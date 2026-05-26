@@ -14,3 +14,4 @@ uploads/
 .DS_Store
 backend_stdout*.log
 backend_stderr*.log
+test_*.py

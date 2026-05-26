@@ -163,26 +163,46 @@ def ingest_from_zip(zip_path: str, index, limit: int = 0, skip: int = 0, batch_s
 
 
 def ingest_from_gcs(gcs_uri: str, index, limit: int = 0, skip: int = 0, batch_size: int = BATCH_SIZE):
-    """Read PDFs from GCS bucket (e.g. gs://sahaiyak/archive/) and ingest into Pinecone."""
+    """Read PDFs from GCS. Handles both:
+    - gs://bucket/prefix/  → directory of PDFs
+    - gs://bucket/file.zip → zip archive containing PDFs
+    """
     try:
-        from google.cloud import storage as gcs
+        from google.cloud import storage as gcs_storage
     except ImportError:
         print("[ingest] ERROR: google-cloud-storage not installed. Run: pip install google-cloud-storage")
         sys.exit(1)
 
-    # Parse gs://bucket/prefix
     gcs_uri = gcs_uri.rstrip('/')
-    if gcs_uri.startswith("gs://"):
-        parts = gcs_uri[5:].split('/', 1)
-        bucket_name = parts[0]
-        prefix = (parts[1] + '/') if len(parts) > 1 else ''
-    else:
+    if not gcs_uri.startswith("gs://"):
         print(f"[ingest] Invalid GCS URI: {gcs_uri}")
         sys.exit(1)
 
-    print(f"[ingest] Reading from GCS: bucket={bucket_name}, prefix={prefix}")
-    client = gcs.Client()
+    parts = gcs_uri[5:].split('/', 1)
+    bucket_name = parts[0]
+    blob_path = parts[1] if len(parts) > 1 else ''
+
+    print(f"[ingest] Connecting to GCS bucket: {bucket_name}")
+    client = gcs_storage.Client()
     bucket = client.bucket(bucket_name)
+
+    # Check if URI points to a zip file
+    if blob_path.lower().endswith('.zip'):
+        import tempfile
+        print(f"[ingest] Downloading zip from GCS: {blob_path}")
+        blob = bucket.blob(blob_path)
+        with tempfile.NamedTemporaryFile(suffix='.zip', delete=False) as tmp:
+            tmp_path = tmp.name
+        blob.download_to_filename(tmp_path)
+        size_mb = os.path.getsize(tmp_path) / 1024 / 1024
+        print(f"[ingest] Downloaded {size_mb:.1f} MB to {tmp_path}")
+        result = ingest_from_zip(tmp_path, index, limit, skip, batch_size)
+        os.unlink(tmp_path)
+        return result
+
+    # Directory of PDFs
+    prefix = blob_path + '/' if blob_path and not blob_path.endswith('/') else blob_path
+    print(f"[ingest] Reading PDFs from GCS prefix: {prefix}")
     blobs = list(bucket.list_blobs(prefix=prefix))
     pdf_blobs = [b for b in blobs if b.name.lower().endswith('.pdf')]
     print(f"[ingest] Found {len(pdf_blobs)} PDFs in GCS")
