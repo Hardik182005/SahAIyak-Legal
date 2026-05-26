@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SahAIyak — Legal Notice Draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A0A0A;--paper:#FAFAF7;--paper-pure:#FFFFFF;--rule:#E8E5DE;--mute:#6B6B6B;--mute-soft:#9A9A9A;--sketch:#2563EB;--success:#15803D;
+  --bg:#0D0D0D;--bg2:#141414;--border:rgba(255,255,255,.08);--txt:#F0EFEA;--txt2:rgba(255,255,255,.5);--txt3:rgba(255,255,255,.25);--sb-w:220px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);
+  display:flex;height:100vh;
+  background-image:
+    linear-gradient(rgba(10,10,10,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,10,10,.055) 1px, transparent 1px),
+    radial-gradient(circle, rgba(10,10,10,.18) 1.5px, transparent 1.5px);
+  background-size:56px 56px,56px 56px,56px 56px;
+  background-position:0 0,0 0,-0.5px -0.5px;
+}
+
+/* ── SIDEBAR ── */
+.sb{width:var(--sb-w);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:18px 14px 16px;border-bottom:1px solid var(--border)}
+.sb-icon{width:28px;height:28px;background:var(--sketch);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-bname{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--txt);font-weight:500}
+.sb-btag{font-size:10px;color:var(--txt3);margin-top:1px}
+.sb-case{margin:10px 10px;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px}
+.sb-cid{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--txt3);text-transform:uppercase;margin-bottom:2px}
+.sb-cname{font-size:12px;font-weight:500;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase;padding:10px 14px 5px}
+.sb-item{display:flex;align-items:center;gap:9px;margin:1px 6px;padding:9px 10px;border-radius:6px;font-size:13px;font-weight:500;color:var(--txt2);cursor:pointer;border:none;background:transparent;width:calc(100% - 12px);text-align:left;text-decoration:none;transition:background .15s,color .15s}
+.sb-item:hover{background:rgba(255,255,255,.06);color:var(--txt)}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff}
+.sb-item svg{flex-shrink:0;opacity:.55}
+.sb-item.active svg{opacity:1}
+.sb-badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;background:rgba(255,255,255,.08);color:var(--txt3);padding:2px 6px;border-radius:100px}
+.sb-item.active .sb-badge{background:rgba(37,99,235,.25);color:#93C5FD}
+.sb-divider{height:1px;background:var(--border);margin:6px 12px}
+.sb-status{padding:10px 14px;border-top:1px solid var(--border)}
+.sb-ws{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.sb-ws-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 5px rgba(34,197,94,.4)}
+.sb-ws-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--txt3);text-transform:uppercase}
+.sb-user{border-top:1px solid var(--border);padding:12px 12px;display:flex;align-items:center;gap:8px}
+.sb-av{width:26px;height:26px;border-radius:50%;background:rgba(37,99,235,.4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.sb-un{font-size:12px;font-weight:500;color:var(--txt2)}
+.sb-ul{font-size:10px;color:var(--txt3)}
+
+/* ── MAIN WRAPPER ── */
+.doc-main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+
+/* ── TOOLBAR ── */
+.toolbar{
+  height:60px;background:var(--paper-pure);border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;flex-shrink:0;
+}
+.toolbar-left{display:flex;align-items:center;gap:16px}
+.toolbar-title{font-size:13px;font-weight:600;color:var(--ink)}
+.toolbar-meta{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--mute-soft)}
+.toolbar-right{display:flex;align-items:center;gap:10px}
+.tool-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:transparent;padding:7px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;color:var(--ink);font-family:'Inter',sans-serif;transition:border-color .2s,background .2s;text-decoration:none}
+.tool-btn:hover{border-color:var(--ink);background:var(--paper)}
+.tool-btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tool-btn-primary:hover{background:#222;border-color:#222;color:#fff}
+
+/* ── DOC LAYOUT ── */
+.doc-layout{display:grid;grid-template-columns:1fr 280px;flex:1;overflow:hidden}
+
+/* ── DOCUMENT PANEL ── */
+.doc-panel{overflow-y:auto;padding:32px 40px;display:flex;justify-content:center;align-items:flex-start;background:var(--paper);background-image:linear-gradient(rgba(10,10,10,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(10,10,10,.055) 1px,transparent 1px),radial-gradient(circle,rgba(10,10,10,.18) 1.5px,transparent 1.5px);background-size:56px 56px,56px 56px,56px 56px;background-position:0 0,0 0,-0.5px -0.5px}
+.doc-page{
+  background:var(--paper-pure);max-width:560px;width:100%;
+  padding:48px 52px;box-shadow:0 2px 40px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);
+  min-height:900px;position:relative;overflow:hidden;word-break:break-word;overflow-wrap:break-word;
+}
+  min-height:900px;position:relative;
+}
+/* Legal Notice Styles */
+.notice-top{text-align:center;border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:40px}
+.notice-from{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.notice-title{font-family:'Fraunces',serif;font-size:22px;font-weight:400;letter-spacing:.02em;margin-bottom:6px}
+.notice-sub-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--mute);text-transform:uppercase}
+.notice-meta{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px;padding:24px;border:1px solid var(--rule)}
+.notice-meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-soft);margin-bottom:4px}
+.notice-meta-val{font-size:14px;font-weight:500;line-height:1.4}
+.notice-ref{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mute);margin-bottom:32px}
+.notice-salutation{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin-bottom:24px}
+.notice-body p{font-family:'Fraunces',serif;font-size:15px;font-weight:300;line-height:1.8;margin-bottom:18px;color:var(--ink);text-align:left}
+.notice-body strong{font-weight:400;font-family:'Fraunces',serif}
+.notice-body em{font-style:italic;font-weight:300}
+.notice-clause{
+  border-left:2px solid var(--sketch);padding-left:20px;margin:28px 0;
+  font-family:'Fraunces',serif;font-size:15px;font-weight:300;line-height:1.8;
+  color:var(--ink);
+}
+.notice-demand{background:var(--paper);padding:24px;border:1px solid var(--rule);margin:32px 0;border-radius:2px}
+.notice-demand h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:16px}
+.notice-demand ol{padding-left:20px}
+.notice-demand li{font-size:14px;line-height:1.7;margin-bottom:8px;font-family:'Fraunces',serif;font-weight:300}
+.notice-warning{font-family:'Fraunces',serif;font-size:16px;font-weight:400;margin:28px 0;line-height:1.7;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:20px 0}
+.notice-close{font-family:'Fraunces',serif;font-size:16px;font-weight:300;margin-top:36px;line-height:1.7}
+.notice-sig{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule)}
+.notice-sig-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;margin-bottom:4px}
+.notice-sig-role{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.notice-footer-bar{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.notice-footer-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--mute-soft);text-transform:uppercase}
+
+/* Editable paragraphs */
+[contenteditable="true"]{outline:none;border-radius:2px;transition:background .2s;max-width:100%;word-break:break-word}
+[contenteditable="true"]:hover{background:rgba(37,99,235,.03)}
+[contenteditable="true"]:focus{background:rgba(37,99,235,.05);box-shadow:0 0 0 2px rgba(37,99,235,.15)}
+
+/* Edit tooltip */
+.edit-hint{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;padding:8px 16px;border-radius:100px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:200}
+.edit-hint.show{opacity:1}
+
+/* ── CHAT PANEL ── */
+.chat-panel{background:var(--paper-pure);border-left:1px solid var(--rule);display:flex;flex-direction:column}
+.chat-header{padding:20px 20px 16px;border-bottom:1px solid var(--rule)}
+.chat-header-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.chat-header-sub{font-size:12px;color:var(--mute)}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;flex-direction:column;gap:4px;max-width:85%}
+.msg.ai{align-self:flex-start}
+.msg.user{align-self:flex-end}
+.msg-bubble{
+  padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.55;
+}
+.msg.ai .msg-bubble{background:var(--paper);border:1px solid var(--rule);color:var(--ink)}
+.msg.user .msg-bubble{background:var(--ink);color:#fff}
+.msg-time{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--mute-soft)}
+.msg.user .msg-time{text-align:right}
+.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.typing span{width:5px;height:5px;border-radius:50%;background:var(--mute-soft);animation:pulse 1.4s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.chat-suggestions{padding:12px 20px;display:flex;flex-wrap:wrap;gap:8px;border-top:1px solid var(--rule)}
+.sug-chip{
+  font-size:12px;background:transparent;border:1px solid var(--rule);
+  padding:6px 12px;border-radius:100px;cursor:pointer;color:var(--mute);
+  font-family:'Inter',sans-serif;transition:border-color .2s,color .2s;white-space:nowrap;
+}
+.sug-chip:hover{border-color:var(--ink);color:var(--ink)}
+.chat-input-row{padding:12px 20px;border-top:1px solid var(--rule);display:flex;gap:8px;align-items:flex-end}
+.chat-input{
+  flex:1;border:1px solid var(--rule);border-radius:8px;padding:10px 12px;
+  font-family:'Inter',sans-serif;font-size:13px;resize:none;outline:none;
+  transition:border-color .2s;min-height:42px;max-height:120px;
+  background:var(--paper-pure);color:var(--ink);
+}
+.chat-input:focus{border-color:var(--ink)}
+.chat-send{
+  width:38px;height:38px;background:var(--ink);border:none;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;
+}
+.chat-send:hover{background:#333}
+
+@media(max-width:900px){.doc-layout{grid-template-columns:1fr}.chat-panel{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sb">
+  <div class="sb-brand">
+    <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.2"/><line x1="4" y1="4.5" x2="10" y2="4.5" stroke="white" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="7" x2="10" y2="7" stroke="white" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="9.5" x2="7" y2="9.5" stroke="white" stroke-width="1" stroke-linecap="round"/></svg></div>
+    <div><div class="sb-bname">SAHAIYAK</div><div class="sb-btag">Legal Intelligence</div></div>
+  </div>
+  <div class="sb-case">
+    <div class="sb-cid">Case #2026-0847</div>
+    <div class="sb-cname">₹80,000 Deposit Dispute</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-lbl">Analysis</div>
+    <a href="dashboard.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.1"/><rect x="7" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.1"/><rect x="1" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.1"/><rect x="7" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.1"/></svg>
+      Overview
+    </a>
+    <a href="dashboard.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.1"/><path d="M6.5 6.5L4.5 4.8" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="6.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      Win Probability
+      <span class="sb-badge">72%</span>
+    </a>
+    <a href="dashboard.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 3.5h9M2 6.5h9M2 9.5h5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+      Evidence Coach
+      <span class="sb-badge">4/6</span>
+    </a>
+    <a href="document.html" class="sb-item active">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 1.5h8v10h-8V1.5z" stroke="currentColor" stroke-width="1.1"/><line x1="4.5" y1="4" x2="8.5" y2="4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="6" x2="8.5" y2="6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="8" x2="6.5" y2="8" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      Legal Notice
+      <span class="sb-badge">Draft</span>
+    </a>
+    <a href="dashboard.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="5" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 11.5c0-2.76 2.24-5 5-5s5 2.24 5 5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+      Where to File
+    </a>
+    <a href="dashboard.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="4.5" cy="6.5" r="3" stroke="currentColor" stroke-width="1.1"/><circle cx="8.5" cy="6.5" r="3" stroke="currentColor" stroke-width="1.1"/></svg>
+      Similar Cases
+      <span class="sb-badge">847</span>
+    </a>
+    <div class="sb-divider"></div>
+    <div class="sb-lbl">Actions</div>
+    <a href="settings.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2" stroke="currentColor" stroke-width="1.1"/><path d="M6.5 1v1.5M6.5 10v1.5M1 6.5h1.5M10 6.5h1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+      Settings
+    </a>
+    <a href="intake.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v10M2.5 7l4 4 4-4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      New Case
+    </a>
+    <a href="index.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5h10M1.5 6.5L5 3M1.5 6.5L5 10" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Home
+    </a>
+  </nav>
+  <div class="sb-status">
+    <div class="sb-ws"><div class="sb-ws-dot"></div><div class="sb-ws-txt">Notice Ready</div></div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-av">AK</div>
+    <div><div class="sb-un">Arjun Kumar</div><div class="sb-ul">Mumbai, MH</div></div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="doc-main">
+
+<!-- ── TOOLBAR ── -->
+<div class="toolbar">
+  <div class="toolbar-left">
+    <div>
+      <div class="toolbar-title">Legal Notice — Deposit Recovery</div>
+      <div class="toolbar-meta">CASE #2026-0847 · DRAFT · CLICK ANY PARAGRAPH TO EDIT</div>
+    </div>
+  </div>
+  <div class="toolbar-right">
+    <button class="tool-btn" onclick="printNotice()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M3 4V1h7v3M3 9H1V5h11v4h-2M3 7h7v5H3V7z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
+      Print
+    </button>
+    <button class="tool-btn" onclick="copyNotice()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="4" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+      Copy
+    </button>
+    <button class="tool-btn tool-btn-primary">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 9l2.5 2.5L11 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download PDF
+    </button>
+  </div>
+</div>
+
+<div class="doc-layout">
+  <!-- ── DOCUMENT ── -->
+  <div class="doc-panel">
+    <div class="doc-page" id="docPage">
+
+      <div class="notice-top">
+        <div class="notice-from">Issued via SahAIyak Legal Intelligence</div>
+        <div class="notice-title">LEGAL NOTICE</div>
+        <div class="notice-sub-title">Under the Consumer Protection Act, 2019 &amp; Indian Contract Act, 1872</div>
+      </div>
+
+      <div class="notice-meta">
+        <div>
+          <div class="notice-meta-label">From</div>
+          <div class="notice-meta-val" contenteditable="true">Arjun Kumar<br>Flat 204, Shivaji Nagar<br>Pune — 411005, Maharashtra</div>
+        </div>
+        <div>
+          <div class="notice-meta-label">To</div>
+          <div class="notice-meta-val" contenteditable="true">Ramesh Malhotra<br>Owner, Flat 301, Vijay Society<br>Bandra West, Mumbai — 400050</div>
+        </div>
+        <div>
+          <div class="notice-meta-label">Date of Notice</div>
+          <div class="notice-meta-val">27 May, 2026</div>
+        </div>
+        <div>
+          <div class="notice-meta-label">Notice Period</div>
+          <div class="notice-meta-val">15 days from receipt</div>
+        </div>
+      </div>
+
+      <div class="notice-ref">REF: SAHAIYAK/2026/0847/MH/DEPOSIT</div>
+
+      <div class="notice-salutation" contenteditable="true">Dear Shri Ramesh Malhotra,</div>
+
+      <div class="notice-body">
+        <p contenteditable="true">I, <strong>Arjun Kumar</strong>, residing at the above-mentioned address, through this legal notice, hereby call upon you to immediately refund the security deposit of <strong>₹80,000 (Rupees Eighty Thousand Only)</strong> which was paid by me at the time of commencement of tenancy of your property situated at Flat 301, Vijay Society, Bandra West, Mumbai, and which you have wrongfully withheld despite my vacating the premises on 12 April 2026.</p>
+
+        <p contenteditable="true">The facts of the matter are as follows: I entered into a registered rental agreement with you on 10 April 2023 for a monthly rent of ₹22,000, and paid a refundable security deposit of ₹80,000 as confirmed by NEFT Transfer Reference No. HDFC2023041000823 dated 11 April 2023. I vacated the premises on 12 April 2026 after completing the agreed notice period of 30 days, as acknowledged by you in our WhatsApp exchange dated 14 March 2026.</p>
+
+        <div class="notice-clause" contenteditable="true">Under Clause 7 of our Rental Agreement dated 10 April 2023, the security deposit was to be refunded within 30 days of vacant possession, after deducting legitimate and documented charges for damage, if any. As of this date, 45 days have elapsed and you have neither refunded the deposit nor provided any itemized deduction statement, constituting a clear breach of contractual obligation.</div>
+
+        <p contenteditable="true">Your conduct constitutes a <em>deficiency in service</em> within the meaning of Section 2(11) of the Consumer Protection Act, 2019, and also amounts to <em>unfair trade practice</em> under Section 2(47) of the said Act. You are further liable under Sections 73 and 74 of the Indian Contract Act, 1872 for breach of the rental agreement.</p>
+
+        <div class="notice-demand">
+          <h4>Demands Under This Notice</h4>
+          <ol>
+            <li contenteditable="true">Immediately refund the full security deposit of <strong>₹80,000</strong> within 15 days of receipt of this notice.</li>
+            <li contenteditable="true">Pay interest at 12% per annum on the said amount for the period of wrongful withholding (45 days to date), amounting to approximately <strong>₹1,315</strong>.</li>
+            <li contenteditable="true">If deductions are claimed, provide a written itemized statement with supporting bills or estimates within 15 days — failing which no deduction shall be permissible.</li>
+          </ol>
+        </div>
+
+        <div class="notice-warning" contenteditable="true">Take notice that if you fail to comply with the above demands within <strong>fifteen (15) days</strong> from the date of receipt of this notice, I shall be constrained, without any further notice, to initiate appropriate proceedings before the District Consumer Disputes Redressal Commission, Mumbai, seeking refund of the deposit together with compensation for harassment, legal costs, and such other relief as the Commission may deem fit. This may also expose you to a penalty under Section 88 of the Consumer Protection Act, 2019.</div>
+
+        <p class="notice-close" contenteditable="true">This notice is being sent without prejudice to all other rights and remedies available to me in law. The cost and consequences of ignoring this notice shall be entirely at your peril.</p>
+      </div>
+
+      <div class="notice-sig">
+        <div class="notice-sig-name" contenteditable="true">Arjun Kumar</div>
+        <div class="notice-sig-role">Sender / Complainant</div>
+        <div style="margin-top:16px;font-size:12px;color:var(--mute)">Assisted by SahAIyak Legal Intelligence Platform</div>
+      </div>
+
+      <div class="notice-footer-bar">
+        <div class="notice-footer-txt">Draft generated 27 May 2026 · For review before dispatch</div>
+        <div class="notice-footer-txt">⚖ SahAIyak · Not a legal opinion</div>
+      </div>
+
+    </div>
+    <div class="edit-hint" id="editHint">Click any paragraph to edit</div>
+  </div>
+
+  <!-- ── CHAT PANEL ── -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="chat-header-title">Ask the Drafter</div>
+      <div class="chat-header-sub">Modify, translate, or strengthen your notice</div>
+    </div>
+
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="msg ai">
+        <div class="msg-bubble">Your legal notice is ready. It cites the Consumer Protection Act 2019 and your rental agreement. Click any paragraph to edit directly, or ask me to modify it.</div>
+        <div class="msg-time">2:34 PM</div>
+      </div>
+      <div class="msg ai">
+        <div class="msg-bubble">I've pre-empted the landlord's three most likely defences. The 15-day deadline creates legal urgency without being aggressive. Want me to adjust the tone?</div>
+        <div class="msg-time">2:34 PM</div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions">
+      <button class="sug-chip" onclick="sendSuggestion('Make this more aggressive')">Make more aggressive</button>
+      <button class="sug-chip" onclick="sendSuggestion('Translate to Hindi')">Translate to Hindi</button>
+      <button class="sug-chip" onclick="sendSuggestion('Add a 7-day final deadline')">Add 7-day deadline</button>
+      <button class="sug-chip" onclick="sendSuggestion('Cite a specific court judgment')">Cite a judgment</button>
+      <button class="sug-chip" onclick="sendSuggestion('Make it shorter and direct')">Make shorter</button>
+    </div>
+
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" placeholder="Ask the drafter..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="chat-send" onclick="sendMsg()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="static/api.js"></script>
+<script>
+// ── EDIT HINT ─────────────────────────────────────────────────────────────
+const hint = document.getElementById('editHint');
+setTimeout(() => { hint.classList.add('show'); }, 1800);
+document.querySelectorAll('[contenteditable]').forEach(el => {
+  el.addEventListener('focus', () => { hint.classList.remove('show'); });
+});
+
+// ── LOAD REAL NOTICE ──────────────────────────────────────────────────────
+(async function loadNotice() {
+  const caseId = getCaseId();
+  if (!caseId || caseId === 'demo') return;
+  try {
+    const data = await apiGet('/api/v1/cases/' + caseId + '/notice');
+    if (data.notice_text) {
+      const page = document.getElementById('docPage');
+      // Replace notice body content with real notice, preserving the page shell
+      const bodyEl = page.querySelector('.notice-body');
+      const topEl = page.querySelector('.notice-top');
+      if (bodyEl) {
+        // Parse notice into paragraphs and render
+        const paras = data.notice_text.split('\n\n').filter(p => p.trim());
+        bodyEl.innerHTML = paras.map(p =>
+          `<p contenteditable="true">${p.replace(/\n/g, '<br>')}</p>`
+        ).join('');
+      }
+      // Update version in toolbar
+      document.querySelectorAll('.toolbar-meta').forEach(el => {
+        el.textContent = el.textContent.replace('DRAFT', `DRAFT · VERSION ${data.version}`);
+      });
+    }
+  } catch(e) {
+    console.warn('Notice load failed, using demo notice:', e.message);
+  }
+})();
+
+// ── CHAT ──────────────────────────────────────────────────────────────────
+const msgs = document.getElementById('chatMsgs');
+const input = document.getElementById('chatInput');
+
+const _fallbackResponses = {
+  'Make this more aggressive': "I've sharpened the warning section and added reference to criminal liability under Section 406 IPC (criminal breach of trust). The final paragraph now reads as a firm final warning before litigation and police complaint.",
+  'Translate to Hindi': "मैं इस नोटिस का हिंदी अनुवाद तैयार कर रहा हूं। सभी कानूनी धाराएं और तारीखें वही रहेंगी, केवल भाषा बदलेगी।",
+  'Add a 7-day final deadline': "Done. Updated deadline from 15 to 7 days and added: \"This being your final opportunity to settle amicably before proceedings are initiated.\"",
+  'Cite a specific court judgment': "Added: *Patil v. Sharma (2022, Consumer Forum Pune): WhatsApp evidence held admissible.* and *Indra Bhavani v. Nagarajan (2023, DCDRC Chennai): Deposit withheld beyond 30 days = deficiency in service.*",
+  'Make it shorter and direct': "Condensed to 3 tight paragraphs: (1) facts, (2) legal violation, (3) demand + consequences. Legal effect unchanged."
+};
+
+function addMsg(text, role) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const now = new Date();
+  const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+  div.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${time} ${role === 'user' ? '· You' : '· Drafter'}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typing-indicator';
+  div.innerHTML = '<div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+async function sendMsg() {
+  const txt = input.value.trim();
+  if (!txt) return;
+  addMsg(txt, 'user');
+  input.value = '';
+  input.style.height = 'auto';
+  const typing = addTyping();
+  const caseId = getCaseId();
+  try {
+    if (caseId && caseId !== 'demo') {
+      const r = await apiPost('/api/v1/cases/' + caseId + '/drafter', { message: txt, case_id: caseId });
+      typing.remove();
+      addMsg(r.reply, 'ai');
+    } else { throw new Error('demo'); }
+  } catch {
+    await new Promise(r => setTimeout(r, 1200 + Math.random() * 600));
+    typing.remove();
+    addMsg(_fallbackResponses[txt] || "I've updated the notice based on your request. The legal citations remain accurate for Indian jurisdiction.", 'ai');
+  }
+}
+
+function sendSuggestion(txt) { input.value = txt; sendMsg(); }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function printNotice() { window.print(); }
+
+function copyNotice() {
+  const text = document.getElementById('docPage').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target.closest('button');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copied';
+    setTimeout(() => { btn.innerHTML = orig; }, 2000);
+  });
+}
+</script>
+</div><!-- /doc-main -->
+</body>
+</html>

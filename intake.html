@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SahAIyak — Tell Us What Happened</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A0A0A;--paper:#FAFAF7;--paper-pure:#FFFFFF;--rule:#E8E5DE;--mute:#6B6B6B;--mute-soft:#9A9A9A;--sketch:#2563EB;--success:#15803D;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:grid;grid-template-columns:40% 60%;
+  background-image:
+    linear-gradient(rgba(10,10,10,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,10,10,.055) 1px, transparent 1px),
+    radial-gradient(circle, rgba(10,10,10,.18) 1.5px, transparent 1.5px);
+  background-size:56px 56px, 56px 56px, 56px 56px;
+  background-position:0 0, 0 0, -0.5px -0.5px;
+}
+
+/* ── LEFT PANEL ── */
+.left{
+  background:var(--paper);padding:52px 48px;display:flex;flex-direction:column;
+  justify-content:center;min-height:100vh;position:sticky;top:0;height:100vh;overflow:hidden;
+}
+.back{
+  display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:.14em;color:var(--mute);text-decoration:none;
+  text-transform:uppercase;margin-bottom:48px;transition:color .2s;
+}
+.back:hover{color:var(--ink)}
+.edition-label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.18em;color:var(--mute);text-transform:uppercase;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.edition-label::after{content:'';height:1px;background:var(--rule);width:80px}
+.left-h1{font-family:'Fraunces',serif;font-size:clamp(40px,4vw,64px);font-weight:400;letter-spacing:-0.04em;line-height:.95;margin-bottom:20px}
+.left-sub{font-size:16px;color:var(--mute);line-height:1.65;max-width:340px;margin-bottom:40px}
+.chips{display:flex;flex-direction:column;gap:10px}
+.chip{
+  display:inline-flex;align-items:center;gap:10px;background:transparent;
+  border:1px solid var(--rule);padding:12px 18px;border-radius:6px;
+  font-size:13px;color:var(--ink);cursor:pointer;text-align:left;
+  transition:border-color .2s,background .2s;font-family:'Inter',sans-serif;
+}
+.chip:hover{border-color:var(--sketch);background:rgba(37,99,235,.04)}
+.chip-icon{font-size:16px;flex-shrink:0}
+.left-footer{margin-top:auto;padding-top:40px;border-top:1px solid var(--rule)}
+.left-footer-txt{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--mute-soft);text-transform:uppercase;line-height:1.8}
+.left-deco{position:absolute;bottom:-40px;right:-40px;opacity:.04;pointer-events:none}
+
+/* ── RIGHT PANEL ── */
+.right{background:var(--paper-pure);padding:52px 56px;display:flex;flex-direction:column;justify-content:center;min-height:100vh;border-left:1px solid var(--rule)}
+
+.form-header{margin-bottom:32px}
+.step-indicator{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.step-dot{width:6px;height:6px;border-radius:50%;background:var(--rule);transition:background .3s}
+.step-dot.active{background:var(--ink)}
+.step-dot.done{background:var(--sketch)}
+.form-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--mute);text-transform:uppercase;display:block;margin-bottom:10px}
+
+/* ── TEXTAREA ── */
+.case-area{
+  width:100%;min-height:180px;font-family:'Inter',sans-serif;font-size:18px;
+  color:var(--ink);border:none;outline:none;resize:none;background:transparent;
+  line-height:1.6;placeholder:color(var(--mute-soft));padding:0;
+}
+.case-area::placeholder{color:var(--mute-soft)}
+.area-wrap{
+  border:1px solid var(--rule);border-radius:8px;padding:24px;
+  transition:border-color .2s;background:var(--paper-pure);
+}
+.area-wrap:focus-within{border-color:var(--ink)}
+.area-actions{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--rule);margin-top:4px}
+.char-count{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--mute-soft)}
+.voice-btn{
+  display:inline-flex;align-items:center;gap:8px;background:transparent;border:1px solid var(--rule);
+  padding:8px 16px;border-radius:100px;font-size:13px;color:var(--mute);cursor:pointer;
+  font-family:'Inter',sans-serif;transition:border-color .2s,color .2s;
+}
+.voice-btn:hover{border-color:var(--ink);color:var(--ink)}
+.voice-btn.active{border-color:#ef4444;color:#ef4444}
+.mic-icon{width:14px;height:14px;position:relative}
+
+/* ── LANGUAGE PILLS ── */
+.lang-row{display:flex;gap:8px;margin:20px 0}
+.lang-pill{
+  padding:7px 18px;border-radius:100px;border:1px solid var(--rule);
+  font-size:13px;font-weight:500;cursor:pointer;background:transparent;
+  font-family:'Inter',sans-serif;transition:all .2s;
+}
+.lang-pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ── CONTEXT FIELDS ── */
+.ctx-fields{display:flex;flex-direction:column;gap:0;overflow:hidden}
+.ctx-field{
+  opacity:0;max-height:0;transform:translateY(8px);
+  transition:opacity .4s ease,max-height .4s ease,transform .4s ease,margin .3s ease;
+  overflow:hidden;
+}
+.ctx-field.visible{opacity:1;max-height:120px;transform:none;margin-bottom:16px}
+.field-inner{padding:14px 18px;border:1px solid var(--rule);border-radius:8px;background:var(--paper-pure);transition:border-color .2s}
+.field-inner:focus-within{border-color:var(--ink)}
+.field-inner input,.field-inner select{
+  width:100%;border:none;outline:none;background:transparent;
+  font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);
+}
+.field-inner select{cursor:pointer}
+.field-inner option{color:var(--ink)}
+
+/* ── SUBMIT ── */
+.submit-row{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+.btn-submit{
+  background:var(--ink);color:#fff;font-size:15px;font-weight:600;
+  padding:17px 32px;border-radius:100px;border:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:10px;
+  transition:background .2s,gap .2s,transform .2s;font-family:'Inter',sans-serif;
+  width:100%;justify-content:center;
+}
+.btn-submit:hover{background:#222;gap:16px;transform:translateY(-1px)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.disclaimer{font-size:12px;color:var(--mute-soft);text-align:center;line-height:1.5}
+
+/* ── LOADING OVERLAY ── */
+#loadOverlay{
+  position:fixed;inset:0;background:#0A0A0A;z-index:9999;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  opacity:0;pointer-events:none;transition:opacity .4s ease;
+}
+#loadOverlay.active{opacity:1;pointer-events:all}
+.load-inner{width:100%;max-width:560px;padding:0 24px}
+.load-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:40px}
+.agent-line{
+  font-family:'JetBrains Mono',monospace;font-size:14px;color:rgba(255,255,255,.9);
+  margin-bottom:20px;min-height:22px;display:flex;align-items:center;gap:12px;
+  opacity:0;transition:opacity .3s ease;
+}
+.agent-line.show{opacity:1}
+.agent-check{
+  width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:10px;transition:all .3s ease;
+}
+.agent-check.done{background:#15803D;border-color:#15803D;color:#fff}
+.agent-text{flex:1}
+.cursor{display:inline-block;animation:blink .6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.load-complete{
+  font-family:'Fraunces',serif;font-size:32px;font-weight:400;color:#fff;
+  margin-top:48px;opacity:0;transition:opacity .6s ease;
+}
+.load-complete.show{opacity:1}
+.load-bar-wrap{margin-top:32px;height:2px;background:rgba(255,255,255,.1);border-radius:1px;overflow:hidden}
+.load-bar{height:100%;background:var(--sketch);width:0;transition:width .3s ease;border-radius:1px}
+
+@media(max-width:768px){body{grid-template-columns:1fr}.left{display:none}.right{padding:40px 24px}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important}}
+</style>
+</head>
+<body>
+
+<!-- ── LEFT PANEL ── -->
+<div class="left">
+  <a href="index.html" class="back">
+    <svg width="12" height="12" viewBox="0 0 12 12"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+    Back
+  </a>
+  <div class="edition-label">VOL. 01 — INTAKE</div>
+  <h1 class="left-h1">Tell us what happened.</h1>
+  <p class="left-sub">In your own words. Hindi, Marathi, or English. Voice or text. No legal jargon needed.</p>
+  <div class="chips">
+    <button class="chip" onclick="prefill('My landlord is refusing to return my security deposit of ₹80,000 after I vacated the flat. It has been 2 months and they are not responding to my calls or messages.')">
+      <span class="chip-icon">🏠</span>
+      Landlord won't return deposit
+    </button>
+    <button class="chip" onclick="prefill('My employer has not paid my salary for the last 3 months despite multiple reminders. I have salary slips and bank statements as proof.')">
+      <span class="chip-icon">💼</span>
+      Employer unpaid salary
+    </button>
+    <button class="chip" onclick="prefill('I purchased a product worth ₹15,000 online. It arrived defective and the seller is refusing to give a refund or replacement despite the warranty.')">
+      <span class="chip-icon">📦</span>
+      Defective product, no refund
+    </button>
+  </div>
+  <div class="left-footer">
+    <div class="left-footer-txt">
+      🔒 Your case details are encrypted<br>
+      ⚖ Not legal advice — legal intelligence<br>
+      🇮🇳 Built for Indian law, Indian courts
+    </div>
+  </div>
+
+  <!-- Decorative polygon -->
+  <svg class="left-deco" width="280" height="280" viewBox="0 0 280 280">
+    <polygon points="140,10 260,70 270,200 180,270 60,260 10,150 50,50" fill="none" stroke="#2563EB" stroke-width="1.5"/>
+    <polygon points="140,40 240,90 248,195 170,255 70,246 24,148 60,62" fill="none" stroke="#2563EB" stroke-width="1"/>
+  </svg>
+</div>
+
+<!-- ── RIGHT PANEL ── -->
+<div class="right">
+  <div class="form-header">
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <div class="step-dot" id="dot4"></div>
+    </div>
+    <label class="form-label">Describe your situation</label>
+  </div>
+
+  <div class="area-wrap">
+    <textarea class="case-area" id="caseInput" placeholder="I'm having a problem with..." rows="7" oninput="onInput()" maxlength="2000"></textarea>
+    <div class="area-actions">
+      <span class="char-count" id="charCount">0 / 2000</span>
+      <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="4.5" y="1" width="5" height="7" rx="2.5" fill="currentColor"/>
+          <path d="M2 7.5C2 10.26 4.24 12.5 7 12.5S12 10.26 12 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="7" y1="12.5" x2="7" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        Speak instead
+      </button>
+    </div>
+  </div>
+
+  <div class="lang-row">
+    <button class="lang-pill active" onclick="setLang(this,'EN')">EN</button>
+    <button class="lang-pill" onclick="setLang(this,'हिं')">हिं</button>
+    <button class="lang-pill" onclick="setLang(this,'मरा')">मरा</button>
+  </div>
+
+  <div class="ctx-fields">
+    <div class="ctx-field" id="field1">
+      <div class="field-inner">
+        <label class="form-label" style="font-size:9px;margin-bottom:6px">Where are you located?</label>
+        <select>
+          <option value="">Select your state</option>
+          <option>Maharashtra</option><option>Delhi</option><option>Karnataka</option>
+          <option>Tamil Nadu</option><option>Gujarat</option><option>Rajasthan</option>
+          <option>Uttar Pradesh</option><option>West Bengal</option><option>Telangana</option>
+          <option>Andhra Pradesh</option><option>Kerala</option><option>Punjab</option>
+          <option>Haryana</option><option>Madhya Pradesh</option><option>Bihar</option>
+        </select>
+      </div>
+    </div>
+    <div class="ctx-field" id="field2">
+      <div class="field-inner">
+        <label class="form-label" style="font-size:9px;margin-bottom:6px">When did this start?</label>
+        <input type="date" />
+      </div>
+    </div>
+    <div class="ctx-field" id="field3">
+      <div class="field-inner">
+        <label class="form-label" style="font-size:9px;margin-bottom:6px">How much money is involved?</label>
+        <input type="text" placeholder="₹ Amount (e.g. ₹80,000)" />
+      </div>
+    </div>
+    <div class="ctx-field" id="field4">
+      <div class="field-inner">
+        <label class="form-label" style="font-size:9px;margin-bottom:6px">Do you have documents / messages?</label>
+        <input type="text" placeholder="e.g. WhatsApp chats, receipts, emails, agreement..." />
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-row">
+    <button class="btn-submit" id="submitBtn" onclick="submitCase()" disabled>
+      ANALYZE MY CASE →
+    </button>
+    <p class="disclaimer">Your information is private. This is legal intelligence, not legal advice.</p>
+  </div>
+</div>
+
+<!-- ── LOADING OVERLAY ── -->
+<div id="loadOverlay">
+  <div class="load-inner">
+    <div class="load-title">SahAIyak Intelligence Engine</div>
+    <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
+    <div style="margin-top:40px">
+      <div class="agent-line" id="al1">
+        <div class="agent-check" id="ac1"></div>
+        <div class="agent-text" id="at1"></div>
+      </div>
+      <div class="agent-line" id="al2">
+        <div class="agent-check" id="ac2"></div>
+        <div class="agent-text" id="at2"></div>
+      </div>
+      <div class="agent-line" id="al3">
+        <div class="agent-check" id="ac3"></div>
+        <div class="agent-text" id="at3"></div>
+      </div>
+      <div class="agent-line" id="al4">
+        <div class="agent-check" id="ac4"></div>
+        <div class="agent-text" id="at4"></div>
+      </div>
+      <div class="agent-line" id="al5">
+        <div class="agent-check" id="ac5"></div>
+        <div class="agent-text" id="at5"></div>
+      </div>
+    </div>
+    <div class="load-complete" id="loadComplete">✓ ANALYSIS COMPLETE</div>
+  </div>
+</div>
+
+<script src="static/api.js"></script>
+<script>
+// ── PREFILL FROM CHIP ────────────────────────────────────────────────────
+function prefill(text) {
+  const ta = document.getElementById('caseInput');
+  ta.value = text;
+  ta.dispatchEvent(new Event('input'));
+  ta.focus();
+}
+
+// ── INPUT HANDLER ─────────────────────────────────────────────────────────
+let fieldsShown = 0;
+function onInput() {
+  const val = document.getElementById('caseInput').value;
+  document.getElementById('charCount').textContent = val.length + ' / 2000';
+  document.getElementById('submitBtn').disabled = val.trim().length < 20;
+
+  // Reveal context fields progressively
+  const thresholds = [40, 80, 140, 220];
+  thresholds.forEach((t, i) => {
+    const f = document.getElementById('field' + (i + 1));
+    if (val.length >= t) f.classList.add('visible');
+    else f.classList.remove('visible');
+  });
+
+  // Step indicator
+  const dots = [10, 60, 140, 300].map((t, i) => ({ el: document.getElementById('dot' + (i + 1)), t }));
+  dots.forEach((d, i) => {
+    if (val.length >= d.t) d.el.classList.add('done');
+    else d.el.classList.remove('done');
+    d.el.classList.toggle('active', val.length >= (dots[i - 1]?.t || 0) && val.length < d.t);
+  });
+}
+
+// ── LANGUAGE SELECTOR ─────────────────────────────────────────────────────
+function setLang(btn, lang) {
+  document.querySelectorAll('.lang-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const placeholder = { EN: "I'm having a problem with...", 'हिं': "मुझे एक समस्या है...", 'मरा': "मला एक समस्या आहे..." };
+  document.getElementById('caseInput').placeholder = placeholder[lang] || placeholder.EN;
+}
+
+// ── VOICE TOGGLE ─────────────────────────────────────────────────────────
+let voiceActive = false, recognition;
+function toggleVoice() {
+  const btn = document.getElementById('voiceBtn');
+  if (!voiceActive) {
+    voiceActive = true;
+    btn.classList.add('active');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#ef4444" opacity=".2"/><circle cx="7" cy="7" r="3" fill="#ef4444"/></svg> Listening...`;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SR();
+      recognition.lang = 'en-IN';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = e => {
+        let t = '';
+        for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+        document.getElementById('caseInput').value = t;
+        onInput();
+      };
+      recognition.start();
+    }
+  } else {
+    voiceActive = false;
+    btn.classList.remove('active');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4.5" y="1" width="5" height="7" rx="2.5" fill="currentColor"/><path d="M2 7.5C2 10.26 4.24 12.5 7 12.5S12 10.26 12 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="12.5" x2="7" y2="14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> Speak instead`;
+    if (recognition) recognition.stop();
+  }
+}
+
+// ── TYPEWRITER ────────────────────────────────────────────────────────────
+function typeText(el, text, ms) {
+  return new Promise(res => {
+    let i = 0;
+    const iv = setInterval(() => {
+      el.textContent = text.slice(0, ++i);
+      if (i >= text.length) { clearInterval(iv); res(); }
+    }, ms);
+  });
+}
+
+// ── SUBMIT + LOADING SEQUENCE ─────────────────────────────────────────────
+async function submitCase() {
+  const overlay = document.getElementById('loadOverlay');
+  overlay.classList.add('active');
+
+  const description = document.getElementById('caseInput').value.trim();
+  const state = document.querySelector('#field1 select')?.value || 'Maharashtra';
+  const dateStarted = document.querySelector('#field2 input')?.value || '';
+  const amount = document.querySelector('#field3 input')?.value || '';
+  const evidence = document.querySelector('#field4 input')?.value || '';
+  const activeLang = document.querySelector('.lang-pill.active')?.textContent?.trim() || 'EN';
+
+  const agentLabels = [
+    '▸ LAW FINDER AGENT — Scanning IPC, CPA, Rent Control Acts...',
+    '▸ AUTHORITY AGENT — Mapping correct forum for your state...',
+    '▸ WIN PREDICTOR — Analyzing 10,000+ Indian court judgments...',
+    '▸ EVIDENCE COACH — Scoring your evidence, finding gaps...',
+    '▸ NOTICE DRAFTER — Composing personalized legal notice...'
+  ];
+
+  const barEl = document.getElementById('loadBar');
+  let barPct = 0;
+  const barInterval = setInterval(() => {
+    barPct = Math.min(barPct + 0.8, 90);
+    barEl.style.width = barPct + '%';
+  }, 80);
+
+  // Start the agent animation in parallel with the API call
+  const animPromise = (async () => {
+    for (let i = 0; i < agentLabels.length; i++) {
+      const line = document.getElementById('al' + (i + 1));
+      const check = document.getElementById('ac' + (i + 1));
+      const text = document.getElementById('at' + (i + 1));
+      line.classList.add('show');
+      await typeText(text, agentLabels[i], 22);
+      await new Promise(r => setTimeout(r, 300));
+      check.classList.add('done');
+      check.textContent = '✓';
+      await new Promise(r => setTimeout(r, 180));
+    }
+  })();
+
+  let caseId = null;
+  try {
+    const langMap = { 'EN': 'EN', 'हिं': 'HI', 'मरा': 'MR' };
+    const result = await apiPost('/api/v1/cases', {
+      description,
+      state: state || 'Maharashtra',
+      amount,
+      date_started: dateStarted,
+      evidence_text: evidence,
+      language: langMap[activeLang] || 'EN',
+    });
+    caseId = result.case_id;
+    setCaseId(caseId);
+  } catch (e) {
+    console.warn('API unavailable, using demo mode:', e.message);
+    setCaseId('demo');
+  }
+
+  await animPromise;
+  clearInterval(barInterval);
+  barEl.style.width = '100%';
+  const complete = document.getElementById('loadComplete');
+  complete.classList.add('show');
+  await new Promise(r => setTimeout(r, 800));
+  window.location.href = caseId && caseId !== 'demo'
+    ? `dashboard.html?case=${caseId}`
+    : 'dashboard.html';
+}
+</script>
+</body>
+</html>

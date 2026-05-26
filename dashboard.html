@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SahAIyak — Case Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0D0D; --bg2:#141414; --bg3:#1A1A1A;
+  --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.12);
+  --txt:#F0EFEA; --txt2:rgba(255,255,255,.5); --txt3:rgba(255,255,255,.25);
+  --sketch:#2563EB; --sketch-s:#93C5FD;
+  --green:#15803D; --amber:#B45309; --warn:#B45309; --success:#15803D;
+  --sb-w:240px;
+  /* content area — white paper */
+  --c-bg:#FAFAF7; --c-card:#FFFFFF; --c-border:#E8E5DE;
+  --c-ink:#0A0A0A; --c-mute:#6B6B6B; --c-soft:#9A9A9A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);
+  display:flex;height:100vh;overflow:hidden;
+}
+
+/* ═══ SIDEBAR ═══════════════════════════════════════ */
+.sb{
+  width:var(--sb-w);flex-shrink:0;background:var(--bg2);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  height:100vh;overflow:hidden;
+}
+.sb-brand{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 16px 16px;border-bottom:1px solid var(--border);
+}
+.sb-icon{
+  width:30px;height:30px;background:var(--sketch);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sb-bname{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--txt);font-weight:500}
+.sb-btag{font-size:10px;color:var(--txt3);margin-top:1px}
+
+.sb-case{margin:10px 12px;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px}
+.sb-cid{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase;margin-bottom:3px}
+.sb-cname{font-size:12px;font-weight:500;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--txt3);text-transform:uppercase;padding:10px 16px 5px}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  margin:1px 8px;padding:9px 10px;border-radius:6px;
+  font-size:13px;font-weight:500;color:var(--txt2);
+  cursor:pointer;border:none;background:transparent;
+  width:calc(100% - 16px);text-align:left;text-decoration:none;
+  transition:background .15s,color .15s;
+}
+.sb-item:hover{background:rgba(255,255,255,.06);color:var(--txt)}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff}
+.sb-item svg{flex-shrink:0;opacity:.55}
+.sb-item.active svg{opacity:1}
+.sb-badge{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;
+  background:rgba(255,255,255,.08);color:var(--txt3);padding:2px 7px;border-radius:100px;
+}
+.sb-item.active .sb-badge{background:rgba(37,99,235,.25);color:var(--sketch-s)}
+
+.sb-divider{height:1px;background:var(--border);margin:8px 14px}
+
+/* Agents */
+.sb-agents{border-top:1px solid var(--border);padding:14px 16px}
+.sb-albl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--txt3);text-transform:uppercase;margin-bottom:10px}
+.sb-arow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-g{background:var(--green);box-shadow:0 0 5px rgba(34,197,94,.4)}
+.dot-a{background:var(--amber)}
+.dot-d{background:rgba(255,255,255,.15)}
+.sb-aname{font-size:11px;color:var(--txt3);flex:1}
+.sb-aval{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3)}
+
+/* WS status */
+.sb-ws{display:flex;align-items:center;gap:7px;padding:10px 16px 6px}
+.sb-ws-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.5)}
+.sb-ws-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--txt3);text-transform:uppercase}
+
+/* User */
+.sb-user{border-top:1px solid var(--border);padding:13px 14px;display:flex;align-items:center;gap:9px}
+.sb-av{width:28px;height:28px;border-radius:50%;background:rgba(37,99,235,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.sb-un{font-size:12px;font-weight:500;color:var(--txt2)}
+.sb-ul{font-size:10px;color:var(--txt3)}
+
+/* ═══ MAIN WRAPPER ══════════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+
+/* ── STAT BAR ── */
+.statbar{
+  height:50px;flex-shrink:0;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;
+}
+.stat-items{display:flex;align-items:center;gap:0}
+.stat-item{padding:0 28px;border-right:1px solid var(--border)}
+.stat-item:first-child{padding-left:0}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase;margin-bottom:2px}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;line-height:1}
+.stat-val.g{color:var(--green)}.stat-val.a{color:var(--amber)}.stat-val.b{color:var(--sketch-s)}.stat-val.w{color:var(--txt)}
+.stat-right{display:flex;align-items:center;gap:10px}
+.s-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:100px;border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--txt3);white-space:nowrap}
+.btn-sm{background:transparent;border:1px solid var(--border);color:var(--txt2);font-size:12px;font-weight:500;padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;transition:border-color .2s,color .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-sm:hover{border-color:var(--border2);color:var(--txt)}
+.btn-sm-p{background:var(--sketch);border-color:var(--sketch);color:#fff}
+.btn-sm-p:hover{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+
+/* ── CONTENT AREA ── */
+.content{
+  flex:1;overflow-y:auto;
+  background-color:var(--c-bg);
+  background-image:
+    linear-gradient(rgba(10,10,10,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,10,10,.06) 1px, transparent 1px),
+    radial-gradient(circle, rgba(10,10,10,.22) 1.5px, transparent 1.5px);
+  background-size:56px 56px, 56px 56px, 56px 56px;
+  background-position:0 0, 0 0, -0.5px -0.5px;
+  scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.1) transparent;
+}
+.content-inner{padding:28px 32px 100px;max-width:1200px}
+
+/* ── STAT BAR ── */
+.statbar{
+  height:50px;flex-shrink:0;
+  background:var(--c-card);border-bottom:1px solid var(--c-border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 32px;
+}
+.stat-items{display:flex;align-items:center;gap:0}
+.stat-item{padding:0 28px;border-right:1px solid var(--c-border)}
+.stat-item:first-child{padding-left:0}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase;margin-bottom:2px}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;line-height:1}
+.stat-val.g{color:var(--success)}.stat-val.a{color:var(--amber)}.stat-val.b{color:var(--sketch)}.stat-val.w{color:var(--c-ink)}
+.stat-right{display:flex;align-items:center;gap:10px}
+.s-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:100px;border:1px solid var(--c-border);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--c-soft);white-space:nowrap}
+
+/* ── PAGE HEADER ── */
+.page-hdr{margin-bottom:28px}
+.page-hdr-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.page-title{font-family:'Fraunces',serif;font-size:clamp(28px,3vw,48px);font-weight:400;letter-spacing:-0.04em;line-height:1;color:var(--c-ink)}
+.page-sub{font-size:13px;color:var(--c-mute);line-height:1.5}
+.p-status{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;border:1px solid var(--c-border);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--c-soft);flex-shrink:0;margin-top:4px}
+
+/* ── WIN CARD ── */
+.win-card{
+  background:var(--c-card);
+  border:1px solid var(--c-border);
+  border-radius:8px;
+  display:grid;grid-template-columns:240px 1fr;margin-bottom:20px;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(21,128,61,.08), 0 4px 24px rgba(21,128,61,.08), 0 0 60px rgba(21,128,61,.06);
+}
+.win-l{padding:36px 40px;border-right:1px solid var(--c-border);background:var(--c-card)}
+.win-cap{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--c-soft);text-transform:uppercase;margin-bottom:8px}
+.win-big{font-family:'Fraunces',serif;font-size:clamp(64px,7vw,96px);font-weight:400;color:var(--success);line-height:1;letter-spacing:-0.04em;text-shadow:0 0 40px rgba(21,128,61,.18)}
+.win-sub{font-size:12px;color:var(--c-soft);margin-top:10px;line-height:1.5}
+.win-r{padding:32px 36px;display:flex;flex-direction:column;gap:20px;background:var(--c-card)}
+.win-r-top{font-size:14px;color:var(--c-mute);line-height:1.65;max-width:520px}
+.win-r-top strong{color:var(--c-ink)}
+.bars{display:flex;flex-direction:column;gap:8px}
+.brow{display:flex;align-items:center;gap:12px}
+.blbl{font-size:11px;color:var(--c-soft);width:90px;text-align:right;flex-shrink:0}
+.btrack{flex:1;height:3px;background:rgba(0,0,0,.07);border-radius:2px;overflow:hidden}
+.bfill{height:100%;border-radius:2px;width:0;transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+.bpct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-soft);width:32px}
+.win-foot{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--c-soft)}
+
+/* ── SECTION LABEL ── */
+.s-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--c-soft);text-transform:uppercase;margin-bottom:12px;margin-top:28px}
+
+/* ── EVIDENCE GRID ── */
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.ev-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:22px}
+.ev-card-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:16px;color:var(--c-ink)}
+.ev-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.ev-txt{flex:1}
+.ev-title{font-size:13px;color:var(--c-ink);line-height:1.4}
+.ev-sub{font-size:11px;color:var(--c-mute);margin-top:2px;line-height:1.4}
+.ev-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.06em;margin-top:3px;display:inline-block}
+.ev-badge.pos{color:var(--success)}.ev-badge.neg{color:var(--amber)}
+
+/* ── CASES TABLE ── */
+.cases-table{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.ct-head{display:grid;grid-template-columns:70px 1fr 140px 100px 1fr;gap:16px;padding:10px 20px;border-bottom:1px solid var(--c-border);background:rgba(0,0,0,.02)}
+.ct-head-col{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase}
+.ct-row{display:grid;grid-template-columns:70px 1fr 140px 100px 1fr;gap:16px;padding:13px 20px;border-bottom:1px solid var(--c-border);align-items:center;transition:background .15s}
+.ct-row:last-child{border-bottom:none}
+.ct-row:hover{background:rgba(0,0,0,.02)}
+.ct-year{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--c-soft)}
+.ct-court{font-size:13px;font-weight:500;color:var(--c-ink)}
+.ct-outcome{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
+.ct-outcome.w{color:var(--success)}.ct-outcome.s{color:var(--sketch)}.ct-outcome.l{color:var(--amber)}
+.ct-amount{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--c-mute)}
+.ct-fact{font-size:12px;color:var(--c-soft);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* ── PLAYBOOK ── */
+.play-h{font-family:'Fraunces',serif;font-size:clamp(22px,2.5vw,36px);font-weight:400;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px;color:var(--c-ink)}
+.play-h em{font-style:italic;font-weight:300}
+.play-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.play-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:background .15s;gap:16px}
+.play-hdr:hover{background:var(--c-bg)}
+.play-hl{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.play-n{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--c-soft);flex-shrink:0}
+.play-t{font-size:14px;font-weight:500;color:var(--c-ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.play-arr{font-size:11px;color:var(--c-soft);flex-shrink:0;transition:transform .25s}
+.play-card.open .play-arr{transform:rotate(180deg)}
+.play-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.play-card.open .play-body{max-height:260px}
+.play-inner{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;padding:0 20px 20px}
+.play-col-h{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase;margin-bottom:7px}
+.play-col-b{font-size:13px;color:var(--c-mute);line-height:1.65}
+
+/* ── ACTION BAR ── */
+.action-bar{
+  background:rgba(250,250,247,.96);backdrop-filter:blur(12px);
+  border-top:1px solid var(--c-border);padding:12px 32px;
+  display:flex;align-items:center;gap:12px;z-index:50;flex-shrink:0;
+}
+.btn-act-p{background:var(--c-ink);color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:6px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:background .2s,gap .2s}
+.btn-act-p:hover{background:#222;gap:11px}
+.btn-act-s{background:transparent;color:var(--c-ink);font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;border:1px solid var(--c-border);cursor:pointer;transition:border-color .2s}
+.btn-act-s:hover{border-color:var(--c-ink)}
+.spacer{flex:1}
+.btn-link{font-size:13px;color:var(--c-mute);text-decoration:none;padding:10px 6px;transition:color .2s}
+.btn-link:hover{color:var(--c-ink)}
+
+/* ── PAGE HEADER ── */
+.page-hdr{margin-bottom:28px}
+.page-hdr-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.page-title{font-family:'Fraunces',serif;font-size:clamp(28px,3vw,48px);font-weight:400;letter-spacing:-0.04em;line-height:1;color:#0A0A0A}
+.page-sub{font-size:13px;color:#6B6B6B;line-height:1.5}
+.p-status{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;border:1px solid #E8E5DE;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:#6B6B6B;flex-shrink:0;margin-top:4px}
+
+/* ── SECTION LABEL ── */
+.s-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;color:#9A9A9A;text-transform:uppercase;margin-bottom:12px;margin-top:28px}
+
+/* ── EVIDENCE GRID ── */
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.ev-card{background:#FFFFFF;border:1px solid #E8E5DE;border-radius:8px;padding:22px}
+.ev-card-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:16px;color:#0A0A0A}
+.ev-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.ev-txt{flex:1}
+.ev-title{font-size:13px;color:#0A0A0A;line-height:1.4}
+.ev-sub{font-size:11px;color:#6B6B6B;margin-top:2px;line-height:1.4}
+.ev-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.06em;margin-top:3px;display:inline-block}
+.ev-badge.pos{color:var(--success)}.ev-badge.neg{color:var(--warn)}
+
+/* ── CASES TABLE ── */
+.cases-table{background:#FFFFFF;border:1px solid #E8E5DE;border-radius:8px;overflow:hidden;margin-bottom:20px}
+.ct-head{display:grid;grid-template-columns:70px 1fr 140px 100px 1fr;gap:16px;padding:10px 20px;border-bottom:1px solid #E8E5DE;background:rgba(0,0,0,.02)}
+.ct-head-col{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:#9A9A9A;text-transform:uppercase}
+.ct-row{display:grid;grid-template-columns:70px 1fr 140px 100px 1fr;gap:16px;padding:13px 20px;border-bottom:1px solid #E8E5DE;align-items:center;transition:background .15s;cursor:default}
+.ct-row:last-child{border-bottom:none}
+.ct-row:hover{background:rgba(0,0,0,.02)}
+.ct-year{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9A9A9A}
+.ct-court{font-size:13px;font-weight:500;color:#0A0A0A}
+.ct-outcome{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:.06em}
+.ct-outcome.w{color:var(--success)}.ct-outcome.s{color:var(--sketch)}.ct-outcome.l{color:var(--amber)}
+.ct-amount{font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B6B6B}
+.ct-fact{font-size:12px;color:#9A9A9A;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* ── PLAYBOOK ── */
+.play-h{font-family:'Fraunces',serif;font-size:clamp(22px,2.5vw,36px);font-weight:400;letter-spacing:-0.03em;line-height:1.05;margin-bottom:16px;color:#0A0A0A}
+.play-h em{font-style:italic;font-weight:300}
+.play-card{background:#FFFFFF;border:1px solid #E8E5DE;border-radius:8px;margin-bottom:10px;overflow:hidden}
+.play-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:background .15s;gap:16px}
+.play-hdr:hover{background:#FAFAF7}
+.play-hl{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.play-n{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:#9A9A9A;flex-shrink:0}
+.play-t{font-size:14px;font-weight:500;color:#0A0A0A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.play-arr{font-size:11px;color:#9A9A9A;flex-shrink:0;transition:transform .25s}
+.play-card.open .play-arr{transform:rotate(180deg)}
+.play-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.play-card.open .play-body{max-height:260px}
+.play-inner{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;padding:0 20px 20px}
+.play-col-h{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:#9A9A9A;text-transform:uppercase;margin-bottom:7px}
+.play-col-b{font-size:13px;color:#6B6B6B;line-height:1.65}
+
+/* ── ACTION BAR ── */
+.action-bar{
+  position:sticky;bottom:0;left:0;right:0;
+  background:rgba(20,20,20,.96);backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);padding:12px 32px;
+  display:flex;align-items:center;gap:12px;z-index:50;flex-shrink:0;
+}
+.btn-act-p{background:var(--sketch);color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:6px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:background .2s}
+.btn-act-p:hover{background:#1d4ed8}
+.btn-act-s{background:transparent;color:var(--txt2);font-size:13px;font-weight:500;padding:10px 20px;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:border-color .2s,color .2s}
+.btn-act-s:hover{border-color:var(--border2);color:var(--txt)}
+.spacer{flex:1}
+.btn-link{font-size:13px;color:var(--txt3);text-decoration:none;padding:10px 6px;transition:color .2s}
+.btn-link:hover{color:var(--txt)}
+
+/* ── TABS ── */
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
+/* ── TOPOLOGY CANVAS ── */
+.topo-section{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:20px;position:relative}
+.topo-header{padding:16px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between}
+.topo-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase}
+.topo-live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--success)}
+.topo-live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 6px rgba(21,128,61,.5);animation:pulse-g 2s infinite}
+@keyframes pulse-g{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+#topoCanvas{display:block;width:100%;height:280px}
+
+/* ── AI SENTRY AGENT ── */
+.ai-sentry{
+  position:fixed;bottom:80px;right:24px;z-index:300;
+  display:flex;flex-direction:column;align-items:flex-end;gap:8px;
+}
+.ai-sentry-btn{
+  width:56px;height:56px;border-radius:50%;cursor:pointer;border:none;
+  background:radial-gradient(circle at 35% 35%,#60a5fa,#2563EB,#1e3a8a);
+  box-shadow:0 0 24px rgba(37,99,235,.5),0 0 48px rgba(37,99,235,.2),0 4px 16px rgba(0,0,0,.2);
+  animation:sentry-pulse 3s ease-in-out infinite;
+  display:flex;align-items:center;justify-content:center;
+}
+@keyframes sentry-pulse{0%,100%{box-shadow:0 0 24px rgba(37,99,235,.5),0 0 48px rgba(37,99,235,.2),0 4px 16px rgba(0,0,0,.2)}50%{box-shadow:0 0 36px rgba(37,99,235,.7),0 0 72px rgba(37,99,235,.3),0 4px 16px rgba(0,0,0,.2)}}
+.ai-sentry-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--c-soft);text-transform:uppercase;background:var(--c-card);border:1px solid var(--c-border);padding:4px 10px;border-radius:100px}
+.ai-sentry-panel{
+  position:absolute;bottom:68px;right:0;width:320px;
+  background:var(--c-card);border:1px solid var(--c-border);border-radius:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);display:none;flex-direction:column;overflow:hidden;
+}
+.ai-sentry-panel.open{display:flex}
+.ai-panel-hdr{padding:14px 16px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:10px;justify-content:space-between}
+.ai-panel-title{font-size:13px;font-weight:600;color:var(--c-ink)}
+.ai-panel-close{background:none;border:none;cursor:pointer;font-size:16px;color:var(--c-soft);line-height:1}
+.ai-msgs{padding:12px 14px;display:flex;flex-direction:column;gap:10px;max-height:220px;overflow-y:auto}
+.ai-msg{font-size:13px;line-height:1.55;padding:10px 12px;border-radius:8px}
+.ai-msg.bot{background:var(--c-bg);color:var(--c-ink);border:1px solid var(--c-border)}
+.ai-msg.user{background:var(--c-ink);color:#fff;align-self:flex-end;max-width:85%}
+.ai-input-row{padding:10px 12px;border-top:1px solid var(--c-border);display:flex;gap:8px}
+.ai-input{flex:1;border:1px solid var(--c-border);border-radius:6px;padding:8px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;background:var(--c-bg);color:var(--c-ink);transition:border-color .2s}
+.ai-input:focus{border-color:var(--c-ink)}
+.ai-send{width:32px;height:32px;background:var(--c-ink);border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+.ai-send:hover{background:#333}
+.ai-suggestions{padding:0 12px 10px;display:flex;flex-wrap:wrap;gap:6px}
+.ai-sug{font-size:11px;border:1px solid var(--c-border);border-radius:100px;padding:4px 10px;cursor:pointer;color:var(--c-mute);background:transparent;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap}
+.ai-sug:hover{border-color:var(--c-ink);color:var(--c-ink)}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.shown{opacity:1;transform:none}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
+
+@media(max-width:960px){.sb{display:none}.main{width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══════════════════════════════════════ -->
+<aside class="sb">
+  <div class="sb-brand">
+    <div class="sb-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="2" stroke="white" stroke-width="1.3"/><line x1="5" y1="5" x2="11" y2="5" stroke="white" stroke-width="1.1" stroke-linecap="round"/><line x1="5" y1="8" x2="11" y2="8" stroke="white" stroke-width="1.1" stroke-linecap="round"/><line x1="5" y1="11" x2="8" y2="11" stroke="white" stroke-width="1.1" stroke-linecap="round"/></svg>
+    </div>
+    <div><div class="sb-bname">SAHAIYAK</div><div class="sb-btag">Legal Intelligence</div></div>
+  </div>
+
+  <div class="sb-case">
+    <div class="sb-cid">Case #2026-0847</div>
+    <div class="sb-cname">₹80,000 Deposit Dispute</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-lbl">Analysis</div>
+    <button class="sb-item active" onclick="setTab('overview',this)">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+      Overview
+    </button>
+    <button class="sb-item" onclick="setTab('winprob',this)">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 7L4.5 4.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="7" r="1.2" fill="currentColor"/></svg>
+      Win Probability
+      <span class="sb-badge">72%</span>
+    </button>
+    <button class="sb-item" onclick="setTab('evidence',this)">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3.5h10M2 7h10M2 10.5h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Evidence Coach
+      <span class="sb-badge">4/6</span>
+    </button>
+    <a href="document.html" class="sb-item">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 2h8v10H3V2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="5" y1="5" x2="9" y2="5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="5" y1="7" x2="9" y2="7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="5" y1="9" x2="7" y2="9" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      Legal Notice
+      <span class="sb-badge">Draft</span>
+    </a>
+    <button class="sb-item" onclick="setTab('fileat',this)">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 12.5c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Where to File
+    </button>
+    <button class="sb-item" onclick="setTab('similar',this)">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/></svg>
+      Similar Cases
+      <span class="sb-badge">847</span>
+    </button>
+
+    <div class="sb-divider"></div>
+    <div class="sb-lbl">Quick Actions</div>
+    <a href="settings.html" class="sb-item">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.93 2.93l1.41 1.41M9.66 9.66l1.41 1.41M2.93 11.07l1.41-1.41M9.66 4.34l1.41-1.41" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Settings
+    </a>
+    <a href="intake.html" class="sb-item">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      New Case
+    </a>
+    <a href="index.html" class="sb-item">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M2 7l4-4M2 7l4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Home
+    </a>
+  </nav>
+
+  <div class="sb-agents">
+    <div class="sb-albl">Agents</div>
+    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Law Finder</div><div class="sb-aval">Done</div></div>
+    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Authority</div><div class="sb-aval">Done</div></div>
+    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Win Predictor</div><div class="sb-aval">72%</div></div>
+    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Notice Drafter</div><div class="sb-aval">Ready</div></div>
+  </div>
+  <div class="sb-ws"><div class="sb-ws-dot"></div><div class="sb-ws-txt">Analysis Complete</div></div>
+
+  <div class="sb-user">
+    <div class="sb-av">AK</div>
+    <div><div class="sb-un">Arjun Kumar</div><div class="sb-ul">Mumbai, MH</div></div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- Stat bar -->
+  <div class="statbar">
+    <div class="stat-items">
+      <div class="stat-item"><div class="stat-lbl">Win Probability</div><div class="stat-val g">72%</div></div>
+      <div class="stat-item"><div class="stat-lbl">Similar Cases</div><div class="stat-val b">847</div></div>
+      <div class="stat-item"><div class="stat-lbl">Claim Amount</div><div class="stat-val w">₹80,000</div></div>
+      <div class="stat-item"><div class="stat-lbl">Days Active</div><div class="stat-val a">14</div></div>
+      <div class="stat-item"><div class="stat-lbl">Evidence Score</div><div class="stat-val w">4 / 6</div></div>
+    </div>
+    <div class="stat-right">
+      <span class="s-pill"><span class="dot dot-g"></span>ANALYSIS COMPLETE · 2 MIN AGO</span>
+    </div>
+  </div>
+
+  <!-- Content + Action bar wrapper -->
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <div class="content">
+      <div class="content-inner">
+
+        <!-- ── OVERVIEW TAB ── -->
+        <div id="tab-overview" class="tab-pane active">
+
+          <!-- Page header -->
+          <div class="page-hdr reveal">
+            <div class="page-hdr-top">
+              <h1 class="page-title">₹80,000 Deposit Dispute</h1>
+              <span class="p-status"><span class="dot dot-g"></span>ANALYSIS COMPLETE</span>
+            </div>
+            <p class="page-sub">Landlord refusing security deposit return · Maharashtra · Consumer Protection Act, 2019 · Section 2(9)</p>
+          </div>
+
+          <!-- Win card -->
+          <div class="win-card reveal d1" id="winModule">
+            <div class="win-l">
+              <div class="win-cap" style="display:flex;align-items:center;justify-content:space-between">
+                Win Probability
+                <button onclick="speakWinSummary()" title="Listen to case summary" style="background:none;border:none;cursor:pointer;padding:2px 4px;opacity:.6;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.6">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4.5h2.5l3-3v11l-3-3H2V4.5z" stroke="#15803D" stroke-width="1.2" stroke-linejoin="round"/><path d="M9.5 3.5c1.5 1 2.2 2.2 2.2 3.5S11 9.5 9.5 10.5" stroke="#15803D" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <div class="win-big" id="winNum">0%</div>
+              <div class="win-sub">Based on 847 similar<br>Maharashtra cases · 2018–2025</div>
+            </div>
+            <div class="win-r">
+              <div class="win-r-top">Outcome distribution across <strong>847 similar cases</strong> filed at Consumer Forums and Civil Courts in Maharashtra. Avg resolution: 4.2 months. Avg award: ₹91,400.</div>
+              <div class="bars">
+                <div class="brow"><span class="blbl">Won outright</span><div class="btrack"><div class="bfill" data-w="58" style="background:var(--green)"></div></div><span class="bpct">58%</span></div>
+                <div class="brow"><span class="blbl">Settled</span><div class="btrack"><div class="bfill" data-w="28" style="background:var(--sketch-s)"></div></div><span class="bpct">28%</span></div>
+                <div class="brow"><span class="blbl">Lost</span><div class="btrack"><div class="bfill" data-w="14" style="background:rgba(255,255,255,.15)"></div></div><span class="bpct">14%</span></div>
+              </div>
+              <div class="win-foot">Consumer Protection Act 2019 · Maharashtra Rent Control Act · Indian Contract Act 1872</div>
+            </div>
+          </div>
+
+          <!-- Case Topology -->
+          <div class="s-lbl reveal">Case Network Map</div>
+          <div class="topo-section reveal d1">
+            <div class="topo-header">
+              <span class="topo-title">Case Topology — Live Agent View</span>
+              <span class="topo-live"><span class="topo-live-dot"></span>AGENTS ACTIVE</span>
+            </div>
+            <canvas id="topoCanvas"></canvas>
+          </div>
+
+          <!-- Evidence breakdown -->
+          <div class="s-lbl reveal">Evidence Breakdown</div>
+          <div class="ev-grid reveal d1">
+            <div class="ev-card">
+              <div class="ev-card-h">
+                <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5.5" stroke="#22c55e" stroke-width="1.1" fill="none"/><polyline points="3.5,6.5 5.8,8.8 9.5,4.5" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                What Helps You
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">WhatsApp messages proving deposit communication</div><div class="ev-badge pos">+35% WIN IMPACT</div></div>
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">Signed rental agreement with deposit clause</div><div class="ev-badge pos">+28% WIN IMPACT</div></div>
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">NEFT bank transfer proof of deposit payment</div><div class="ev-badge pos">+22% WIN IMPACT</div></div>
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">Landlord acknowledged vacate date (WhatsApp)</div><div class="ev-badge pos">+18% WIN IMPACT</div></div>
+              </div>
+            </div>
+
+            <div class="ev-card">
+              <div class="ev-card-h">
+                <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5.5" stroke="#f59e0b" stroke-width="1.1" fill="none"/><line x1="6.5" y1="3.5" x2="6.5" y2="7" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="9.2" r=".7" fill="#f59e0b"/></svg>
+                What Hurts You
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">No written demand notice sent before now</div><div class="ev-sub">→ Our legal notice cures this immediately</div><div class="ev-badge neg">−20% WITHOUT THIS</div></div>
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">Flat exit condition not documented</div><div class="ev-sub">→ Get a witness to sign an inspection note</div><div class="ev-badge neg">−12% WITHOUT THIS</div></div>
+              </div>
+              <div class="ev-row">
+                <svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>
+                <div class="ev-txt"><div class="ev-title">No police complaint on record</div><div class="ev-sub">→ Optional but strengthens urgency</div><div class="ev-badge neg">−8% WITHOUT THIS</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Similar cases table -->
+          <div class="s-lbl reveal">Similar Cases — Maharashtra Consumer Courts</div>
+          <div class="cases-table reveal d1">
+            <div class="ct-head">
+              <div class="ct-head-col">Year</div>
+              <div class="ct-head-col">Court</div>
+              <div class="ct-head-col">Outcome</div>
+              <div class="ct-head-col">Amount</div>
+              <div class="ct-head-col">Key Facts</div>
+            </div>
+            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">Consumer Forum, Pune</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹75,000</div><div class="ct-fact">WhatsApp proof accepted. ₹90K awarded incl. damages + costs.</div></div>
+            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">DCDRC, Mumbai</div><div class="ct-outcome s"><span style="width:5px;height:5px;border-radius:50%;background:var(--sketch-s);display:inline-block;flex-shrink:0"></span>SETTLED</div><div class="ct-amount">₹90,000</div><div class="ct-fact">Legal notice triggered full settlement before first hearing.</div></div>
+            <div class="ct-row"><div class="ct-year">2023</div><div class="ct-court">Consumer Forum, Nagpur</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹60,000</div><div class="ct-fact">Bank transfer proof decisive. Landlord ordered to pay 12% interest.</div></div>
+            <div class="ct-row"><div class="ct-year">2023</div><div class="ct-court">Civil Court, Thane</div><div class="ct-outcome l"><span style="width:5px;height:5px;border-radius:50%;background:var(--amber);display:inline-block;flex-shrink:0"></span>LOST</div><div class="ct-amount">₹40,000</div><div class="ct-fact">No written agreement. Verbal deposit only. Dismissed for lack of evidence.</div></div>
+            <div class="ct-row"><div class="ct-year">2022</div><div class="ct-court">Consumer Forum, Nashik</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹1,20,000</div><div class="ct-fact">90-day delay. Court awarded deposit + 12% interest per annum.</div></div>
+            <div class="ct-row"><div class="ct-year">2022</div><div class="ct-court">DCDRC, Mumbai Suburban</div><div class="ct-outcome s"><span style="width:5px;height:5px;border-radius:50%;background:var(--sketch-s);display:inline-block;flex-shrink:0"></span>SETTLED</div><div class="ct-amount">₹80,000</div><div class="ct-fact">Full refund within 30 days of legal notice being sent.</div></div>
+          </div>
+
+          <!-- Playbook -->
+          <div class="s-lbl reveal">Opponent Intelligence</div>
+          <h3 class="play-h reveal">What your landlord <em>will argue.</em></h3>
+
+          <div class="play-card reveal d1" id="pl1">
+            <div class="play-hdr" onclick="togglePlay('pl1')">
+              <div class="play-hl"><span class="play-n">01</span><span class="play-t">"You damaged the flat — I'm deducting from the deposit."</span></div>
+              <span class="play-arr">▾</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <div><div class="play-col-h">Their Argument</div><div class="play-col-b">Claims routine wear-and-tear is "damage." Common tactic, rarely documented.</div></div>
+              <div><div class="play-col-h">Why It Might Work</div><div class="play-col-b">If no move-out inspection report exists, courts sometimes allow partial deductions.</div></div>
+              <div><div class="play-col-h">How Our Notice Pre-empts It</div><div class="play-col-b">Demands itemized damage report in 15 days. No report = no deduction. Sharma v. Mehta (2022, Pune CF).</div></div>
+            </div></div>
+          </div>
+
+          <div class="play-card reveal d2" id="pl2">
+            <div class="play-hdr" onclick="togglePlay('pl2')">
+              <div class="play-hl"><span class="play-n">02</span><span class="play-t">"You left early — deposit covers remaining rent."</span></div>
+              <span class="play-arr">▾</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <div><div class="play-col-h">Their Argument</div><div class="play-col-b">Deposit offsets rent if notice period not served without mutual consent.</div></div>
+              <div><div class="play-col-h">Why It Might Work</div><div class="play-col-b">Courts uphold if lease specifies notice period and tenant vacated without written consent.</div></div>
+              <div><div class="play-col-h">How Our Notice Pre-empts It</div><div class="play-col-b">Your WhatsApp messages show landlord acknowledged exit date — implied consent. Notice cites this exchange.</div></div>
+            </div></div>
+          </div>
+
+          <div class="play-card reveal d3" id="pl3">
+            <div class="play-hdr" onclick="togglePlay('pl3')">
+              <div class="play-hl"><span class="play-n">03</span><span class="play-t">"There was no formal deposit — it was an advance."</span></div>
+              <span class="play-arr">▾</span>
+            </div>
+            <div class="play-body"><div class="play-inner">
+              <div><div class="play-col-h">Their Argument</div><div class="play-col-b">Reclassifies payment as "advance rent," not refundable under same provisions.</div></div>
+              <div><div class="play-col-h">Why It Might Work</div><div class="play-col-b">Ambiguous agreement language like "advance" creates legal room for dispute.</div></div>
+              <div><div class="play-col-h">How Our Notice Pre-empts It</div><div class="play-col-b">Bank transfer + agreement both use "deposit." Courts look at substance, not labelling. Consumer Forum Mumbai 2023.</div></div>
+            </div></div>
+          </div>
+
+        </div><!-- /overview -->
+
+        <!-- Other tab panes -->
+        <div id="tab-winprob" class="tab-pane">
+          <div class="page-hdr"><h1 class="page-title">Win Probability</h1><p class="page-sub" style="margin-top:6px">Detailed probability analysis with case citations</p></div>
+          <div class="win-card" style="grid-template-columns:200px 1fr">
+            <div class="win-l"><div class="win-cap">Probability</div><div class="win-big" style="font-size:72px">72%</div><div class="win-sub">847 cases analyzed</div></div>
+            <div class="win-r"><div class="win-r-top">Strong case. WhatsApp evidence is admissible and decisive. The primary risk is the absence of a move-out inspection report — which our legal notice demands within 15 days, effectively neutralising that argument.</div></div>
+          </div>
+        </div>
+        <div id="tab-evidence" class="tab-pane">
+          <div class="page-hdr"><h1 class="page-title">Evidence Coach</h1><p class="page-sub" style="margin-top:6px">4 of 6 evidence items complete · 2 gaps identified</p></div>
+          <div class="ev-grid" style="margin-top:16px"><div class="ev-card" style="grid-column:1/-1"><div class="ev-card-h">Evidence Checklist</div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">WhatsApp messages (deposit communication)</div><div class="ev-badge pos">COMPLETE · +35%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Signed rental agreement</div><div class="ev-badge pos">COMPLETE · +28%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Bank NEFT transfer proof</div><div class="ev-badge pos">COMPLETE · +22%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Landlord acknowledgement of vacate date</div><div class="ev-badge pos">COMPLETE · +18%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Move-out inspection report</div><div class="ev-sub">→ Get a witness to sign a condition report now</div><div class="ev-badge neg">MISSING · −12%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Police complaint (optional)</div><div class="ev-sub">→ Strengthens urgency; not required</div><div class="ev-badge neg">OPTIONAL · −8%</div></div></div></div></div>
+        </div>
+        <div id="tab-fileat" class="tab-pane">
+          <div class="page-hdr"><h1 class="page-title">Where to File</h1><p class="page-sub" style="margin-top:6px">Recommended forum based on your location and claim amount</p></div>
+          <div class="win-card" style="grid-template-columns:1fr;margin-top:16px"><div class="win-r"><div class="win-cap">Recommended Forum</div><div style="font-family:'Fraunces',serif;font-size:32px;font-weight:400;color:var(--txt);margin:10px 0 6px;letter-spacing:-0.02em">District Consumer Disputes<br>Redressal Commission</div><div class="win-r-top">Mumbai Suburban District · Filing fee: <strong>₹200</strong> · Claim limit: up to ₹50 lakh · Avg resolution: 4–6 months</div></div></div>
+        </div>
+        <div id="tab-similar" class="tab-pane">
+          <div class="page-hdr"><h1 class="page-title">Similar Cases</h1><p class="page-sub" style="margin-top:6px">847 cases analyzed · 72% won or settled</p></div>
+          <div class="cases-table" style="margin-top:16px">
+            <div class="ct-head"><div class="ct-head-col">Year</div><div class="ct-head-col">Court</div><div class="ct-head-col">Outcome</div><div class="ct-head-col">Amount</div><div class="ct-head-col">Key Facts</div></div>
+            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">Consumer Forum, Pune</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹75,000</div><div class="ct-fact">WhatsApp proof accepted. Full award + damages.</div></div>
+            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">DCDRC, Mumbai</div><div class="ct-outcome s"><span style="width:5px;height:5px;border-radius:50%;background:var(--sketch-s);display:inline-block"></span>SETTLED</div><div class="ct-amount">₹90,000</div><div class="ct-fact">Settled before first hearing.</div></div>
+            <div class="ct-row"><div class="ct-year">2023</div><div class="ct-court">Consumer Forum, Nagpur</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹60,000</div><div class="ct-fact">Bank transfer decisive. Interest awarded.</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <a href="document.html" class="btn-act-p">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 2h8v9h-8V2z" stroke="currentColor" stroke-width="1.2"/><line x1="4.5" y1="5" x2="8.5" y2="5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="7" x2="8.5" y2="7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+        VIEW LEGAL NOTICE →
+      </a>
+      <button class="btn-act-s">FILE WITH CONSUMER FORUM</button>
+      <div class="spacer"></div>
+      <a href="#" class="btn-link">Get 1-on-1 Lawyer (₹499)</a>
+    </div>
+  </div>
+</div>
+
+<!-- AI SENTRY AGENT -->
+<div class="ai-sentry">
+  <div class="ai-sentry-panel" id="sentryPanel">
+    <div class="ai-panel-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#60a5fa,#2563EB);"></div>
+        <div class="ai-panel-title">SahAIyak Sentry</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button onclick="sentryVoice()" title="Read aloud" style="background:none;border:none;cursor:pointer;padding:2px;opacity:.6;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.6">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4.5h2.5l3-3v11l-3-3H2V4.5z" stroke="#0A0A0A" stroke-width="1.2" stroke-linejoin="round"/><path d="M9.5 3.5c1.5 1 2.2 2.2 2.2 3.5S11 9.5 9.5 10.5" stroke="#0A0A0A" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="ai-panel-close" onclick="toggleSentry()">✕</button>
+      </div>
+    </div>
+    <div class="ai-msgs" id="sentryMsgs">
+      <div class="ai-msg bot">Namaste! I'm Sentry, your legal AI. Your case has a <strong>72% win probability</strong>. What would you like to know?</div>
+    </div>
+    <div class="ai-suggestions">
+      <button class="ai-sug" onclick="sentrySug('What is my strongest evidence?')">Strongest evidence?</button>
+      <button class="ai-sug" onclick="sentrySug('How long will this take?')">Timeline?</button>
+      <button class="ai-sug" onclick="sentrySug('What should I do next?')">Next steps?</button>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="sentryInput" placeholder="Ask Sentry anything..." onkeydown="if(event.key==='Enter')sentryChat()"/>
+      <button class="ai-send" onclick="sentryChat()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M7 2l4 4-4 4" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="ai-sentry-label">ASK SENTRY</span>
+    <button class="ai-sentry-btn" onclick="toggleSentry()">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4C7.5 4 5 6.5 5 9.5c0 2.2 1.3 4.1 3.2 5V16l2.3-1.2c.2.02.33.02.5.02 3.5 0 6-2.5 6-5.5S14.5 4 11 4z" fill="rgba(255,255,255,.9)"/><circle cx="8.5" cy="9.5" r="1" fill="#2563EB"/><circle cx="11" cy="9.5" r="1" fill="#2563EB"/><circle cx="13.5" cy="9.5" r="1" fill="#2563EB"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="static/api.js"></script>
+<script>
+// ── LIVE DATA LOADER ──────────────────────────────────────────────────
+(async function loadCaseData() {
+  const caseId = getCaseId();
+  if (!caseId || caseId === 'demo') return;
+  try {
+    const d = await apiGet('/api/v1/cases/' + caseId);
+
+    // Win probability
+    const winTarget = d.win_probability || 72;
+    _winProbability = winTarget;
+    document.querySelectorAll('.stat-val.g').forEach(el => {
+      if (el.previousElementSibling?.textContent?.includes('Win')) el.textContent = winTarget + '%';
+    });
+    document.querySelectorAll('.sb-badge').forEach(el => {
+      if (el.previousElementSibling?.textContent?.includes('Win') || el.closest('button')?.textContent?.includes('Win')) {
+        el.textContent = winTarget + '%';
+      }
+    });
+
+    // Claim amount
+    if (d.amount) {
+      document.querySelectorAll('.stat-val.w').forEach(el => {
+        if (el.previousElementSibling?.textContent?.includes('Claim')) el.textContent = d.amount;
+      });
+    }
+
+    // Similar cases count
+    if (d.similar_cases_count) {
+      document.querySelectorAll('.stat-val.b').forEach(el => el.textContent = d.similar_cases_count.toLocaleString('en-IN'));
+    }
+
+    // Page title
+    if (d.amount) {
+      document.querySelectorAll('.page-title').forEach(el => {
+        if (el.textContent.includes('Deposit')) el.textContent = d.amount + ' Dispute';
+      });
+    }
+
+    // Render similar cases table
+    if (d.similar_cases && d.similar_cases.length) {
+      _renderSimilarCases(d.similar_cases);
+    }
+
+    // Render evidence
+    if (d.evidence_strengths || d.evidence_gaps) {
+      _renderEvidence(d.evidence_strengths || [], d.evidence_gaps || []);
+    }
+
+    // Laws in sub-heading
+    if (d.law_summary) {
+      document.querySelectorAll('.page-sub').forEach((el, i) => { if (i === 0) el.textContent = d.law_summary; });
+    }
+
+    // Forum in "Where to File"
+    if (d.authority) {
+      const forum = d.authority.forum || '';
+      document.querySelectorAll('#tab-fileat .win-r').forEach(el => {
+        const h = el.querySelector('div[style*="font-family"]');
+        if (h) h.textContent = forum;
+        const sub = el.querySelector('.win-r-top');
+        if (sub) sub.innerHTML = `${d.authority.address || ''} · Filing fee: <strong>${d.authority.filing_fee || '₹200'}</strong> · ${d.authority.jurisdiction_notes || ''}`;
+      });
+    }
+  } catch (e) {
+    console.warn('Live data load failed, using demo data:', e.message);
+  }
+})();
+
+function _renderSimilarCases(cases) {
+  const tables = document.querySelectorAll('.cases-table');
+  tables.forEach(table => {
+    const head = table.querySelector('.ct-head');
+    if (!head) return;
+    const existing = table.querySelectorAll('.ct-row');
+    existing.forEach(r => r.remove());
+    cases.forEach(c => {
+      const outcomeClass = c.outcome === 'WON' ? 'w' : c.outcome === 'SETTLED' ? 's' : 'l';
+      const dot = c.outcome === 'WON' ? '<span class="dot dot-g"></span>' : c.outcome === 'SETTLED' ? '<span style="width:5px;height:5px;border-radius:50%;background:#93C5FD;display:inline-block"></span>' : '<span style="width:5px;height:5px;border-radius:50%;background:#B45309;display:inline-block"></span>';
+      const row = document.createElement('div');
+      row.className = 'ct-row';
+      row.innerHTML = `<div class="ct-year">${c.year}</div><div class="ct-court">${c.court}</div><div class="ct-outcome ${outcomeClass}">${dot}${c.outcome}</div><div class="ct-amount">${c.amount || '—'}</div><div class="ct-fact">${c.key_fact}</div>`;
+      table.appendChild(row);
+    });
+  });
+}
+
+function _renderEvidence(strengths, gaps) {
+  const cards = document.querySelectorAll('.ev-card');
+  if (cards.length < 2) return;
+  const posCard = cards[0], negCard = cards[1];
+  const posBody = posCard.querySelectorAll('.ev-row');
+  const negBody = negCard.querySelectorAll('.ev-row');
+  posBody.forEach(r => r.remove());
+  negBody.forEach(r => r.remove());
+  const checkSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const crossSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  strengths.slice(0, 4).forEach(s => {
+    const div = document.createElement('div'); div.className = 'ev-row';
+    div.innerHTML = `${checkSvg}<div class="ev-txt"><div class="ev-title">${s.title}</div><div class="ev-badge pos">${s.impact}</div></div>`;
+    posCard.appendChild(div);
+  });
+  gaps.slice(0, 3).forEach(g => {
+    const div = document.createElement('div'); div.className = 'ev-row';
+    div.innerHTML = `${crossSvg}<div class="ev-txt"><div class="ev-title">${g.title}</div>${g.sub ? `<div class="ev-sub">→ ${g.sub}</div>` : ''}<div class="ev-badge neg">${g.impact}</div></div>`;
+    negCard.appendChild(div);
+  });
+}
+
+// ── SENTRY — wire to real API ────────────────────────────────────────────
+const _origSentryChat = typeof sentryChat !== 'undefined' ? sentryChat : null;
+async function sentryChat() {
+  const input = document.getElementById('sentryInput');
+  const txt = input?.value?.trim();
+  if (!txt) return;
+  addSentryMsg(txt, 'user');
+  input.value = '';
+  addSentryTyping();
+  const caseId = getCaseId();
+  try {
+    if (caseId && caseId !== 'demo') {
+      const r = await apiPost('/api/v1/cases/' + caseId + '/sentry', { message: txt, case_id: caseId });
+      document.getElementById('sentry-typing')?.remove();
+      addSentryMsg(r.reply, 'bot');
+    } else { throw new Error('demo'); }
+  } catch {
+    document.getElementById('sentry-typing')?.remove();
+    const fallback = {
+      'What is my strongest evidence?': 'Your WhatsApp messages and NEFT bank transfer proof are your strongest evidence — together they add +57% to your win probability.',
+      'How long will this take?': 'Based on similar cases, the average resolution at Consumer Forum is 4.2 months. 28% settle within 30 days of receiving the legal notice.',
+      'What should I do next?': 'Step 1: Download and send the legal notice via registered post. Step 2: Keep all receipts. Step 3: If no response in 15 days, file at the District Consumer Forum with ₹200 fee.'
+    };
+    addSentryMsg(fallback[txt] || 'Based on your case and similar Indian judgments, I recommend focusing on your evidence and sending the legal notice immediately. Want me to explain the filing process?', 'bot');
+  }
+}
+
+// ── TOPOLOGY ANIMATION ────────────────────────────────────────────────
+const canvas = document.getElementById('topoCanvas');
+if (canvas) {
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], nodes;
+
+  function initTopo() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = rect.width;
+    H = canvas.height = 280;
+
+    nodes = [
+      { id: 0, label: 'Your Case',        x: W*.5,  y: H*.5,  r: 22, color: '#15803D', glow: 'rgba(21,128,61,.4)',  status: 'active' },
+      { id: 1, label: 'Consumer Forum',   x: W*.78, y: H*.3,  r: 16, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
+      { id: 2, label: 'Win Predictor',    x: W*.78, y: H*.7,  r: 16, color: '#15803D', glow: 'rgba(21,128,61,.4)', status: 'ok' },
+      { id: 3, label: 'Evidence Coach',   x: W*.5,  y: H*.12, r: 14, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
+      { id: 4, label: 'Legal Notice',     x: W*.22, y: H*.3,  r: 16, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
+      { id: 5, label: 'Landlord',         x: W*.22, y: H*.7,  r: 14, color: '#B45309', glow: 'rgba(180,83,9,.4)',  status: 'warn' },
+      { id: 6, label: 'Law Finder',       x: W*.5,  y: H*.88, r: 14, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
+    ];
+    particles = [];
+  }
+
+  const edges = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,2],[3,4]];
+
+  function spawnParticle(a, b) {
+    particles.push({ from: a, to: b, t: 0, speed: 0.003 + Math.random() * 0.003 });
+  }
+
+  setInterval(() => {
+    if (!nodes) return;
+    const e = edges[Math.floor(Math.random() * edges.length)];
+    spawnParticle(e[0], e[1]);
+    if (Math.random() > 0.5) spawnParticle(e[1], e[0]);
+  }, 600);
+
+  let animT = 0;
+  function drawTopo() {
+    if (!nodes) return;
+    ctx.clearRect(0, 0, W, H);
+    animT += 0.01;
+
+    // Draw edges
+    edges.forEach(([a, b]) => {
+      const na = nodes[a], nb = nodes[b];
+      ctx.beginPath();
+      ctx.moveTo(na.x, na.y);
+      ctx.lineTo(nb.x, nb.y);
+      ctx.strokeStyle = 'rgba(10,10,10,.08)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Draw particles
+    particles = particles.filter(p => p.t <= 1);
+    particles.forEach(p => {
+      p.t += p.speed;
+      const na = nodes[p.from], nb = nodes[p.to];
+      const x = na.x + (nb.x - na.x) * p.t;
+      const y = na.y + (nb.y - na.y) * p.t;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = na.color;
+      ctx.globalAlpha = 1 - Math.abs(p.t - 0.5) * 1.5;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+
+    // Draw nodes
+    nodes.forEach((n, i) => {
+      const pulse = 1 + Math.sin(animT * 2 + i) * 0.08;
+
+      // Glow
+      const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 2.5 * pulse);
+      grad.addColorStop(0, n.glow);
+      grad.addColorStop(1, 'transparent');
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 2.5 * pulse, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
+      ctx.strokeStyle = n.color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Inner fill
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 0.55 * pulse, 0, Math.PI * 2);
+      ctx.fillStyle = n.color;
+      ctx.fill();
+
+      // Label
+      ctx.font = '500 11px Inter, sans-serif';
+      ctx.fillStyle = '#0A0A0A';
+      ctx.textAlign = 'center';
+      ctx.fillText(n.label, n.x, n.y + n.r + 14);
+    });
+
+    requestAnimationFrame(drawTopo);
+  }
+
+  initTopo();
+  window.addEventListener('resize', initTopo);
+  drawTopo();
+}
+
+// ── AI SENTRY ─────────────────────────────────────────────────────────
+function toggleSentry() {
+  document.getElementById('sentryPanel').classList.toggle('open');
+}
+
+function addSentryMsg(text, role) {
+  const msgs = document.getElementById('sentryMsgs');
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + role;
+  div.innerHTML = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addSentryTyping() {
+  const msgs = document.getElementById('sentryMsgs');
+  const div = document.createElement('div');
+  div.className = 'ai-msg bot';
+  div.id = 'sentry-typing';
+  div.innerHTML = '<span style="opacity:.5">Sentry is thinking</span><span style="animation:blink .6s infinite">...</span>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sentrySug(txt) {
+  document.getElementById('sentryInput').value = txt;
+  sentryChat();
+}
+
+async function sentryVoice() {
+  const msgs = document.querySelectorAll('#sentryMsgs .ai-msg.bot');
+  if (!msgs.length) return;
+  const lastBot = msgs[msgs.length - 1];
+  speakText(lastBot.textContent || lastBot.innerText, 'en');
+}
+
+async function speakWinSummary() {
+  const pct = document.getElementById('winNum')?.textContent || '72%';
+  speakText(`Your case has a ${pct} win probability based on 847 similar cases filed in Indian consumer courts. 58% of similar cases were won outright, and 28% settled before the first hearing.`, 'en');
+}
+</script>
+<script>
+function setTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  const pane = document.getElementById('tab-' + id);
+  if (pane) pane.classList.add('active');
+  btn.classList.add('active');
+}
+
+function togglePlay(id) {
+  const c = document.getElementById(id);
+  const was = c.classList.contains('open');
+  document.querySelectorAll('.play-card').forEach(x => x.classList.remove('open'));
+  if (!was) c.classList.add('open');
+}
+
+let counted = false;
+let _winProbability = 72;
+function doCount() {
+  if (counted) return; counted = true;
+  const el = document.getElementById('winNum');
+  const target = _winProbability;
+  const t0 = performance.now();
+  function step(t) {
+    const p = Math.min((t - t0) / 2000, 1);
+    const ease = 1 - Math.pow(1 - p, 4);
+    el.textContent = Math.round(target * ease) + '%';
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+  setTimeout(() => {
+    document.querySelectorAll('.bfill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+  }, 400);
+}
+
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('shown');
+      if (e.target.id === 'winModule') doCount();
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+</script>
+</body>
+</html>

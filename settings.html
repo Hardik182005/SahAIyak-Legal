@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SahAIyak — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0D0D;--bg2:#141414;--bg3:#1A1A1A;
+  --border:rgba(255,255,255,.08);--txt:#F0EFEA;--txt2:rgba(255,255,255,.5);--txt3:rgba(255,255,255,.25);
+  --sketch:#2563EB;--green:#15803D;--amber:#B45309;--sb-w:240px;
+  --c-bg:#FAFAF7;--c-card:#FFFFFF;--c-border:#E8E5DE;--c-ink:#0A0A0A;--c-mute:#6B6B6B;--c-soft:#9A9A9A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;height:100vh}
+
+/* SIDEBAR — same as dashboard */
+.sb{width:var(--sb-w);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:18px 16px 16px;border-bottom:1px solid var(--border)}
+.sb-icon{width:30px;height:30px;background:var(--sketch);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-bname{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--txt);font-weight:500}
+.sb-btag{font-size:10px;color:var(--txt3);margin-top:1px}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;scrollbar-width:none}
+.sb-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;color:var(--txt3);text-transform:uppercase;padding:10px 16px 5px}
+.sb-item{display:flex;align-items:center;gap:10px;margin:1px 8px;padding:9px 10px;border-radius:6px;font-size:13px;font-weight:500;color:var(--txt2);cursor:pointer;border:none;background:transparent;width:calc(100% - 16px);text-align:left;text-decoration:none;transition:background .15s,color .15s}
+.sb-item:hover{background:rgba(255,255,255,.06);color:var(--txt)}
+.sb-item.active{background:rgba(255,255,255,.1);color:#fff}
+.sb-item svg{flex-shrink:0;opacity:.55}
+.sb-item.active svg{opacity:1}
+.sb-divider{height:1px;background:var(--border);margin:8px 14px}
+.sb-user{border-top:1px solid var(--border);padding:13px 14px;display:flex;align-items:center;gap:9px}
+.sb-av{width:28px;height:28px;border-radius:50%;background:rgba(37,99,235,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.sb-un{font-size:12px;font-weight:500;color:var(--txt2)}
+.sb-ul{font-size:10px;color:var(--txt3)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
+.topbar{height:50px;flex-shrink:0;background:var(--c-card);border-bottom:1px solid var(--c-border);display:flex;align-items:center;padding:0 32px;gap:16px}
+.topbar-title{font-size:14px;font-weight:600;color:var(--c-ink)}
+.topbar-sub{font-size:12px;color:var(--c-soft)}
+
+/* SETTINGS LAYOUT */
+.settings-wrap{display:flex;flex:1;overflow:hidden}
+.settings-nav{width:200px;flex-shrink:0;border-right:1px solid var(--c-border);background:var(--c-card);padding:16px 0;overflow-y:auto}
+.snav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;font-weight:500;color:var(--c-mute);cursor:pointer;transition:color .15s,background .15s;border-left:2px solid transparent}
+.snav-item:hover{color:var(--c-ink);background:var(--c-bg)}
+.snav-item.active{color:var(--c-ink);border-left-color:var(--c-ink);background:var(--c-bg)}
+.snav-sep{height:1px;background:var(--c-border);margin:8px 16px}
+
+/* CONTENT */
+.settings-content{
+  flex:1;overflow-y:auto;
+  background-color:var(--c-bg);
+  background-image:
+    linear-gradient(rgba(10,10,10,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,10,10,.06) 1px, transparent 1px),
+    radial-gradient(circle, rgba(10,10,10,.22) 1.5px, transparent 1.5px);
+  background-size:56px 56px, 56px 56px, 56px 56px;
+  background-position:0 0, 0 0, -0.5px -0.5px;
+  padding:32px;
+}
+.s-panel{display:none}
+.s-panel.active{display:block}
+.s-section{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:28px;margin-bottom:20px}
+.s-section-title{font-size:15px;font-weight:600;color:var(--c-ink);margin-bottom:4px}
+.s-section-sub{font-size:13px;color:var(--c-mute);margin-bottom:24px}
+.s-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--c-border)}
+.s-row:last-child{border-bottom:none;padding-bottom:0}
+.s-row-left{}
+.s-row-label{font-size:14px;font-weight:500;color:var(--c-ink);margin-bottom:2px}
+.s-row-desc{font-size:12px;color:var(--c-soft)}
+.s-input{border:1px solid var(--c-border);border-radius:6px;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--c-ink);background:var(--c-bg);outline:none;transition:border-color .2s;width:240px}
+.s-input:focus{border-color:var(--c-ink)}
+.s-select{border:1px solid var(--c-border);border-radius:6px;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--c-ink);background:var(--c-bg);outline:none;cursor:pointer;width:180px}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--c-border);border-radius:100px;cursor:pointer;transition:background .2s}
+.toggle input:checked+.toggle-slider{background:var(--c-ink)}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:white;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px)}
+
+/* PRICING CARDS */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:4px}
+.plan-card{border:1px solid var(--c-border);border-radius:8px;padding:24px;position:relative;transition:border-color .2s,transform .2s;background:var(--c-card)}
+.plan-card:hover{border-color:var(--c-ink);transform:translateY(-2px)}
+.plan-card.current{border-color:var(--green);box-shadow:0 0 0 1px var(--green),0 4px 16px rgba(21,128,61,.08)}
+.plan-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:100px;background:var(--green);color:#fff;position:absolute;top:16px;right:16px}
+.plan-name{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--c-soft);margin-bottom:8px}
+.plan-price{font-family:'Fraunces',serif;font-size:40px;font-weight:400;color:var(--c-ink);line-height:1;margin-bottom:4px}
+.plan-period{font-size:12px;color:var(--c-soft);margin-bottom:20px}
+.plan-features{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.plan-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--c-mute)}
+.plan-feat svg{flex-shrink:0}
+.btn-plan{width:100%;padding:10px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid var(--c-border);background:transparent;color:var(--c-ink);transition:all .2s}
+.btn-plan.primary{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.btn-plan:hover{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.btn-plan.current-plan{background:transparent;color:var(--green);border-color:var(--green);cursor:default}
+
+/* Page title */
+.page-h{font-family:'Fraunces',serif;font-size:32px;font-weight:400;letter-spacing:-0.03em;color:var(--c-ink);margin-bottom:6px}
+.page-sh{font-size:14px;color:var(--c-mute);margin-bottom:24px}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-brand">
+    <div class="sb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="2" stroke="white" stroke-width="1.3"/><line x1="5" y1="5" x2="11" y2="5" stroke="white" stroke-width="1.1" stroke-linecap="round"/><line x1="5" y1="8" x2="11" y2="8" stroke="white" stroke-width="1.1" stroke-linecap="round"/><line x1="5" y1="11" x2="8" y2="11" stroke="white" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+    <div><div class="sb-bname">SAHAIYAK</div><div class="sb-btag">Legal Intelligence</div></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-lbl">Navigation</div>
+    <a href="dashboard.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>Overview</a>
+    <a href="dashboard.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 7L4.5 4.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="7" r="1.2" fill="currentColor"/></svg>Win Probability<span class="sb-badge">72%</span></a>
+    <a href="dashboard.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3.5h10M2 7h10M2 10.5h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Evidence Coach<span class="sb-badge">4/6</span></a>
+    <a href="document.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 2h8v10H3V2z" stroke="currentColor" stroke-width="1.2"/></svg>Legal Notice<span class="sb-badge">Draft</span></a>
+    <a href="dashboard.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 12.5c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Where to File</a>
+    <a href="dashboard.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/></svg>Similar Cases<span class="sb-badge">847</span></a>
+    <div class="sb-divider"></div>
+    <div class="sb-lbl">Settings</div>
+    <button class="sb-item" onclick="showPanel('account',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 12.5c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Account</button>
+    <button class="sb-item" onclick="showPanel('pricing',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 10L7 2l5 8H2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>Pricing & Plans</button>
+    <button class="sb-item" onclick="showPanel('preferences',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Preferences</button>
+    <button class="sb-item" onclick="showPanel('notifications',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5C4.52 1.5 2.5 3.52 2.5 6v3.5H11.5V6C11.5 3.52 9.48 1.5 7 1.5z" stroke="currentColor" stroke-width="1.2"/><line x1="5.5" y1="9.5" x2="5.5" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="8.5" y1="9.5" x2="8.5" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Notifications</button>
+    <button class="sb-item" onclick="showPanel('privacy',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="3" y="6" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M5 6V4.5a2 2 0 014 0V6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Privacy</button>
+    <a href="index.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M2 7l4-4M2 7l4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to Home</a>
+  </nav>
+  <div class="sb-user">
+    <div class="sb-av">AK</div>
+    <div><div class="sb-un">Arjun Kumar</div><div class="sb-ul">Free Plan</div></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Settings</div>
+    <div class="topbar-sub">Manage your account, preferences and billing</div>
+  </div>
+
+  <div class="settings-wrap">
+    <div class="settings-content">
+
+      <!-- DEFAULT WELCOME -->
+      <div id="panel-welcome" class="s-panel active">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;opacity:.5">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style="margin-bottom:16px"><circle cx="24" cy="24" r="20" stroke="#0A0A0A" stroke-width="1.5"/><path d="M24 15v9M24 33v1" stroke="#0A0A0A" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <p style="font-family:'Fraunces',serif;font-size:24px;font-weight:400;color:#0A0A0A;margin-bottom:8px">Select a setting</p>
+          <p style="font-size:14px;color:#6B6B6B">Choose a category from the sidebar to manage your account</p>
+        </div>
+      </div>
+
+      <!-- ACCOUNT -->
+      <div id="panel-account" class="s-panel">
+        <h2 class="page-h">Account</h2>
+        <p class="page-sh">Manage your personal information and credentials</p>
+        <div class="s-section">
+          <div class="s-section-title">Personal Information</div>
+          <div class="s-section-sub">Your name and contact details</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Full Name</div><div class="s-row-desc">Used in legal documents</div></div><input class="s-input" value="Arjun Kumar"/></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Email Address</div><div class="s-row-desc">For case notifications</div></div><input class="s-input" value="arjun@example.com" type="email"/></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Phone Number</div><div class="s-row-desc">For voice agent callbacks</div></div><input class="s-input" value="+91 98765 43210"/></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">State / Location</div><div class="s-row-desc">For jurisdiction mapping</div></div><select class="s-select"><option>Maharashtra</option><option>Delhi</option><option>Karnataka</option><option>Tamil Nadu</option><option>Gujarat</option></select></div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Security</div>
+          <div class="s-section-sub">Password and authentication settings</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Change Password</div><div class="s-row-desc">Last changed 30 days ago</div></div><button style="border:1px solid var(--c-border);background:transparent;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;color:var(--c-ink)">Update Password</button></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Two-Factor Authentication</div><div class="s-row-desc">Add an extra layer of security</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title" style="color:#ef4444">Danger Zone</div>
+          <div class="s-section-sub">Irreversible actions on your account</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Delete Account</div><div class="s-row-desc">Permanently delete all your cases and data</div></div><button style="border:1px solid #ef4444;background:transparent;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;color:#ef4444">Delete Account</button></div>
+        </div>
+      </div>
+
+      <!-- PRICING -->
+      <div id="panel-pricing" class="s-panel">
+        <h2 class="page-h">Pricing & Plans</h2>
+        <p class="page-sh">SahAIyak is free for individuals. Always.</p>
+        <div class="pricing-grid">
+          <div class="plan-card current">
+            <span class="plan-badge">Current</span>
+            <div class="plan-name">Individual</div>
+            <div class="plan-price">₹0</div>
+            <div class="plan-period">Free, forever</div>
+            <div class="plan-features">
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Unlimited case analyses</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Legal notice drafting</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Win probability engine</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Hindi, Marathi, English</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Voice input</div>
+            </div>
+            <button class="btn-plan current-plan">✓ Current Plan</button>
+          </div>
+          <div class="plan-card">
+            <div class="plan-name">Lawyer Pro</div>
+            <div class="plan-price">₹999</div>
+            <div class="plan-period">per month</div>
+            <div class="plan-features">
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Everything in Individual</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Client case management</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Bulk notice generation</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Priority analysis queue</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>API access</div>
+            </div>
+            <button class="btn-plan primary">Upgrade to Pro</button>
+          </div>
+          <div class="plan-card">
+            <div class="plan-name">Enterprise</div>
+            <div class="plan-price">Custom</div>
+            <div class="plan-period">contact us</div>
+            <div class="plan-features">
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Everything in Pro</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>White-label deployment</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>Custom AI training</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>SLA + dedicated support</div>
+              <div class="plan-feat"><svg width="13" height="13" viewBox="0 0 13 13"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#15803D" stroke-width="1.4" stroke-linecap="round"/></svg>On-premise option</div>
+            </div>
+            <button class="btn-plan">Contact Sales</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREFERENCES -->
+      <div id="panel-preferences" class="s-panel">
+        <h2 class="page-h">Preferences</h2>
+        <p class="page-sh">Language, voice, and display settings</p>
+        <div class="s-section">
+          <div class="s-section-title">Language & Region</div>
+          <div class="s-section-sub">Controls analysis language and notice output</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Primary Language</div><div class="s-row-desc">For case analysis and notice drafting</div></div><select class="s-select"><option>English</option><option>हिंदी (Hindi)</option><option>मराठी (Marathi)</option></select></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Voice Input Language</div><div class="s-row-desc">For speech-to-text transcription</div></div><select class="s-select"><option>en-IN (English India)</option><option>hi-IN (Hindi India)</option><option>mr-IN (Marathi India)</option></select></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Currency Display</div><div class="s-row-desc">For claim amounts and awards</div></div><select class="s-select"><option>₹ INR</option><option>$ USD</option></select></div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">AI Voice Agent</div>
+          <div class="s-section-sub">SahAIyak Sentry — your legal AI assistant</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Enable Voice Agent</div><div class="s-row-desc">Floating AI assistant on all pages</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Agent Voice</div><div class="s-row-desc">Text-to-speech voice style</div></div><select class="s-select"><option>Neutral (Default)</option><option>Professional</option><option>Hindi accent</option></select></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Auto-read responses</div><div class="s-row-desc">Agent speaks answers aloud</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div id="panel-notifications" class="s-panel">
+        <h2 class="page-h">Notifications</h2>
+        <p class="page-sh">Control when and how SahAIyak contacts you</p>
+        <div class="s-section">
+          <div class="s-section-title">Case Alerts</div>
+          <div class="s-section-sub">Updates on your active cases</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Case analysis complete</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Legal notice ready to download</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Deadline reminders</div><div class="s-row-desc">7 days before filing deadlines</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Similar case updates</div><div class="s-row-desc">When new similar judgments are added</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Channels</div>
+          <div class="s-section-sub">How you receive notifications</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Email notifications</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">WhatsApp alerts</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">SMS alerts</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+        </div>
+      </div>
+
+      <!-- PRIVACY -->
+      <div id="panel-privacy" class="s-panel">
+        <h2 class="page-h">Privacy</h2>
+        <p class="page-sh">Control how your data is used and stored</p>
+        <div class="s-section">
+          <div class="s-section-title">Data Usage</div>
+          <div class="s-section-sub">How your case data improves SahAIyak</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Anonymized training data</div><div class="s-row-desc">Help improve AI accuracy (no PII shared)</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Case outcome feedback</div><div class="s-row-desc">Report your real outcome to improve predictions</div></div><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Analytics cookies</div></div><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="s-section">
+          <div class="s-section-title">Data Export & Deletion</div>
+          <div class="s-section-sub">Your case data belongs to you</div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Export all case data</div><div class="s-row-desc">Download a JSON file of all your cases</div></div><button style="border:1px solid var(--c-border);background:transparent;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;color:var(--c-ink)">Export Data</button></div>
+          <div class="s-row"><div class="s-row-left"><div class="s-row-label">Auto-delete cases after</div></div><select class="s-select"><option>Never</option><option>1 year</option><option>6 months</option><option>3 months</option></select></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function showPanel(id, btn) {
+  document.querySelectorAll('.s-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id)?.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+</script>
+</body>
+</html>

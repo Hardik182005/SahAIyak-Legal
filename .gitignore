@@ -1,0 +1,16 @@
+.env
+*.zip
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+uploads/
+*.log
+*.db
+.DS_Store
+backend_stdout*.log
+backend_stderr*.log

@@ -1,0 +1,15 @@
+.env
+*.log
+*.db
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/
+node_modules/
+SahAIyak.zip
+backend_stdout*.log
+backend_stderr*.log
+test_*.py
+uploads/
+.venv/
+venv/
