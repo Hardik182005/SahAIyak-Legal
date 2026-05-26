@@ -14,9 +14,10 @@ RUN pip install --upgrade pip && pip install -r backend/requirements.txt
 # Copy backend
 COPY backend/ ./backend/
 
-# Copy frontend (HTML pages + static assets)
+# Copy frontend (HTML pages + static assets) and scripts
 COPY *.html ./
 COPY static/ ./static/
+COPY scripts/ ./scripts/
 
 EXPOSE 8080
 
