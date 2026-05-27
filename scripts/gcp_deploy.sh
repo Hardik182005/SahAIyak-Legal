@@ -11,7 +11,7 @@ SERVICE_NAME="sahayak-api"
 DB_INSTANCE="sahayak-db"
 REDIS_INSTANCE="sahayak-redis"
 VPC_CONNECTOR="sahayak-vpc"
-DB_PASSWORD="SahAIyak@2026!Secure"
+DB_PASSWORD="${DB_PASSWORD:-$(openssl rand -base64 20)}"
 
 echo "=== SahAIyak GCP Deployment ==="
 echo "Project: ${PROJECT_ID} | Region: ${REGION}"

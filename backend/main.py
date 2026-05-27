@@ -66,8 +66,10 @@ app.add_middleware(
 )
 
 # Serve /static/ folder (JS, CSS, etc.)
-_FRONTEND_DIR = Path(__file__).parent.parent  # project root
-_STATIC_DIR = _FRONTEND_DIR / "static"
+_PROJECT_ROOT = Path(__file__).parent.parent  # project root
+_SCREENS_DIR = _PROJECT_ROOT / "screens"   # HTML pages live here
+_FRONTEND_DIR = _SCREENS_DIR if _SCREENS_DIR.exists() else _PROJECT_ROOT
+_STATIC_DIR = _PROJECT_ROOT / "static"
 if _STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
