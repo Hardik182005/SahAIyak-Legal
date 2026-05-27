@@ -470,7 +470,7 @@ async function submitCase() {
   }, 80);
 
   // Announce analysis start
-  speakBrowserQueue('Analyzing your case. Five AI agents are now running in parallel.');
+  speakText('Analyzing your case. Five AI agents are now running in parallel.', 'en');
 
   // Start the agent animation in parallel with the API call
   const animPromise = (async () => {
@@ -480,7 +480,7 @@ async function submitCase() {
       const check = document.getElementById('ac' + (i + 1));
       const text = document.getElementById('at' + (i + 1));
       line.classList.add('show');
-      speakBrowserQueue(agentSpeech[i], 1.1);
+      speakText(agentSpeech[i], 'en');
       await typeText(text, agentLabels[i], 22);
       await new Promise(r => setTimeout(r, 300));
       check.classList.add('done');
@@ -512,7 +512,7 @@ async function submitCase() {
   barEl.style.width = '100%';
   const complete = document.getElementById('loadComplete');
   complete.classList.add('show');
-  speakBrowser('Analysis complete. Opening your case report now.');
+  speakText('Analysis complete. Opening your case report now.', 'en');
   await new Promise(r => setTimeout(r, 900));
   window.location.href = caseId && caseId !== 'demo'
     ? `dashboard.html?case=${caseId}`
