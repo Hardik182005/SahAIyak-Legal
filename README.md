@@ -118,10 +118,11 @@ Submit your case in plain language. Within 30 seconds, four specialized AI agent
 |---|---|---|---|
 | Law Finder | Llama 3.3 70B | Groq | ~0.8s |
 | Authority Agent | Llama 3.3 70B | Groq | ~0.7s |
-| Evidence Coach | Llama 3.3 70B | Groq | ~0.9s |
-| Win Predictor | gemini-embedding-001 + Pinecone | Google + Pinecone | ~1.2s |
-| Notice Drafter | Llama 3.3 70B | Groq | ~1.5s |
-| Sentry Chat | Llama 3.3 70B / Gemini 2.0 Flash | Groq + Google | ~0.6s |
+| Evidence Coach | Gemini 2.0 Flash | Google | ~0.9s |
+| Win Predictor | text-embedding-005 + Pinecone | Vertex AI + Pinecone | ~1.2s |
+| Notice Drafter | Gemini 2.0 Flash | Google | ~1.5s |
+| Sentry Chat | Gemini 2.0 Flash | Google | ~0.6s |
+| **Negotiation Opponent** | **GPT-4o-mini** | **OpenAI** | ~1.2s |
 | Voice TTS | eleven_multilingual_v2 | ElevenLabs | ~1.5s |
 
 **Total pipeline latency: ~1.8s** (agents run in parallel via `asyncio.gather`)
