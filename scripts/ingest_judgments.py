@@ -47,10 +47,10 @@ VERTEX_REGION  = "us-central1"
 EMBED_MODEL    = "text-embedding-005"
 
 PINECONE_DIM  = 768
-EMBED_BATCH   = 50     # texts per Vertex AI call (max 250)
+EMBED_BATCH   = 20     # texts per Vertex AI call (20 × ~460 tokens = ~9200, under 20k limit)
 UPSERT_BATCH  = 100    # vectors per Pinecone upsert
-MAX_CHARS     = 1500   # chars of PDF text per judgment
-VERTEX_RPM    = 1000   # Vertex AI free quota (conservative)
+MAX_CHARS     = 800    # chars per PDF (< 230 tokens; 20 × 230 = 4600 tokens total per call)
+VERTEX_RPM    = 1000   # Vertex AI quota (conservative)
 
 
 # ── GCS seekable wrapper ──────────────────────────────────────────────────────
