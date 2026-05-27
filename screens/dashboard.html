@@ -490,7 +490,7 @@ body{
 
   <nav class="sb-nav">
     <div class="sb-lbl">Analysis</div>
-    <button class="sb-item active" onclick="setTab('overview',this)">
+    <button class="sb-item" onclick="setTab('overview',this)">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
       Overview
     </button>
@@ -586,7 +586,7 @@ body{
       <div class="content-inner">
 
         <!-- ── OVERVIEW TAB ── -->
-        <div id="tab-overview" class="tab-pane active">
+        <div id="tab-overview" class="tab-pane">
 
           <!-- Page header -->
           <div class="page-hdr reveal">
@@ -1469,6 +1469,8 @@ function sentrySpeakLast() {
 </script>
 <script>
 function setTab(id, btn) {
+  const VALID = ['overview','winprob','evidence','fileat','similar'];
+  if (!VALID.includes(id)) id = 'overview';
   document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
   const pane = document.getElementById('tab-' + id);
@@ -1495,8 +1497,25 @@ function setTab(id, btn) {
       if (fill) { const w = fill.style.width; fill.style.transition = 'none'; fill.style.width = '0%'; requestAnimationFrame(() => { fill.style.transition = ''; fill.style.width = w; }); }
     }, 100);
   }
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  // Persist active tab so navigating away and back restores it
+  try { sessionStorage.setItem('dash_tab', id); } catch(e){}
+  // Update URL hash without triggering a page reload
+  history.replaceState(null, '', location.pathname + location.search + '#' + id);
 }
+
+function _restoreTab() {
+  const VALID = ['overview','winprob','evidence','fileat','similar'];
+  // 1. Prefer URL hash (direct link / back-navigation)
+  let id = location.hash.replace('#','');
+  // 2. Fall back to sessionStorage
+  if (!VALID.includes(id)) { try { id = sessionStorage.getItem('dash_tab') || ''; } catch(e){} }
+  if (!VALID.includes(id)) id = 'overview';
+  const btn = document.querySelector(`.sb-item[onclick*="'${id}'"]`);
+  setTab(id, btn || document.querySelector('.sb-item'));
+}
+// Restore tab on load
+document.addEventListener('DOMContentLoaded', _restoreTab);
 
 function togglePlay(id) {
   const c = document.getElementById(id);
