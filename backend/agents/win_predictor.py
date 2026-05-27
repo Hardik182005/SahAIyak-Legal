@@ -127,15 +127,6 @@ async def predict_win(description: str, state: str = "") -> dict:
 
             pc = Pinecone(api_key=settings.pinecone_api_key)
             index = pc.Index(host=settings.pinecone_host)
-
-            # Get real total vector count from index stats
-            index_total = 0
-            try:
-                stats = index.describe_index_stats()
-                index_total = stats.total_vector_count or 0
-            except Exception:
-                pass
-
             results = index.query(vector=vector, top_k=10, include_metadata=True)
 
             for match in results.matches:
@@ -162,10 +153,8 @@ async def predict_win(description: str, state: str = "") -> dict:
             if total >= 3:
                 base_pct = int((win_prob / total) * 100)
                 win_prob = max(25, min(92, base_pct))
-                # Use real index size as total_analyzed, fall back to match count
-                total = index_total if index_total > total else total
                 source = "pinecone"
-                logger.info("Pinecone index has %d vectors, returned %d matches (win=%d%%)", index_total, len(similar_cases), win_prob)
+                logger.info("Pinecone returned %d similar matches (win=%d%%)", total, win_prob)
         except Exception as exc:
             logger.warning("Pinecone/embedding failed, using fallback: %s", exc)
 
@@ -175,11 +164,12 @@ async def predict_win(description: str, state: str = "") -> dict:
         similar_cases = _FALLBACK_CASES.get(case_type, _FALLBACK_CASES["consumer"])
         total = len(similar_cases)
 
+    match_count   = len(similar_cases)   # actual retrieved matches for stats
     won_count     = sum(1 for c in similar_cases if c["outcome"] == "WON")
     settled_count = sum(1 for c in similar_cases if c["outcome"] == "SETTLED")
-    lost_count    = total - won_count - settled_count
+    lost_count    = max(0, match_count - won_count - settled_count)
 
-    # Calculate avg award from actual cases where amount is available
+    # Calculate avg award from actual retrieved cases
     amounts = []
     for c in similar_cases:
         raw = str(c.get("amount", "")).replace("₹", "").replace(",", "").strip()
@@ -193,11 +183,11 @@ async def predict_win(description: str, state: str = "") -> dict:
     return {
         "win_probability":   win_prob,
         "similar_cases":     similar_cases[:6],
-        "total_analyzed":    total,
+        "total_analyzed":    match_count,
         "outcome_breakdown": {
-            "won_pct":     round(won_count     / total * 100) if total else 0,
-            "settled_pct": round(settled_count / total * 100) if total else 0,
-            "lost_pct":    round(lost_count    / total * 100) if total else 0,
+            "won_pct":     round(won_count     / match_count * 100) if match_count else 0,
+            "settled_pct": round(settled_count / match_count * 100) if match_count else 0,
+            "lost_pct":    round(lost_count    / match_count * 100) if match_count else 0,
         },
         "avg_award":              avg_award_str,
         "avg_resolution_months":  "4–6",
