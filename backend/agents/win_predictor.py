@@ -1,12 +1,9 @@
-﻿import json
-import random
-from typing import Optional
-import google.generativeai as genai
+﻿import random
+from openai import AsyncOpenAI
 from pinecone import Pinecone
 from ..config import get_settings
 
-_EMBED_MODEL = "models/gemini-embedding-001"
-_GEN_MODEL = "gemini-2.0-flash"
+_EMBED_MODEL = "text-embedding-3-small"   # 1536-dim, matches Pinecone index
 
 _FALLBACK_CASES = {
     "deposit": [
@@ -57,11 +54,13 @@ async def predict_win(description: str, state: str = "") -> dict:
     total = 0
     source = "fallback"
 
-    if settings.pinecone_api_key and settings.pinecone_host:
+    if settings.pinecone_api_key and settings.pinecone_host and settings.openai_api_key:
         try:
-            genai.configure(api_key=settings.gemini_api_key)
-            embed_resp = genai.embed_content(model=_EMBED_MODEL, content=description[:1000])
-            vector = embed_resp["embedding"]
+            oai = AsyncOpenAI(api_key=settings.openai_api_key)
+            embed_resp = await oai.embeddings.create(
+                model=_EMBED_MODEL, input=description[:1000]
+            )
+            vector = embed_resp.data[0].embedding
 
             pc = Pinecone(api_key=settings.pinecone_api_key)
             index = pc.Index(host=settings.pinecone_host)

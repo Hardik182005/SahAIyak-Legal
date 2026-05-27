@@ -4,11 +4,12 @@ Stream-ingest Indian SC judgments from GCS zip into Pinecone.
 Design:
 - Zero disk space: GCSSeekable wraps a GCS blob via byte-range reads so
   Python's zipfile reads only the central directory + requested entries.
-- One embed per text: Gemini embed_content takes a single string; each PDF
-  gets its own vector (batch API does NOT produce one vector per input text).
+- OpenAI text-embedding-3-large (3072-dim): 3000 RPM limit, supports true
+  batch embedding (up to 2048 inputs per call), ~$0.00013/1k tokens.
+  Cost for full 26k judgment run: ~$1.30.
 - Parallel shards: Cloud Run Job --tasks N splits entries by modulo via
   CLOUD_RUN_TASK_INDEX / CLOUD_RUN_TASK_COUNT env vars.
-- Rate limit budget: 1500 RPM / task_count per task → sleep accordingly.
+- Rate limit budget: 3000 RPM / task_count per task → sleep accordingly.
 - Checkpoint: saves last processed global index to GCS per task.
 
 Usage:
@@ -27,22 +28,25 @@ import time
 import zipfile
 from pathlib import Path
 
-import google.generativeai as genai
+from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
 from pypdf import PdfReader
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 
-GEMINI_KEY     = os.getenv("GEMINI_API_KEY", "")
+OPENAI_KEY     = os.getenv("OPENAI_API_KEY", "")
 PINECONE_KEY   = os.getenv("PINECONE_API_KEY", "")
 PINECONE_HOST  = os.getenv("PINECONE_HOST", "")
 PINECONE_INDEX = os.getenv("PINECONE_INDEX", "sahayak-judgments")
 GCS_ZIP_URI    = os.getenv("GCS_ZIP_URI", "gs://sahaiyak/archive.zip")
 
-EMBED_MODEL   = "models/gemini-embedding-001"
-UPSERT_BATCH  = 100   # vectors per Pinecone upsert call
-MAX_CHARS     = 1500  # chars of PDF text to embed
+EMBED_MODEL   = "text-embedding-3-small"   # 1536-dim, $0.00002/1k tokens (~$0.20 total)
+PINECONE_DIM  = 1536
+EMBED_BATCH   = 50     # texts per OpenAI embed call (supports up to 2048)
+UPSERT_BATCH  = 100    # vectors per Pinecone upsert call
+MAX_CHARS     = 1000   # chars of PDF text to embed
+EMBED_RPM     = 3000   # OpenAI tier-1 limit
 
 
 # ── GCS seekable wrapper ──────────────────────────────────────────────────────
@@ -119,32 +123,39 @@ def _pdf_text(data: bytes) -> str:
         return ""
 
 
-# ── Embedding (single text per call — Gemini API requirement) ─────────────────
+# ── Embedding (OpenAI — true batch, 3000 RPM, $0.00002/1k tokens) ─────────────
 
-def _embed_one(text: str, task_idx: int = 0) -> list | None:
-    """Embed a single text string. Retries with backoff on rate-limit errors."""
+_oai_client: OpenAI | None = None
+
+def _get_oai() -> OpenAI:
+    global _oai_client
+    if _oai_client is None:
+        _oai_client = OpenAI(api_key=OPENAI_KEY)
+    return _oai_client
+
+
+def _embed_batch_oai(texts: list[str], task_idx: int = 0) -> list[list[float]]:
+    """Embed a batch of texts via OpenAI. Returns one vector per text."""
     for attempt in range(5):
         try:
-            result = genai.embed_content(
+            resp = _get_oai().embeddings.create(
                 model=EMBED_MODEL,
-                content=text,
-                task_type="retrieval_document",
+                input=texts,
             )
-            emb = result["embedding"] if isinstance(result, dict) else result.get("embedding")
-            return emb
+            # Sort by index to preserve order
+            return [e.embedding for e in sorted(resp.data, key=lambda x: x.index)]
         except Exception as e:
             err = str(e)
-            if "429" in err or "quota" in err.lower() or "RESOURCE_EXHAUSTED" in err:
-                # Jitter prevents all tasks waking up in sync
-                wait = min(60 * (2 ** attempt), 300) + random.randint(0, 20)
+            if "429" in err or "rate" in err.lower():
+                wait = min(30 * (2 ** attempt), 120) + random.randint(0, 10)
                 print(f"  [t{task_idx}] Rate limit (attempt {attempt+1}), sleeping {wait}s")
                 time.sleep(wait)
             else:
                 print(f"  [t{task_idx}] Embed error: {e}")
                 if attempt >= 2:
-                    return None
-                time.sleep(5)
-    return None
+                    return []
+                time.sleep(3)
+    return []
 
 
 # ── Checkpoint ────────────────────────────────────────────────────────────────
@@ -183,19 +194,62 @@ def _run(zf: zipfile.ZipFile, index, bucket, task_idx: int, task_count: int,
             my_pdfs = [(g, e) for g, e in my_pdfs if g > last]
             print(f"[t{task_idx}] Remaining: {len(my_pdfs)} PDFs")
 
-    # Rate limit budget: 1500 RPM shared across all tasks
-    # Each task should do at most 1500/task_count RPM
-    embed_interval = (task_count / 1500.0) * 60.0  # seconds between embed calls
-    embed_interval = max(embed_interval, 0.05)       # floor at 50ms
-    print(f"[t{task_idx}] Embed interval: {embed_interval:.2f}s "
-          f"({1/embed_interval:.0f}/min × {task_count} tasks = "
-          f"{task_count/embed_interval:.0f}/min total)")
+    # OpenAI: 3000 RPM / task_count per task; with batch=50, need ~53 API calls per task
+    embed_interval = (task_count / float(EMBED_RPM)) * 60.0
+    embed_interval = max(embed_interval, 0.02)
+    print(f"[t{task_idx}] OpenAI embed: batch={EMBED_BATCH}, interval={embed_interval:.2f}s")
 
-    upsert_buf: list[dict] = []
+    # Accumulate PDFs; flush as embed batches
+    pdf_buf_texts:  list[str]  = []
+    pdf_buf_meta:   list[dict] = []
+    pdf_buf_ids:    list[str]  = []
+    upsert_buf:     list[dict] = []
     total_upserted = 0
     skipped = 0
-    errors = 0
+    errors  = 0
     last_embed_time = 0.0
+
+    def _flush_embed_buf(force: bool = False):
+        nonlocal errors, last_embed_time
+        if not pdf_buf_texts:
+            return
+        if not force and len(pdf_buf_texts) < EMBED_BATCH:
+            return
+        # Process in EMBED_BATCH chunks
+        while pdf_buf_texts:
+            chunk_texts = pdf_buf_texts[:EMBED_BATCH]
+            chunk_meta  = pdf_buf_meta[:EMBED_BATCH]
+            chunk_ids   = pdf_buf_ids[:EMBED_BATCH]
+            del pdf_buf_texts[:EMBED_BATCH]
+            del pdf_buf_meta[:EMBED_BATCH]
+            del pdf_buf_ids[:EMBED_BATCH]
+
+            elapsed = time.monotonic() - last_embed_time
+            if elapsed < embed_interval:
+                time.sleep(embed_interval - elapsed)
+
+            vecs = _embed_batch_oai(chunk_texts, task_idx)
+            last_embed_time = time.monotonic()
+
+            if len(vecs) != len(chunk_texts):
+                errors += len(chunk_texts)
+                continue
+            for i, vec in enumerate(vecs):
+                upsert_buf.append({
+                    "id":     chunk_ids[i],
+                    "values": vec,
+                    "metadata": chunk_meta[i],
+                })
+            if not force and pdf_buf_texts:
+                break  # only one chunk per call unless force-flushing
+
+    def _flush_upsert_buf(final: bool = False):
+        nonlocal total_upserted
+        while len(upsert_buf) >= UPSERT_BATCH or (final and upsert_buf):
+            batch = upsert_buf[:UPSERT_BATCH]
+            del upsert_buf[:UPSERT_BATCH]
+            index.upsert(vectors=batch)
+            total_upserted += len(batch)
 
     for count, (global_idx, entry_name) in enumerate(my_pdfs):
         if limit and count >= limit:
@@ -219,42 +273,27 @@ def _run(zf: zipfile.ZipFile, index, bucket, task_idx: int, task_count: int,
         outcome   = _outcome(text)
         doc_id    = f"sc_{year}_{global_idx:06d}"
 
-        # Respect rate limit interval
-        elapsed = time.monotonic() - last_embed_time
-        if elapsed < embed_interval:
-            time.sleep(embed_interval - elapsed)
-
-        emb = _embed_one(text, task_idx)
-        last_embed_time = time.monotonic()
-
-        if emb is None:
-            errors += 1
-            continue
-
-        upsert_buf.append({
-            "id":     doc_id,
-            "values": emb,
-            "metadata": {
-                "title":   case_name,
-                "year":    year,
-                "court":   "Supreme Court of India",
-                "outcome": outcome,
-                "source":  "indiankanoon",
-            }
+        pdf_buf_texts.append(text)
+        pdf_buf_ids.append(doc_id)
+        pdf_buf_meta.append({
+            "title":   case_name,
+            "year":    year,
+            "court":   "Supreme Court of India",
+            "outcome": outcome,
+            "source":  "indiankanoon",
         })
 
-        if len(upsert_buf) >= UPSERT_BATCH:
-            index.upsert(vectors=upsert_buf)
-            total_upserted += len(upsert_buf)
-            upsert_buf.clear()
-            _ckpt_save(bucket, task_idx, global_idx)
-            print(f"  ✓ [t{task_idx}] {total_upserted} upserted | "
-                  f"skip={skipped} err={errors} | last: {case_name[:50]}")
+        if len(pdf_buf_texts) >= EMBED_BATCH:
+            _flush_embed_buf()
+            _flush_upsert_buf()
+            if total_upserted and total_upserted % 500 == 0:
+                _ckpt_save(bucket, task_idx, global_idx)
+                print(f"  ✓ [t{task_idx}] {total_upserted} upserted | "
+                      f"skip={skipped} err={errors} | {case_name[:50]}")
 
-    # Flush remainder
-    if upsert_buf:
-        index.upsert(vectors=upsert_buf)
-        total_upserted += len(upsert_buf)
+    # Final flush
+    _flush_embed_buf(force=True)
+    _flush_upsert_buf(final=True)
 
     if my_pdfs:
         _ckpt_save(bucket, task_idx, my_pdfs[-1][0])
@@ -301,20 +340,28 @@ def ingest_local(zip_path: str, task_idx: int, task_count: int, limit: int, resu
 
 
 def _ensure_index(pc: Pinecone):
-    existing = {i.name for i in pc.list_indexes().indexes}
-    if PINECONE_INDEX not in existing:
-        print(f"[ingest] Creating Pinecone index '{PINECONE_INDEX}' (3072-dim, cosine)")
-        pc.create_index(
-            name=PINECONE_INDEX,
-            dimension=3072,
-            metric="cosine",
-            spec=ServerlessSpec(cloud="gcp", region="us-central1"),
-        )
-        time.sleep(10)
-    host = PINECONE_HOST or None
-    idx  = pc.Index(host=host) if host else pc.Index(PINECONE_INDEX)
-    stats = idx.describe_index_stats()
-    print(f"[ingest] Index '{PINECONE_INDEX}' — current vectors: {stats.total_vector_count}")
+    existing = {i.name: i for i in pc.list_indexes().indexes}
+    if PINECONE_INDEX in existing:
+        current_dim = existing[PINECONE_INDEX].dimension
+        if current_dim != PINECONE_DIM:
+            print(f"[ingest] Recreating index: {current_dim}-dim → {PINECONE_DIM}-dim")
+            pc.delete_index(PINECONE_INDEX)
+            time.sleep(5)
+        else:
+            idx = pc.Index(host=PINECONE_HOST) if PINECONE_HOST else pc.Index(PINECONE_INDEX)
+            stats = idx.describe_index_stats()
+            print(f"[ingest] Index '{PINECONE_INDEX}' ({PINECONE_DIM}-dim) — vectors: {stats.total_vector_count}")
+            return
+
+    print(f"[ingest] Creating Pinecone index '{PINECONE_INDEX}' ({PINECONE_DIM}-dim, cosine)")
+    pc.create_index(
+        name=PINECONE_INDEX,
+        dimension=PINECONE_DIM,
+        metric="cosine",
+        spec=ServerlessSpec(cloud="gcp", region="us-central1"),
+    )
+    time.sleep(10)
+    print(f"[ingest] Index created.")
 
 
 def main():
@@ -329,21 +376,24 @@ def main():
     task_idx   = int(os.getenv("CLOUD_RUN_TASK_INDEX", "0"))
     task_count = int(os.getenv("CLOUD_RUN_TASK_COUNT", "1"))
 
-    print(f"[ingest] task={task_idx}/{task_count}  model={EMBED_MODEL}")
+    print(f"[ingest] task={task_idx}/{task_count}  model={EMBED_MODEL}  dim={PINECONE_DIM}")
+    print(f"[ingest] Est. cost: {26688 * 250 / 1_000_000 * 0.00002:.4f} USD (text-embedding-3-small)")
 
-    # Stagger tasks so they don't all burst the Gemini API simultaneously
+    # Stagger tasks so they don't all burst the OpenAI API simultaneously
     if task_idx > 0:
-        stagger = task_idx * 4 + random.randint(0, 5)
+        stagger = task_idx * 3 + random.randint(0, 5)
         print(f"[ingest] Staggering {stagger}s …")
         time.sleep(stagger)
 
-    genai.configure(api_key=GEMINI_KEY)
+    if not OPENAI_KEY:
+        print("ERROR: OPENAI_API_KEY not set")
+        sys.exit(1)
 
     pc = Pinecone(api_key=PINECONE_KEY)
     if task_idx == 0:
         _ensure_index(pc)
     else:
-        time.sleep(3)  # give task 0 time to create index if needed
+        time.sleep(5)  # give task 0 time to create/verify index
 
     if args.zip:
         ingest_local(args.zip, task_idx, task_count, args.limit, not args.no_resume)
