@@ -303,14 +303,42 @@ body{
 .tab-pane{display:none}
 .tab-pane.active{display:block}
 
-/* ── TOPOLOGY CANVAS ── */
-.topo-section{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:20px;position:relative}
-.topo-header{padding:16px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between}
-.topo-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase}
-.topo-live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--success)}
-.topo-live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 6px rgba(21,128,61,.5);animation:pulse-g 2s infinite}
+/* ── LEGAL JOURNEY PATHWAY ── */
+.pathway-section{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.pathway-header{padding:16px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between}
+.pathway-hdr-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase}
+.pathway-stage-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--sketch);background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);padding:2px 9px;border-radius:100px}
+.pathway-body{padding:24px 24px 20px}
+/* Step track */
+.pathway-steps{display:flex;align-items:flex-start;position:relative;margin-bottom:22px}
+.pw-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.pw-step:not(:last-child)::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:var(--c-border);z-index:0;transition:background .6s}
+.pw-step.done:not(:last-child)::after{background:var(--green)}
+.pw-step.active:not(:last-child)::after{background:linear-gradient(90deg,var(--green) 0%,var(--c-border) 100%)}
+.pw-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--c-border);background:var(--c-card);position:relative;z-index:1;transition:all .4s ease;flex-shrink:0}
+.pw-step.done .pw-dot{border-color:var(--green);background:var(--green)}
+.pw-step.active .pw-dot{border-color:var(--sketch);background:var(--sketch);box-shadow:0 0 0 5px rgba(37,99,235,.12);animation:pw-glow 2.2s infinite}
+@keyframes pw-glow{0%,100%{box-shadow:0 0 0 5px rgba(37,99,235,.12)}50%{box-shadow:0 0 0 10px rgba(37,99,235,.04)}}
+.pw-dot-inner{width:8px;height:8px;border-radius:50%;background:var(--c-border)}
+.pw-step.done .pw-dot svg,.pw-step.active .pw-dot svg{display:block}
+.pw-dot svg{display:block}
+.pw-step.pending .pw-dot{opacity:.35}
+.pw-label{margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--c-soft);max-width:72px;line-height:1.45;text-align:center}
+.pw-step.done .pw-label{color:var(--green)}
+.pw-step.active .pw-label{color:var(--sketch);font-weight:600;letter-spacing:.12em}
+.pw-step.pending .pw-label{opacity:.4}
+/* Next action card */
+.pathway-next{display:flex;align-items:center;gap:14px;padding:13px 16px;background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.14);border-radius:6px;margin-bottom:16px}
+.pathway-next-icon{width:34px;height:34px;border-radius:7px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pathway-next-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sketch);margin-bottom:3px}
+.pathway-next-txt{font-size:12.5px;color:var(--c-ink);font-weight:500;line-height:1.4}
+/* Stats row */
+.pathway-stats{display:flex;border-top:1px solid var(--c-border);padding-top:14px;gap:0}
+.pw-stat{flex:1;text-align:center;padding:0 8px}
+.pw-stat:not(:last-child){border-right:1px solid var(--c-border)}
+.pw-stat-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:var(--c-ink);display:block;line-height:1.2}
+.pw-stat-lbl{font-size:10px;color:var(--c-soft);margin-top:3px;display:block;line-height:1.3}
 @keyframes pulse-g{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
-#topoCanvas{display:block;width:100%;height:280px}
 
 /* ── AI SENTRY AGENT ── */
 .ai-sentry{
@@ -592,14 +620,66 @@ body{
             </div>
           </div>
 
-          <!-- Case Topology -->
-          <div class="s-lbl reveal">Case Network Map</div>
-          <div class="topo-section reveal d1">
-            <div class="topo-header">
-              <span class="topo-title">Case Topology — Live Agent View</span>
-              <span class="topo-live"><span class="topo-live-dot"></span>AGENTS ACTIVE</span>
+          <!-- Legal Journey Pathway -->
+          <div class="s-lbl reveal">Legal Journey</div>
+          <div class="pathway-section reveal d1">
+            <div class="pathway-header">
+              <span class="pathway-hdr-title">Case Resolution Pathway</span>
+              <span class="pathway-stage-tag" id="pathwayStageTag">STAGE 3 OF 5</span>
             </div>
-            <canvas id="topoCanvas"></canvas>
+            <div class="pathway-body">
+              <div class="pathway-steps" id="pathwaySteps">
+                <div class="pw-step done" data-stage="1">
+                  <div class="pw-dot"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="pw-label">Case Intake</div>
+                </div>
+                <div class="pw-step done" data-stage="2">
+                  <div class="pw-dot"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="pw-label">AI Analysis</div>
+                </div>
+                <div class="pw-step active" data-stage="3">
+                  <div class="pw-dot"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="1.5" width="8" height="9" rx="1" stroke="#fff" stroke-width="1.3"/><line x1="4" y1="4.5" x2="8" y2="4.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="6.5" x2="8" y2="6.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/></svg></div>
+                  <div class="pw-label">Legal Notice</div>
+                </div>
+                <div class="pw-step pending" data-stage="4">
+                  <div class="pw-dot"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2" width="9" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 5h9" stroke="currentColor" stroke-width="1.1"/><circle cx="4" cy="8" r=".7" fill="currentColor"/><circle cx="6" cy="8" r=".7" fill="currentColor"/></svg></div>
+                  <div class="pw-label">Forum Filing</div>
+                </div>
+                <div class="pw-step pending" data-stage="5">
+                  <div class="pw-dot"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.2"/><polyline points="4,6 5.5,7.5 8.5,4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="pw-label">Resolution</div>
+                </div>
+              </div>
+
+              <div class="pathway-next">
+                <div class="pathway-next-icon">
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 13L7.5 2 13 13" stroke="#2563EB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="4" y1="9.5" x2="11" y2="9.5" stroke="#2563EB" stroke-width="1.2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <div class="pathway-next-lbl">Next Action</div>
+                  <div class="pathway-next-txt" id="pathwayNextTxt">Send legal notice via Registered Post AD — download from the Notice tab above</div>
+                </div>
+              </div>
+
+              <div class="pathway-stats">
+                <div class="pw-stat">
+                  <span class="pw-stat-val" id="pathwayResponseDays">15</span>
+                  <span class="pw-stat-lbl">Days for<br>response</span>
+                </div>
+                <div class="pw-stat">
+                  <span class="pw-stat-val" id="pathwayMonths">3–5</span>
+                  <span class="pw-stat-lbl">Months to<br>resolution</span>
+                </div>
+                <div class="pw-stat">
+                  <span class="pw-stat-val" id="pathwaySuccessRate">72%</span>
+                  <span class="pw-stat-lbl">Success rate<br>similar cases</span>
+                </div>
+                <div class="pw-stat">
+                  <span class="pw-stat-val" id="pathwayAvgAward">₹65K</span>
+                  <span class="pw-stat-lbl">Avg. award<br>this forum</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Evidence breakdown -->
@@ -1009,6 +1089,9 @@ body{
     // ── Evidence Coach tab ──
     _renderEvidenceCoachTab(d);
 
+    // ── Legal Journey Pathway ──
+    updatePathway({ ...d, win_probability: winPct, avg_months: avgMonths ? avgMonths + ' mo' : null, avg_award: avgAward });
+
     // ── Where to File tab ──
     if (d.authority) {
       const auth = d.authority;
@@ -1257,113 +1340,58 @@ async function sentryChat() {
   }
 }
 
-// ── TOPOLOGY ANIMATION ────────────────────────────────────────────────
-const canvas = document.getElementById('topoCanvas');
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [], nodes;
+// ── LEGAL JOURNEY PATHWAY ─────────────────────────────────────────────
+function updatePathway(d) {
+  if (!d) return;
+  const pct = d.win_probability || 72;
+  const srEl = document.getElementById('pathwaySuccessRate');
+  if (srEl) srEl.textContent = pct + '%';
 
-  function initTopo() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    W = canvas.width = rect.width;
-    H = canvas.height = 280;
+  if (d.avg_months) {
+    const mEl = document.getElementById('pathwayMonths');
+    if (mEl) mEl.textContent = d.avg_months;
+  }
+  if (d.avg_award) {
+    const aEl = document.getElementById('pathwayAvgAward');
+    if (aEl) aEl.textContent = '₹' + (d.avg_award >= 100000 ? Math.round(d.avg_award / 1000) + 'K' : (d.avg_award / 1000).toFixed(0) + 'K');
+  }
 
-    nodes = [
-      { id: 0, label: 'Your Case',        x: W*.5,  y: H*.5,  r: 22, color: '#15803D', glow: 'rgba(21,128,61,.4)',  status: 'active' },
-      { id: 1, label: 'Consumer Forum',   x: W*.78, y: H*.3,  r: 16, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
-      { id: 2, label: 'Win Predictor',    x: W*.78, y: H*.7,  r: 16, color: '#15803D', glow: 'rgba(21,128,61,.4)', status: 'ok' },
-      { id: 3, label: 'Evidence Coach',   x: W*.5,  y: H*.12, r: 14, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
-      { id: 4, label: 'Legal Notice',     x: W*.22, y: H*.3,  r: 16, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
-      { id: 5, label: 'Landlord',         x: W*.22, y: H*.7,  r: 14, color: '#B45309', glow: 'rgba(180,83,9,.4)',  status: 'warn' },
-      { id: 6, label: 'Law Finder',       x: W*.5,  y: H*.88, r: 14, color: '#2563EB', glow: 'rgba(37,99,235,.4)', status: 'ok' },
+  // Derive stage from status field
+  const statusMap = { 'intake': 1, 'analyzed': 2, 'notice': 3, 'filed': 4, 'resolved': 5 };
+  const stage = statusMap[d.status] || 3;
+  const stageTag = document.getElementById('pathwayStageTag');
+  if (stageTag) stageTag.textContent = `STAGE ${stage} OF 5`;
+
+  const nextMessages = [
+    'Complete your case intake and describe the dispute in detail',
+    'AI agents are analyzing your case — this usually takes under a minute',
+    'Send legal notice via Registered Post AD — download it from the Notice tab',
+    'File complaint at your district consumer forum or via e-Daakhil portal',
+    'Case resolved — download your final order from the forum website',
+  ];
+  const nextEl = document.getElementById('pathwayNextTxt');
+  if (nextEl) nextEl.textContent = nextMessages[stage - 1] || nextMessages[2];
+
+  // Re-render step states
+  document.querySelectorAll('#pathwaySteps .pw-step').forEach((step, i) => {
+    const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const activeSvgs = ['','',
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="1.5" width="8" height="9" rx="1" stroke="#fff" stroke-width="1.3"/><line x1="4" y1="4.5" x2="8" y2="4.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="6.5" x2="8" y2="6.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/></svg>',
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2" width="9" height="8" rx="1" stroke="#fff" stroke-width="1.2"/><path d="M1.5 5h9" stroke="#fff" stroke-width="1.1"/><circle cx="4" cy="8" r=".7" fill="#fff"/><circle cx="6" cy="8" r=".7" fill="#fff"/></svg>',
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="#fff" stroke-width="1.2"/><polyline points="4,6 5.5,7.5 8.5,4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     ];
-    particles = [];
-  }
-
-  const edges = [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[1,2],[3,4]];
-
-  function spawnParticle(a, b) {
-    particles.push({ from: a, to: b, t: 0, speed: 0.003 + Math.random() * 0.003 });
-  }
-
-  setInterval(() => {
-    if (!nodes) return;
-    const e = edges[Math.floor(Math.random() * edges.length)];
-    spawnParticle(e[0], e[1]);
-    if (Math.random() > 0.5) spawnParticle(e[1], e[0]);
-  }, 600);
-
-  let animT = 0;
-  function drawTopo() {
-    if (!nodes) return;
-    ctx.clearRect(0, 0, W, H);
-    animT += 0.01;
-
-    // Draw edges
-    edges.forEach(([a, b]) => {
-      const na = nodes[a], nb = nodes[b];
-      ctx.beginPath();
-      ctx.moveTo(na.x, na.y);
-      ctx.lineTo(nb.x, nb.y);
-      ctx.strokeStyle = 'rgba(10,10,10,.08)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
-
-    // Draw particles
-    particles = particles.filter(p => p.t <= 1);
-    particles.forEach(p => {
-      p.t += p.speed;
-      const na = nodes[p.from], nb = nodes[p.to];
-      const x = na.x + (nb.x - na.x) * p.t;
-      const y = na.y + (nb.y - na.y) * p.t;
-      ctx.beginPath();
-      ctx.arc(x, y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = na.color;
-      ctx.globalAlpha = 1 - Math.abs(p.t - 0.5) * 1.5;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    });
-
-    // Draw nodes
-    nodes.forEach((n, i) => {
-      const pulse = 1 + Math.sin(animT * 2 + i) * 0.08;
-
-      // Glow
-      const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 2.5 * pulse);
-      grad.addColorStop(0, n.glow);
-      grad.addColorStop(1, 'transparent');
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r * 2.5 * pulse, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Outer ring
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
-      ctx.strokeStyle = n.color;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Inner fill
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r * 0.55 * pulse, 0, Math.PI * 2);
-      ctx.fillStyle = n.color;
-      ctx.fill();
-
-      // Label
-      ctx.font = '500 11px Inter, sans-serif';
-      ctx.fillStyle = '#0A0A0A';
-      ctx.textAlign = 'center';
-      ctx.fillText(n.label, n.x, n.y + n.r + 14);
-    });
-
-    requestAnimationFrame(drawTopo);
-  }
-
-  initTopo();
-  window.addEventListener('resize', initTopo);
-  drawTopo();
+    const dot = step.querySelector('.pw-dot');
+    if (i < stage - 1) {
+      step.className = 'pw-step done';
+      dot.innerHTML = checkSvg;
+    } else if (i === stage - 1) {
+      step.className = 'pw-step active';
+      dot.innerHTML = activeSvgs[i] || checkSvg;
+    } else {
+      step.className = 'pw-step pending';
+      dot.innerHTML = activeSvgs[i] || '<div class="pw-dot-inner"></div>';
+    }
+  });
 }
 
 // ── AI SENTRY ─────────────────────────────────────────────────────────

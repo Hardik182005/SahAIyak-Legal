@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SahAIyak — Legal Notice Draft</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#0A0A0A;--paper:#FAFAF7;--paper-pure:#FFFFFF;--rule:#E8E5DE;--mute:#6B6B6B;--mute-soft:#9A9A9A;--sketch:#2563EB;--success:#15803D;
   --bg:#0D0D0D;--bg2:#141414;--border:rgba(255,255,255,.08);--txt:#F0EFEA;--txt2:rgba(255,255,255,.5);--txt3:rgba(255,255,255,.25);--sb-w:220px;}
@@ -79,37 +79,39 @@ body{
   padding:48px 52px;box-shadow:0 2px 40px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04);
   min-height:900px;position:relative;overflow:hidden;word-break:break-word;overflow-wrap:break-word;
 }
-  min-height:900px;position:relative;
-}
-/* Legal Notice Styles */
-.notice-top{text-align:center;border-bottom:2px solid var(--ink);padding-bottom:24px;margin-bottom:40px}
-.notice-from{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
-.notice-title{font-family:'Fraunces',serif;font-size:22px;font-weight:400;letter-spacing:.02em;margin-bottom:6px}
-.notice-sub-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--mute);text-transform:uppercase}
-.notice-meta{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px;padding:24px;border:1px solid var(--rule)}
-.notice-meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-soft);margin-bottom:4px}
-.notice-meta-val{font-size:14px;font-weight:500;line-height:1.4}
-.notice-ref{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mute);margin-bottom:32px}
-.notice-salutation{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin-bottom:24px}
-.notice-body p{font-family:'Fraunces',serif;font-size:15px;font-weight:300;line-height:1.8;margin-bottom:18px;color:var(--ink);text-align:left}
-.notice-body strong{font-weight:400;font-family:'Fraunces',serif}
-.notice-body em{font-style:italic;font-weight:300}
+/* ── LEGAL NOTICE STYLES (formal court-paper look) ── */
+:root{--legal:'PT Serif','Times New Roman',Times,Georgia,serif}
+.notice-top{text-align:center;border-bottom:3px double var(--ink);padding-bottom:20px;margin-bottom:32px}
+.notice-from{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.notice-title{font-family:var(--legal);font-size:26px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;color:var(--ink)}
+.notice-sub-title{font-family:var(--legal);font-size:12px;font-style:italic;color:var(--mute);letter-spacing:.01em}
+.notice-meta{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:32px;border:1.5px solid var(--ink)}
+.notice-meta>div{padding:16px 18px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.notice-meta>div:nth-child(2n){border-right:none}
+.notice-meta>div:nth-child(3),.notice-meta>div:nth-child(4){border-bottom:none}
+.notice-meta-label{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute-soft);margin-bottom:5px}
+.notice-meta-val{font-family:var(--legal);font-size:13.5px;font-weight:400;line-height:1.55;color:var(--ink)}
+.notice-ref{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--mute);margin-bottom:28px;border-left:3px solid var(--ink);padding-left:12px}
+.notice-salutation{font-family:var(--legal);font-size:15px;font-weight:400;margin-bottom:20px;color:var(--ink)}
+.notice-body p{font-family:var(--legal);font-size:14.5px;font-weight:400;line-height:1.9;margin-bottom:16px;color:var(--ink);text-align:justify;hyphens:auto}
+.notice-body strong{font-weight:700;font-family:var(--legal)}
+.notice-body em{font-style:italic;font-weight:400}
 .notice-clause{
-  border-left:2px solid var(--sketch);padding-left:20px;margin:28px 0;
-  font-family:'Fraunces',serif;font-size:15px;font-weight:300;line-height:1.8;
-  color:var(--ink);
+  border-left:3px solid var(--ink);padding:12px 18px;margin:24px 0;
+  font-family:var(--legal);font-size:14px;font-weight:400;line-height:1.85;
+  color:var(--ink);text-align:justify;background:rgba(0,0,0,.015);
 }
-.notice-demand{background:var(--paper);padding:24px;border:1px solid var(--rule);margin:32px 0;border-radius:2px}
-.notice-demand h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:16px}
-.notice-demand ol{padding-left:20px}
-.notice-demand li{font-size:14px;line-height:1.7;margin-bottom:8px;font-family:'Fraunces',serif;font-weight:300}
-.notice-warning{font-family:'Fraunces',serif;font-size:16px;font-weight:400;margin:28px 0;line-height:1.7;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:20px 0}
-.notice-close{font-family:'Fraunces',serif;font-size:16px;font-weight:300;margin-top:36px;line-height:1.7}
-.notice-sig{margin-top:60px;padding-top:24px;border-top:1px solid var(--rule)}
-.notice-sig-name{font-family:'Fraunces',serif;font-size:18px;font-weight:400;margin-bottom:4px}
-.notice-sig-role{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
-.notice-footer-bar{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
-.notice-footer-txt{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--mute-soft);text-transform:uppercase}
+.notice-demand{border:1.5px solid var(--ink);padding:20px 24px;margin:28px 0}
+.notice-demand h4{font-family:var(--legal);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;color:var(--ink);border-bottom:1px solid var(--rule);padding-bottom:8px}
+.notice-demand ol{padding-left:22px}
+.notice-demand li{font-family:var(--legal);font-size:14px;line-height:1.8;margin-bottom:10px;color:var(--ink);text-align:justify}
+.notice-warning{font-family:var(--legal);font-size:14.5px;font-weight:400;margin:28px 0;line-height:1.9;border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);padding:18px 0;text-align:justify;color:var(--ink)}
+.notice-close{font-family:var(--legal);font-size:14.5px;font-weight:400;margin-top:28px;line-height:1.9;text-align:justify;color:var(--ink)}
+.notice-sig{margin-top:56px;padding-top:0}
+.notice-sig-name{font-family:var(--legal);font-size:17px;font-weight:700;margin-bottom:4px;color:var(--ink);border-top:1px solid var(--ink);padding-top:10px;display:inline-block;min-width:200px}
+.notice-sig-role{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase;margin-top:2px}
+.notice-footer-bar{margin-top:40px;padding-top:14px;border-top:2px double var(--ink);display:flex;justify-content:space-between;align-items:center}
+.notice-footer-txt{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.1em;color:var(--mute-soft);text-transform:uppercase}
 
 /* Editable paragraphs */
 [contenteditable="true"]{outline:none;border-radius:2px;transition:background .2s;max-width:100%;word-break:break-word}
@@ -171,7 +173,7 @@ body{
   .doc-main{height:auto!important}
   .doc-layout{display:block!important}
   .doc-panel{overflow:visible!important;padding:0!important;background:#fff!important;background-image:none!important;display:block!important}
-  .doc-page{box-shadow:none!important;max-width:100%!important;padding:20mm 20mm!important}
+  .doc-page{box-shadow:none!important;max-width:100%!important;padding:20mm 25mm!important;font-family:'PT Serif','Times New Roman',serif!important}
   [contenteditable]{outline:none!important;background:transparent!important;box-shadow:none!important}
 }
 </style>
