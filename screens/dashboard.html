@@ -1139,16 +1139,12 @@ body{
     if (d.evidence_strengths?.length || d.evidence_gaps?.length)
       _renderEvidence(d.evidence_strengths || [], d.evidence_gaps || []);
 
-    // ── Auto-speak win summary ──
-    setTimeout(() => {
-      const forum = d.authority?.forum || 'Consumer Forum';
-      const score = d.evidence_score || '5/10';
-      const tip = d.coaching_tip ? ' Key tip: ' + d.coaching_tip : '';
-      speakBrowser(
-        `Analysis complete. Your case has a ${winPct}% win probability based on ${total.toLocaleString('en-IN')} similar Indian cases. ` +
-        `${ob.won_pct}% won outright. Recommended forum: ${forum}. Evidence score: ${score}.${tip}`
-      );
-    }, 1200);
+    // Store summary text for the click-to-speak button — no auto-play
+    const forum = d.authority?.forum || 'Consumer Forum';
+    const score = d.evidence_score || '5/10';
+    const tip = d.coaching_tip ? ' Key tip: ' + d.coaching_tip : '';
+    window._winSpeechText = `Your case has a ${winPct}% win probability. ` +
+      `${ob.won_pct ?? '—'}% of similar cases were won outright. Recommended forum: ${forum}. Evidence score: ${score}.${tip}`;
 
   } catch (e) {
     console.warn('Live data load failed, using demo data:', e.message);
@@ -1450,12 +1446,20 @@ async function sentryVoice() {
   speakText(lastBot.textContent || lastBot.innerText, 'en');
 }
 
-async function speakWinSummary() {
-  const d  = window._caseData || {};
-  const pct = document.getElementById('winNum')?.textContent || (d.win_probability || 72) + '%';
-  const total = (d.total_analyzed || 26688).toLocaleString('en-IN');
-  const ob = d.outcome_breakdown || { won_pct: 58, settled_pct: 28 };
-  speakText(`Your case has a ${pct} win probability based on ${total} similar cases. ${ob.won_pct}% of similar cases were won outright, and ${ob.settled_pct}% settled before the first hearing.`, 'en');
+function speakWinSummary() {
+  const text = window._winSpeechText;
+  if (!text) {
+    speakBrowser('Analysis is still loading. Please wait a moment.');
+    return;
+  }
+  speakText(text, 'en');
+}
+
+function sentrySpeakLast() {
+  const msgs = document.querySelectorAll('#sentryMsgs .ai-msg.bot');
+  if (!msgs.length) { speakBrowser('No Sentry message yet. Ask me something first.'); return; }
+  const last = msgs[msgs.length - 1];
+  speakBrowser(last.textContent || last.innerText);
 }
 </script>
 <script>
