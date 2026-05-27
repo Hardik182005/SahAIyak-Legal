@@ -240,6 +240,8 @@ def _run(zf: zipfile.ZipFile, index, bucket, task_idx: int, task_count: int,
     errors  = 0
     last_embed_time = 0.0
 
+    batch_fail_counts: dict = {}
+
     def _flush_embed(force: bool = False):
         nonlocal errors, last_embed_time
         while pdf_texts and (force or len(pdf_texts) >= EMBED_BATCH):
@@ -258,8 +260,21 @@ def _run(zf: zipfile.ZipFile, index, bucket, task_idx: int, task_count: int,
             last_embed_time = time.monotonic()
 
             if len(vecs) != len(chunk_t):
-                errors += len(chunk_t)
+                key = chunk_i[0] if chunk_i else "unknown"
+                batch_fail_counts[key] = batch_fail_counts.get(key, 0) + 1
+                if batch_fail_counts[key] <= 3:
+                    # re-queue at front so it's retried before moving on
+                    pdf_texts[:0] = chunk_t
+                    pdf_meta[:0] = chunk_m
+                    pdf_ids[:0] = chunk_i
+                    print(f"  [t{task_idx}] Batch failed, requeueing (attempt {batch_fail_counts[key]})")
+                    time.sleep(15 * batch_fail_counts[key])
+                else:
+                    errors += len(chunk_t)
+                    print(f"  [t{task_idx}] Giving up on batch {key} after 3 retries")
+                    batch_fail_counts.pop(key, None)
                 continue
+            batch_fail_counts.pop(chunk_i[0] if chunk_i else None, None)
             for i, vec in enumerate(vecs):
                 upsert_buf.append({
                     "id":     chunk_i[i],
