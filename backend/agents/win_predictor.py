@@ -168,16 +168,27 @@ async def predict_win(description: str, state: str = "") -> dict:
     settled_count = sum(1 for c in similar_cases if c["outcome"] == "SETTLED")
     lost_count    = total - won_count - settled_count
 
+    # Calculate avg award from actual cases where amount is available
+    amounts = []
+    for c in similar_cases:
+        raw = str(c.get("amount", "")).replace("₹", "").replace(",", "").strip()
+        try:
+            amounts.append(float(raw))
+        except ValueError:
+            pass
+    avg_award_num = int(sum(amounts) / len(amounts)) if amounts else None
+    avg_award_str = f"₹{avg_award_num:,}" if avg_award_num else "Varies"
+
     return {
         "win_probability":   win_prob,
         "similar_cases":     similar_cases[:6],
-        "total_analyzed":    max(total, 847),
+        "total_analyzed":    total,
         "outcome_breakdown": {
-            "won_pct":     round(won_count     / total * 100) if total else 58,
-            "settled_pct": round(settled_count / total * 100) if total else 28,
-            "lost_pct":    round(lost_count    / total * 100) if total else 14,
+            "won_pct":     round(won_count     / total * 100) if total else 0,
+            "settled_pct": round(settled_count / total * 100) if total else 0,
+            "lost_pct":    round(lost_count    / total * 100) if total else 0,
         },
-        "avg_award":              "₹91,400",
-        "avg_resolution_months":  "4.2",
+        "avg_award":              avg_award_str,
+        "avg_resolution_months":  "4–6",
         "data_source":            source,
     }

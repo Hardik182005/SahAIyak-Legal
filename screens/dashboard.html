@@ -516,7 +516,7 @@ body{
     <button class="sb-item" onclick="setTab('similar',this)">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="5" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/></svg>
       Similar Cases
-      <span class="sb-badge">847</span>
+      <span class="sb-badge" id="sbSimilarCount">—</span>
     </button>
 
     <div class="sb-divider"></div>
@@ -570,7 +570,7 @@ body{
   <div class="statbar">
     <div class="stat-items">
       <div class="stat-item"><div class="stat-lbl">Win Probability</div><div class="stat-val g">72%</div></div>
-      <div class="stat-item"><div class="stat-lbl">Similar Cases</div><div class="stat-val b">847</div></div>
+      <div class="stat-item"><div class="stat-lbl">Similar Cases</div><div class="stat-val b">—</div></div>
       <div class="stat-item"><div class="stat-lbl">Claim Amount</div><div class="stat-val w">₹80,000</div></div>
       <div class="stat-item"><div class="stat-lbl">Days Active</div><div class="stat-val a">14</div></div>
       <div class="stat-item"><div class="stat-lbl">Evidence Score</div><div class="stat-val w">4 / 6</div></div>
@@ -607,10 +607,10 @@ body{
                 </button>
               </div>
               <div class="win-big" id="winNum">0%</div>
-              <div class="win-sub">Based on 847 similar<br>Maharashtra cases · 2018–2025</div>
+              <div class="win-sub">AI prediction based on<br>similar case analysis</div>
             </div>
             <div class="win-r">
-              <div class="win-r-top">Outcome distribution across <strong>847 similar cases</strong> filed at Consumer Forums and Civil Courts in Maharashtra. Avg resolution: 4.2 months. Avg award: ₹91,400.</div>
+              <div class="win-r-top">Outcome distribution across similar cases in our database. Avg resolution and award updated from your case analysis.</div>
               <div class="bars">
                 <div class="brow"><span class="blbl">Won outright</span><div class="btrack"><div class="bfill" data-w="58" style="background:var(--green)"></div></div><span class="bpct">58%</span></div>
                 <div class="brow"><span class="blbl">Settled</span><div class="btrack"><div class="bfill" data-w="28" style="background:var(--sketch-s)"></div></div><span class="bpct">28%</span></div>
@@ -792,7 +792,7 @@ body{
         <div id="tab-winprob" class="tab-pane">
           <div class="page-hdr">
             <h1 class="page-title">Win Probability</h1>
-            <p class="page-sub" style="margin-top:6px">Data-driven prediction from <span id="wp-total">847</span> real Indian court judgments</p>
+            <p class="page-sub" style="margin-top:6px">Data-driven prediction from <span id="wp-total">—</span> similar cases</p>
           </div>
           <!-- Assessment banner -->
           <div class="assess-banner strong" id="assessBanner">
@@ -807,7 +807,7 @@ body{
           <!-- Outcome distribution -->
           <div class="s-lbl">Outcome Distribution — Similar Cases</div>
           <div class="ev-card" style="padding:24px 28px;margin-bottom:20px">
-            <div style="font-size:13px;color:#6B6B6B;line-height:1.65;margin-bottom:16px" id="wp-desc">Outcome distribution across <strong>847</strong> similar cases. Avg resolution: <strong id="wp-months">4.2</strong> months. Avg award: <strong id="wp-award">&#8377;91,400</strong>.</div>
+            <div style="font-size:13px;color:#6B6B6B;line-height:1.65;margin-bottom:16px" id="wp-desc">Outcome distribution across <strong id="wp-total-2">—</strong> similar cases. Avg resolution: <strong id="wp-months">4–6</strong> months. Avg award: <strong id="wp-award">Varies</strong>.</div>
             <div class="bars">
               <div class="brow"><span class="blbl">Won outright</span><div class="btrack"><div class="bfill" id="wp-bar-won" data-w="58" style="background:var(--success)"></div></div><span class="bpct" id="wp-pct-won">58%</span></div>
               <div class="brow"><span class="blbl">Settled</span><div class="btrack"><div class="bfill" id="wp-bar-set" data-w="28" style="background:var(--sketch)"></div></div><span class="bpct" id="wp-pct-set">28%</span></div>
@@ -910,11 +910,11 @@ body{
         <div id="tab-similar" class="tab-pane">
           <div class="page-hdr">
             <h1 class="page-title">Similar Cases</h1>
-            <p class="page-sub" id="sim-sub" style="margin-top:6px">847 cases analyzed — 86% won or settled</p>
+            <p class="page-sub" id="sim-sub" style="margin-top:6px">Analyzing similar cases from our database...</p>
           </div>
           <!-- Stats row -->
           <div class="cases-stats">
-            <div class="cs-card"><div class="cs-val w" id="sim-total">847</div><div class="cs-lbl">Cases Analyzed</div></div>
+            <div class="cs-card"><div class="cs-val w" id="sim-total">—</div><div class="cs-lbl">Cases Found</div></div>
             <div class="cs-card"><div class="cs-val g" id="sim-won">58%</div><div class="cs-lbl">Won Outright</div></div>
             <div class="cs-card"><div class="cs-val b" id="sim-settled">28%</div><div class="cs-lbl">Settled</div></div>
             <div class="cs-card"><div class="cs-val w" id="sim-award">&#8377;91,400</div><div class="cs-lbl">Avg Award</div></div>
@@ -1012,11 +1012,11 @@ body{
     const d = await apiGet('/api/v1/cases/' + caseId);
     window._caseData = d;
 
-    const winPct    = d.win_probability || 72;
-    const total     = d.total_analyzed  || d.similar_cases_count || 847;
-    const ob        = d.outcome_breakdown || { won_pct: 58, settled_pct: 28, lost_pct: 14 };
-    const avgMonths = d.avg_resolution_months || '4.2';
-    const avgAward  = d.avg_award || '₹91,400';
+    const winPct    = d.win_probability ?? 0;
+    const total     = d.total_analyzed  || d.similar_cases_count || (d.similar_cases?.length) || 0;
+    const ob        = d.outcome_breakdown || {};
+    const avgMonths = d.avg_resolution_months || '4–6';
+    const avgAward  = d.avg_award || 'Varies';
 
     // ── Sidebar ──
     document.querySelectorAll('.sb-cid').forEach(el =>
@@ -1026,7 +1026,7 @@ body{
     document.querySelectorAll('.sb-badge').forEach(el => {
       const t = el.textContent.trim();
       if (t.includes('%'))  el.textContent = winPct + '%';
-      if (/^\d+$/.test(t)) el.textContent = total.toLocaleString('en-IN');
+      if (t === '—')        el.textContent = total > 0 ? total.toLocaleString('en-IN') : '—';
       if (t.includes('/'))  el.textContent = d.evidence_score || t;
     });
     const sbWin = document.getElementById('sbWinPct');
@@ -1041,27 +1041,31 @@ body{
     doCount();
 
     // ── Outcome bars (overview) ──
-    document.querySelectorAll('.brow').forEach(row => {
-      const lbl   = (row.querySelector('.blbl')?.textContent || '').toLowerCase();
-      const fill  = row.querySelector('.bfill');
-      const pctEl = row.querySelector('.bpct');
-      const pct   = lbl.includes('won') ? ob.won_pct
-                  : lbl.includes('settled') ? ob.settled_pct
-                  : lbl.includes('lost') ? ob.lost_pct : null;
-      if (pct !== null) {
-        if (fill)  { fill.dataset.w = pct; fill.style.width = pct + '%'; }
-        if (pctEl) pctEl.textContent = pct + '%';
-      }
-    });
+    if (ob.won_pct !== undefined) {
+      document.querySelectorAll('.brow').forEach(row => {
+        const lbl   = (row.querySelector('.blbl')?.textContent || '').toLowerCase();
+        const fill  = row.querySelector('.bfill');
+        const pctEl = row.querySelector('.bpct');
+        const pct   = lbl.includes('won') ? ob.won_pct
+                    : lbl.includes('settled') ? ob.settled_pct
+                    : lbl.includes('lost') ? ob.lost_pct : null;
+        if (pct !== null && pct !== undefined) {
+          if (fill)  { fill.dataset.w = pct; fill.style.width = pct + '%'; }
+          if (pctEl) pctEl.textContent = pct + '%';
+        }
+      });
+    }
 
     // ── win-r-top description ──
+    const totalLabel = total > 0 ? total.toLocaleString('en-IN') + ' similar cases' : 'similar cases in our database';
     document.querySelectorAll('.win-r-top').forEach(el => {
-      if (el.textContent.includes('similar cases') || el.textContent.includes('847'))
-        el.innerHTML = `Outcome distribution across <strong>${total.toLocaleString('en-IN')} similar cases</strong>. Avg resolution: ${avgMonths} months. Avg award: ${avgAward}.`;
+      el.innerHTML = `Outcome distribution across <strong>${totalLabel}</strong>. Avg resolution: ${avgMonths} months. Avg award: ${avgAward}.`;
     });
     document.querySelectorAll('.win-sub').forEach(el => {
-      if (el.textContent.includes('cases'))
-        el.innerHTML = `Based on ${total.toLocaleString('en-IN')} similar<br>cases · 2015–2025`;
+      if (el.textContent.includes('cases') || el.textContent.includes('Based'))
+        el.innerHTML = total > 0
+          ? `Based on <strong>${total}</strong> similar<br>cases found · 2015–2025`
+          : `AI prediction based on<br>legal pattern analysis`;
     });
 
     // ── Stats bar ──
@@ -1107,12 +1111,23 @@ body{
 
     // ── Similar Cases tab stats ──
     const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-    setTxt('sim-total',   total.toLocaleString('en-IN'));
-    setTxt('sim-won',     ob.won_pct + '%');
-    setTxt('sim-settled', ob.settled_pct + '%');
-    setTxt('sim-award',   avgAward);
+    const totalStr = total > 0 ? total.toLocaleString('en-IN') : '—';
+    setTxt('sim-total',       totalStr);
+    setTxt('sim-won',         ob.won_pct != null ? ob.won_pct + '%' : '—');
+    setTxt('sim-settled',     ob.settled_pct != null ? ob.settled_pct + '%' : '—');
+    setTxt('sim-award',       avgAward);
+    setTxt('sbSimilarCount',  totalStr);
+    setTxt('wp-total',        totalStr);
+    setTxt('wp-total-2',      totalStr);
+    setTxt('wp-months',       avgMonths);
+    setTxt('wp-award',        avgAward);
     const simSub = document.getElementById('sim-sub');
-    if (simSub) simSub.textContent = `${total.toLocaleString('en-IN')} cases analyzed · ${ob.won_pct + ob.settled_pct}% won or settled`;
+    if (simSub && total > 0) {
+      const wonSettled = (ob.won_pct || 0) + (ob.settled_pct || 0);
+      simSub.textContent = `${totalStr} cases found · ${wonSettled > 0 ? wonSettled + '% won or settled' : 'see outcomes below'}`;
+    } else if (simSub) {
+      simSub.textContent = 'Cases from similar disputes in our database';
+    }
 
     // ── Tables ──
     if (d.similar_cases?.length) {

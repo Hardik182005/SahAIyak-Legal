@@ -202,7 +202,7 @@ async def get_case(case_id: str, db: AsyncSession = Depends(get_db)):
             "lost_pct": round(lost / len(cases) * 100) if cases else 14,
         }
     stored_total = analysis.evidence_data.get("total_analyzed", 0)
-    total_analyzed = stored_total if stored_total > len(cases) else max(len(cases), 847)
+    total_analyzed = stored_total if stored_total > 0 else len(cases)
 
     from datetime import datetime, timezone as _tz
     days_active = (datetime.now(_tz.utc) - case.created_at).days if case.created_at else 0
