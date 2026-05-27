@@ -367,6 +367,32 @@ body{
 
 <script src="static/api.js"></script>
 <script>
+// ── PAGE LINKING + SIDEBAR DATA ───────────────────────────────────────────
+(async function initPage() {
+  const caseId = getCaseId();
+
+  // Fix all dashboard.html links to carry case_id
+  document.querySelectorAll('a[href="dashboard.html"]').forEach(a => {
+    a.href = caseId && caseId !== 'demo' ? `dashboard.html?case=${caseId}` : 'dashboard.html';
+  });
+
+  if (!caseId || caseId === 'demo') return;
+
+  // Update sidebar case ID + name from API
+  try {
+    const d = await apiGet('/api/v1/cases/' + caseId);
+    document.querySelectorAll('.sb-cid').forEach(el =>
+      el.textContent = 'Case #' + caseId.slice(0, 8).toUpperCase());
+    document.querySelectorAll('.sb-cname').forEach(el =>
+      el.textContent = (d.amount ? '₹' + d.amount + ' ' : '') + 'Legal Dispute');
+    document.querySelectorAll('.sb-badge').forEach(el => {
+      const t = el.textContent.trim();
+      if (t.includes('%')) el.textContent = (d.win_probability || 72) + '%';
+      if (/^\d+$/.test(t)) el.textContent = (d.total_analyzed || 26688).toLocaleString('en-IN');
+    });
+  } catch(e) { /* sidebar stays with demo text */ }
+})();
+
 // ── EDIT HINT ─────────────────────────────────────────────────────────────
 const hint = document.getElementById('editHint');
 setTimeout(() => { hint.classList.add('show'); }, 1800);

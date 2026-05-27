@@ -689,66 +689,120 @@ body{
 // ── LIVE DATA LOADER ──────────────────────────────────────────────────
 (async function loadCaseData() {
   const caseId = getCaseId();
+
+  // Wire all document.html links to carry case_id
+  document.querySelectorAll('a[href="document.html"]').forEach(a => {
+    a.href = caseId && caseId !== 'demo' ? `document.html?case=${caseId}` : 'document.html';
+  });
+
   if (!caseId || caseId === 'demo') return;
   try {
     const d = await apiGet('/api/v1/cases/' + caseId);
+    window._caseData = d;
 
-    // Win probability
-    const winTarget = d.win_probability || 72;
-    _winProbability = winTarget;
-    document.querySelectorAll('.stat-val.g').forEach(el => {
-      if (el.previousElementSibling?.textContent?.includes('Win')) el.textContent = winTarget + '%';
-    });
+    const winPct    = d.win_probability || 72;
+    const total     = d.total_analyzed  || d.similar_cases_count || 26688;
+    const ob        = d.outcome_breakdown || { won_pct: 58, settled_pct: 28, lost_pct: 14 };
+    const avgMonths = d.avg_resolution_months || '4.2';
+    const avgAward  = d.avg_award || '₹91,400';
+
+    // ── Sidebar case info ──
+    document.querySelectorAll('.sb-cid').forEach(el =>
+      el.textContent = 'Case #' + caseId.slice(0, 8).toUpperCase());
+    document.querySelectorAll('.sb-cname').forEach(el =>
+      el.textContent = (d.amount ? '₹' + d.amount + ' ' : '') + 'Legal Dispute');
+
+    // ── Sidebar badges ──
     document.querySelectorAll('.sb-badge').forEach(el => {
-      if (el.previousElementSibling?.textContent?.includes('Win') || el.closest('button')?.textContent?.includes('Win')) {
-        el.textContent = winTarget + '%';
+      const t = el.textContent.trim();
+      if (t.includes('%'))  el.textContent = winPct + '%';
+      if (/^\d+$/.test(t)) el.textContent = total.toLocaleString('en-IN');
+    });
+
+    // ── Win number (animate with real value) ──
+    _winProbability = winPct;
+    counted = false;
+    document.querySelectorAll('.win-big').forEach(el => el.textContent = winPct + '%');
+    doCount();
+
+    // ── "Based on N similar cases" ──
+    document.querySelectorAll('.win-sub').forEach(el => {
+      if (el.textContent.includes('cases'))
+        el.innerHTML = `Based on ${total.toLocaleString('en-IN')} similar<br>cases · 2015–2025`;
+    });
+
+    // ── Outcome distribution bars ──
+    document.querySelectorAll('.brow').forEach(row => {
+      const lbl   = (row.querySelector('.blbl')?.textContent || '').toLowerCase();
+      const fill  = row.querySelector('.bfill');
+      const pctEl = row.querySelector('.bpct');
+      let pct = lbl.includes('won') ? ob.won_pct
+              : lbl.includes('settled') ? ob.settled_pct
+              : lbl.includes('lost') ? ob.lost_pct : null;
+      if (pct !== null) {
+        if (fill)  { fill.dataset.w = pct; fill.style.width = pct + '%'; }
+        if (pctEl) pctEl.textContent = pct + '%';
       }
     });
 
-    // Claim amount
-    if (d.amount) {
-      document.querySelectorAll('.stat-val.w').forEach(el => {
-        if (el.previousElementSibling?.textContent?.includes('Claim')) el.textContent = d.amount;
-      });
+    // ── Win distribution description text ──
+    document.querySelectorAll('.win-r-top').forEach(el => {
+      if (el.textContent.includes('similar cases') || el.textContent.includes('847'))
+        el.innerHTML = `Outcome distribution across <strong>${total.toLocaleString('en-IN')} similar cases</strong>. Avg resolution: ${avgMonths} months. Avg award: ${avgAward}.`;
+    });
+
+    // ── Stat items (stats bar) ──
+    document.querySelectorAll('.stat-item').forEach(el => {
+      const lbl = (el.querySelector('.stat-lbl')?.textContent || '').toLowerCase();
+      const val = el.querySelector('.stat-val');
+      if (!val) return;
+      if (lbl.includes('win'))     val.textContent = winPct + '%';
+      if (lbl.includes('similar')) val.textContent = total.toLocaleString('en-IN');
+      if (lbl.includes('claim') && d.amount) val.textContent = '₹' + d.amount;
+    });
+
+    // ── Overview page header ──
+    const overviewHdr = document.querySelector('#tab-overview .page-hdr');
+    if (overviewHdr) {
+      if (d.amount) {
+        const t = overviewHdr.querySelector('.page-title');
+        if (t) t.textContent = '₹' + d.amount + ' Legal Dispute';
+      }
+      if (d.law_summary) {
+        const s = overviewHdr.querySelector('.page-sub');
+        if (s) s.textContent = d.law_summary;
+      }
     }
 
-    // Similar cases count
-    if (d.similar_cases_count) {
-      document.querySelectorAll('.stat-val.b').forEach(el => el.textContent = d.similar_cases_count.toLocaleString('en-IN'));
+    // ── Similar Cases tab heading ──
+    document.querySelectorAll('.page-sub').forEach(el => {
+      if (el.textContent.includes('cases analyzed'))
+        el.textContent = `${total.toLocaleString('en-IN')} cases analyzed · ${ob.won_pct + ob.settled_pct}% won or settled`;
+    });
+
+    // ── Evidence Coach tab ──
+    if (d.evidence_score) {
+      document.querySelectorAll('#tab-evidence .page-sub').forEach(el =>
+        el.textContent = `Evidence score: ${d.evidence_score} · ${d.coaching_tip || 'Review gaps below'}`);
     }
 
-    // Page title
-    if (d.amount) {
-      document.querySelectorAll('.page-title').forEach(el => {
-        if (el.textContent.includes('Deposit')) el.textContent = d.amount + ' Dispute';
-      });
-    }
-
-    // Render similar cases table
-    if (d.similar_cases && d.similar_cases.length) {
-      _renderSimilarCases(d.similar_cases);
-    }
-
-    // Render evidence
-    if (d.evidence_strengths || d.evidence_gaps) {
-      _renderEvidence(d.evidence_strengths || [], d.evidence_gaps || []);
-    }
-
-    // Laws in sub-heading
-    if (d.law_summary) {
-      document.querySelectorAll('.page-sub').forEach((el, i) => { if (i === 0) el.textContent = d.law_summary; });
-    }
-
-    // Forum in "Where to File"
+    // ── Where to File tab ──
     if (d.authority) {
-      const forum = d.authority.forum || '';
       document.querySelectorAll('#tab-fileat .win-r').forEach(el => {
-        const h = el.querySelector('div[style*="font-family"]');
-        if (h) h.textContent = forum;
-        const sub = el.querySelector('.win-r-top');
-        if (sub) sub.innerHTML = `${d.authority.address || ''} · Filing fee: <strong>${d.authority.filing_fee || '₹200'}</strong> · ${d.authority.jurisdiction_notes || ''}`;
+        const fEl = el.querySelector('[style*="Fraunces"]') || el.querySelector('[style*="serif"]');
+        if (fEl) fEl.innerHTML = (d.authority.forum || '').replace(' ', '<br>');
+        const top = el.querySelector('.win-r-top');
+        if (top) top.innerHTML = `${d.authority.address || ''} · Filing fee: <strong>${d.authority.filing_fee || '₹200'}</strong> · ${d.authority.jurisdiction_notes || ''}`;
       });
     }
+
+    // ── Similar cases tables (both overview + similar tab) ──
+    if (d.similar_cases?.length) _renderSimilarCases(d.similar_cases);
+
+    // ── Evidence cards ──
+    if (d.evidence_strengths?.length || d.evidence_gaps?.length)
+      _renderEvidence(d.evidence_strengths || [], d.evidence_gaps || []);
+
   } catch (e) {
     console.warn('Live data load failed, using demo data:', e.message);
   }
@@ -967,8 +1021,11 @@ async function sentryVoice() {
 }
 
 async function speakWinSummary() {
-  const pct = document.getElementById('winNum')?.textContent || '72%';
-  speakText(`Your case has a ${pct} win probability based on 847 similar cases filed in Indian consumer courts. 58% of similar cases were won outright, and 28% settled before the first hearing.`, 'en');
+  const d  = window._caseData || {};
+  const pct = document.getElementById('winNum')?.textContent || (d.win_probability || 72) + '%';
+  const total = (d.total_analyzed || 26688).toLocaleString('en-IN');
+  const ob = d.outcome_breakdown || { won_pct: 58, settled_pct: 28 };
+  speakText(`Your case has a ${pct} win probability based on ${total} similar cases. ${ob.won_pct}% of similar cases were won outright, and ${ob.settled_pct}% settled before the first hearing.`, 'en');
 }
 </script>
 <script>
