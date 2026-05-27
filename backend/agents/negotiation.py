@@ -45,22 +45,33 @@ async def negotiate_turn(
             "coach_whisper": "Do not accept less than 80% of your claim. Stay firm and cite Section 19 of the Consumer Protection Act.",
         }
 
+    # Round number is half the history length (each round = 1 user + 1 model entry)
+    round_num = len(history) // 2 + 1
+    if round_num <= 2:
+        stance = "You are in Round 1-2: be defensive, deny liability, offer 20-35% of claim max."
+    elif round_num <= 4:
+        stance = "You are in Round 3-4: soften slightly, acknowledge partial issue, offer 40-60%."
+    elif round_num <= 6:
+        stance = "You are in Round 5-6: they may threaten court. Be more conciliatory, offer 65-80%."
+    else:
+        stance = "You are in Round 7+: consider near-full settlement (85-95%) or agree with conditions."
+
     messages = []
     messages.append({
         "role": "user",
-        "parts": [{"text": _SYSTEM + f"\n\nCASE SUMMARY: {case_description[:600]}"}]
+        "parts": [{"text": _SYSTEM + f"\n\nCASE SUMMARY: {case_description[:600]}\n\nCURRENT NEGOTIATION STATE: {stance} (Round {round_num})"}]
     })
     messages.append({
         "role": "model",
-        "parts": [{"text": "Understood. I am ready to play the opponent and coach simultaneously. Please begin the simulation."}]
+        "parts": [{"text": f"Understood. I am in Round {round_num}. I will follow the negotiation dynamics for this round. Ready."}]
     })
 
-    for h in history[-10:]:
+    for h in history[-12:]:
         messages.append(h)
 
     messages.append({
         "role": "user",
-        "parts": [{"text": f"User says to opponent: {user_message}"}]
+        "parts": [{"text": f"[Round {round_num}] User says to opponent: {user_message}"}]
     })
 
     try:
