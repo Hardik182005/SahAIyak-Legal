@@ -1,9 +1,20 @@
 ﻿import random
-from openai import AsyncOpenAI
+import httpx
+import google.auth
+import google.auth.transport.requests
 from pinecone import Pinecone
 from ..config import get_settings
 
-_EMBED_MODEL = "text-embedding-3-small"   # 1536-dim, matches Pinecone index
+_EMBED_MODEL   = "text-embedding-005"
+_EMBED_DIM     = 768
+_GCP_PROJECT   = "sahaiyak"
+_VERTEX_REGION = "us-central1"
+_VERTEX_URL    = (
+    f"https://{_VERTEX_REGION}-aiplatform.googleapis.com/v1/projects/{_GCP_PROJECT}"
+    f"/locations/{_VERTEX_REGION}/publishers/google/models/{_EMBED_MODEL}:predict"
+)
+_cached_token: str = ""
+_token_expires: float = 0.0
 
 _FALLBACK_CASES = {
     "deposit": [
@@ -54,13 +65,25 @@ async def predict_win(description: str, state: str = "") -> dict:
     total = 0
     source = "fallback"
 
-    if settings.pinecone_api_key and settings.pinecone_host and settings.openai_api_key:
+    if settings.pinecone_api_key and settings.pinecone_host:
         try:
-            oai = AsyncOpenAI(api_key=settings.openai_api_key)
-            embed_resp = await oai.embeddings.create(
-                model=_EMBED_MODEL, input=description[:1000]
-            )
-            vector = embed_resp.data[0].embedding
+            import time as _time
+            global _cached_token, _token_expires
+            if _time.monotonic() >= _token_expires - 60:
+                creds, _ = google.auth.default(
+                    scopes=["https://www.googleapis.com/auth/cloud-platform"])
+                creds.refresh(google.auth.transport.requests.Request())
+                _cached_token = creds.token
+                _token_expires = _time.monotonic() + 3600
+            async with httpx.AsyncClient(timeout=30) as client:
+                resp = await client.post(
+                    _VERTEX_URL,
+                    json={"instances": [{"content": description[:1000],
+                                         "task_type": "RETRIEVAL_DOCUMENT"}]},
+                    headers={"Authorization": f"Bearer {_cached_token}"},
+                )
+                resp.raise_for_status()
+            vector = resp.json()["predictions"][0]["embeddings"]["values"]
 
             pc = Pinecone(api_key=settings.pinecone_api_key)
             index = pc.Index(host=settings.pinecone_host)
