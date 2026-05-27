@@ -1,0 +1,19 @@
+/*
+  Rupee symbol (₹ U+20B9) fallback fix.
+  JetBrains Mono and Fraunces do not include this glyph, causing random
+  system-font fallback. These @font-face rules tell the browser to render
+  only U+20B9 from Inter instead.
+*/
+@font-face{
+  font-family:'JetBrains Mono';
+  src:local('Inter'),local('Segoe UI'),local('Arial Unicode MS'),local('Helvetica Neue');
+  unicode-range:U+20B9;
+}
+@font-face{
+  font-family:'Fraunces';
+  src:local('Inter'),local('Segoe UI'),local('Arial Unicode MS'),local('Helvetica Neue');
+  unicode-range:U+20B9;
+}
+
+/* Also ensure inline rupee spans render cleanly everywhere */
+.rupee, [data-rupee]{font-family:'Inter',system-ui,sans-serif}
