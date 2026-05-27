@@ -480,9 +480,24 @@ async function sendMsg() {
   const caseId = getCaseId();
   try {
     if (caseId && caseId !== 'demo') {
-      const r = await apiPost('/api/v1/cases/' + caseId + '/drafter', { message: txt, case_id: caseId });
+      // Update the actual notice text via the notice endpoint
+      const updated = await apiPost('/api/v1/cases/' + caseId + '/notice', { message: txt });
       typing.remove();
-      addMsg(r.reply, 'ai');
+      if (updated.notice_text) {
+        // Re-render the notice live
+        const bodyEl = document.querySelector('.notice-body');
+        if (bodyEl) {
+          const paras = updated.notice_text.split('\n\n').filter(p => p.trim());
+          bodyEl.innerHTML = paras.map(p =>
+            `<p contenteditable="true">${p.replace(/\n/g, '<br>')}</p>`
+          ).join('');
+        }
+        // Update version in toolbar
+        document.querySelectorAll('.toolbar-meta').forEach(el => {
+          el.textContent = el.textContent.replace(/DRAFT.*/, `DRAFT · VERSION ${updated.version}`);
+        });
+        addMsg(`✓ Notice updated (v${updated.version}). You can see the changes on the left.`, 'ai');
+      }
     } else { throw new Error('demo'); }
   } catch {
     await new Promise(r => setTimeout(r, 1200 + Math.random() * 600));

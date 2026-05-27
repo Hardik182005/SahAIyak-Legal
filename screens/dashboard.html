@@ -1494,15 +1494,23 @@ function setTab(id, btn) {
   }
   if (btn) btn.classList.add('active');
   // Persist active tab so navigating away and back restores it
-  try { sessionStorage.setItem('dash_tab', id); } catch(e){}
-  // Update URL hash without triggering a page reload
+  // Persist tab per case so navigating between pages restores it
+  const caseId = getCaseId();
+  try { if (caseId) sessionStorage.setItem('dash_tab_' + caseId, id); } catch(e){}
   history.replaceState(null, '', location.pathname + location.search + '#' + id);
 }
 
-// Always open Overview on load
+// On load: new case → Overview; same case mid-session → restore last tab
 document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.querySelector(`.sb-item[onclick*="'overview'"]`);
-  setTab('overview', btn || document.querySelector('.sb-item'));
+  const VALID = ['overview','winprob','evidence','fileat','similar'];
+  const caseId = getCaseId();
+  let id = 'overview';
+  if (caseId) {
+    try { id = sessionStorage.getItem('dash_tab_' + caseId) || 'overview'; } catch(e){}
+    if (!VALID.includes(id)) id = 'overview';
+  }
+  const btn = document.querySelector(`.sb-item[onclick*="'${id}'"]`);
+  setTab(id, btn || document.querySelector('.sb-item'));
 });
 
 function togglePlay(id) {
