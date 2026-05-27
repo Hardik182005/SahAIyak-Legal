@@ -1,5 +1,4 @@
-"""ADR Negotiation Simulator — AI plays the opponent, Sentry coaches the user."""
-import httpx
+"""ADR Negotiation Simulator — OpenAI plays the opponent, Sentry coaches the user."""
 import logging
 from ..config import get_settings
 
@@ -8,28 +7,29 @@ logger = logging.getLogger(__name__)
 _SYSTEM = """You are running an Indian legal negotiation simulation. Play TWO roles simultaneously.
 
 ━━━ ROLE 1 — THE OPPONENT ━━━
-You are the opposing party (landlord / employer / seller / service provider). Behave like a real person in a real negotiation:
+You are the opposing party (landlord / employer / seller / service provider). Behave like a real person in a real negotiation — emotional, self-interested, but eventually reasonable under pressure.
 
-NEGOTIATION DYNAMICS — follow these rules strictly:
-• Round 1-2: Start defensive. Deny liability or offer 20–35% of the claim. Use vague excuses.
-• Round 3-4: If user cites evidence or law, show slight softening. Acknowledge "some" issue. Move offer to 40–60%.
-• Round 5-6: If user threatens Consumer Forum / Labour Court / police, take it seriously. Move to 65–80%.
-• Round 7+: If user is firm and consistent, make a near-full offer (85–95%) or propose full settlement with conditions.
-• NEVER repeat the same line from a previous turn — each response must be distinct.
-• React SPECIFICALLY to what the user just said — if they mentioned bank transfer proof, acknowledge it; if they cited a law section, respond to it.
-• Use realistic Indian language and mindset: mention "adjust kar lete hain", "let's settle this amicably", "my lawyer says", "this will take years in court", etc.
-• Be slightly emotional and human — not robotic.
+NEGOTIATION DYNAMICS:
+• Round 1-2: Defensive. Deny liability. Offer 20–35% of claim with vague excuses.
+• Round 3-4: If user cites evidence/law, soften slightly. Acknowledge "some" issue. Offer 40–60%.
+• Round 5-6: If user threatens Consumer Forum / court / police, get nervous. Offer 65–80%.
+• Round 7+: User is firm and consistent — make near-full offer 85–95% or propose full settlement with conditions.
 
-OPPONENT response: 1-3 sentences max. Be specific to the conversation.
+RULES:
+• NEVER repeat the same wording from a previous turn.
+• React SPECIFICALLY to what the user just said — mention their evidence, their legal threat, their exact words.
+• Use realistic Indian bargaining language: "adjust kar lete hain", "let's be practical", "my lawyer says this will drag for years", "I'm doing this as goodwill", "you have no proof", etc.
+• Be human — slightly defensive, emotional, not robotic.
+• Opponent response: 2-3 sentences MAX.
 
 ━━━ ROLE 2 — SENTRY COACH ━━━
-Give the user ONE sharp, specific coaching tip based on the current negotiation state. Cite Indian law (Consumer Protection Act 2019 s.2(9), s.39; Transfer of Property Act s.105; Payment of Wages Act; IPC 406/420 etc.) where relevant. Tell them exactly what leverage to use next.
+One sharp, specific coaching tip for the USER based on where the negotiation is right now.
+Cite Indian law where relevant (Consumer Protection Act 2019, Transfer of Property Act s.105, Payment of Wages Act, IPC 406/420, etc.).
+Tell them exactly what to say or do next.
 
 ━━━ OUTPUT FORMAT (exact, no deviation) ━━━
-OPPONENT: [opponent's response — specific to this turn]
-COACH: [one sharp coaching tip with legal citation if applicable]
-
-Case context will be provided. Track conversation history carefully — never repeat yourself."""
+OPPONENT: [opponent's response — specific to this turn, never repeat previous lines]
+COACH: [one sharp tip with legal citation]"""
 
 
 async def negotiate_turn(
@@ -39,66 +39,82 @@ async def negotiate_turn(
 ) -> dict:
     settings = get_settings()
 
-    if not settings.gemini_api_key:
-        return {
-            "opponent_says": "I can offer ₹20,000 as a goodwill gesture — that's my final word.",
-            "coach_whisper": "Do not accept less than 80% of your claim. Stay firm and cite Section 19 of the Consumer Protection Act.",
-        }
-
-    # Round number is half the history length (each round = 1 user + 1 model entry)
     round_num = len(history) // 2 + 1
     if round_num <= 2:
-        stance = "You are in Round 1-2: be defensive, deny liability, offer 20-35% of claim max."
+        stance = f"Round {round_num}: be defensive, deny or minimize liability, offer at most 20-35% of claim."
     elif round_num <= 4:
-        stance = "You are in Round 3-4: soften slightly, acknowledge partial issue, offer 40-60%."
+        stance = f"Round {round_num}: soften slightly, acknowledge a partial problem, offer 40-60% of claim."
     elif round_num <= 6:
-        stance = "You are in Round 5-6: they may threaten court. Be more conciliatory, offer 65-80%."
+        stance = f"Round {round_num}: they may threaten legal action — show concern, offer 65-80% of claim."
     else:
-        stance = "You are in Round 7+: consider near-full settlement (85-95%) or agree with conditions."
+        stance = f"Round {round_num}: near-full settlement (85-95%) or propose to settle fully with a condition."
 
-    messages = []
-    messages.append({
-        "role": "user",
-        "parts": [{"text": _SYSTEM + f"\n\nCASE SUMMARY: {case_description[:600]}\n\nCURRENT NEGOTIATION STATE: {stance} (Round {round_num})"}]
-    })
-    messages.append({
-        "role": "model",
-        "parts": [{"text": f"Understood. I am in Round {round_num}. I will follow the negotiation dynamics for this round. Ready."}]
-    })
+    system_prompt = (
+        _SYSTEM
+        + f"\n\nCASE SUMMARY: {case_description[:600]}"
+        + f"\n\nCURRENT ROUND INSTRUCTION: {stance}"
+    )
 
+    # Build messages in OpenAI format
+    messages = [{"role": "system", "content": system_prompt}]
     for h in history[-12:]:
-        messages.append(h)
+        # history entries use Gemini format {role, parts:[{text}]} — convert to OpenAI
+        role = h.get("role", "user")
+        if role == "model":
+            role = "assistant"
+        parts = h.get("parts", [])
+        content = parts[0].get("text", "") if parts else h.get("content", "")
+        messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": f"[Round {round_num}] User says to opponent: {user_message}"})
 
-    messages.append({
-        "role": "user",
-        "parts": [{"text": f"[Round {round_num}] User says to opponent: {user_message}"}]
-    })
+    text = ""
 
-    try:
-        async with httpx.AsyncClient(timeout=30) as client:
-            resp = await client.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={settings.gemini_api_key}",
-                json={
-                    "contents": messages,
-                    "generationConfig": {"temperature": 0.95, "maxOutputTokens": 500},
-                },
+    # Try OpenAI first
+    if settings.openai_api_key:
+        try:
+            from openai import AsyncOpenAI
+            client = AsyncOpenAI(api_key=settings.openai_api_key)
+            resp = await client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                temperature=0.95,
+                max_tokens=500,
             )
-            resp.raise_for_status()
-        text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
-    except Exception as exc:
-        logger.warning("Negotiation Gemini call failed: %s", exc)
+            text = resp.choices[0].message.content or ""
+            logger.info("Negotiation via OpenAI (round=%d)", round_num)
+        except Exception as exc:
+            logger.warning("OpenAI negotiation failed (%s), trying Groq", exc)
+
+    # Groq fallback
+    if not text and settings.groq_api_key:
+        try:
+            from groq import AsyncGroq
+            client = AsyncGroq(api_key=settings.groq_api_key)
+            resp = await client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=messages,
+                temperature=0.95,
+                max_tokens=500,
+            )
+            text = resp.choices[0].message.content or ""
+            logger.info("Negotiation via Groq fallback (round=%d)", round_num)
+        except Exception as exc:
+            logger.warning("Groq negotiation also failed: %s", exc)
+
+    if not text:
         return {
-            "opponent_says": "My final offer is ₹30,000. I suggest you reconsider before wasting both our times in court.",
-            "coach_whisper": "They are bluffing. Court costs them far more than your full claim. Hold your position.",
+            "opponent_says": "My final offer is ₹30,000. I suggest you reconsider before we both waste time in court.",
+            "coach_whisper": "They are bluffing. Court costs them far more. Hold your position and counter with full amount.",
         }
 
     opponent = ""
     coach = ""
     for line in text.splitlines():
-        if line.upper().startswith("OPPONENT:"):
-            opponent = line[9:].strip()
-        elif line.upper().startswith("COACH:"):
-            coach = line[6:].strip()
+        stripped = line.strip()
+        if stripped.upper().startswith("OPPONENT:"):
+            opponent = stripped[9:].strip()
+        elif stripped.upper().startswith("COACH:"):
+            coach = stripped[6:].strip()
 
     if not opponent:
         opponent = text.split("COACH:")[0].replace("OPPONENT:", "").strip()
