@@ -18,7 +18,7 @@ body{
 
 /* ── SIDEBAR ── */
 .sb{width:var(--sb-w);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.sb-brand{display:flex;align-items:center;gap:10px;padding:18px 14px 16px;border-bottom:1px solid var(--border)}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:18px 14px 16px;border-bottom:1px solid var(--border);text-decoration:none;cursor:pointer;}
 .sb-icon{width:28px;height:28px;background:var(--sketch);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sb-bname{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--txt);font-weight:500}
 .sb-btag{font-size:10px;color:var(--txt3);margin-top:1px}
@@ -177,10 +177,10 @@ body{
 
 <!-- ── SIDEBAR ── -->
 <aside class="sb">
-  <div class="sb-brand">
+  <a href="/" class="sb-brand">
     <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="2" stroke="white" stroke-width="1.2"/><line x1="4" y1="4.5" x2="10" y2="4.5" stroke="white" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="7" x2="10" y2="7" stroke="white" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="9.5" x2="7" y2="9.5" stroke="white" stroke-width="1" stroke-linecap="round"/></svg></div>
-    <div><div class="sb-bname">SAHAIYAK</div><div class="sb-btag">Legal Intelligence</div></div>
-  </div>
+    <div><div class="sb-bname">SahAIyak</div><div class="sb-btag">Legal Intelligence</div></div>
+  </a>
   <div class="sb-case">
     <div class="sb-cid">Case #2026-0847</div>
     <div class="sb-cname">₹80,000 Deposit Dispute</div>

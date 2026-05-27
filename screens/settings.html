@@ -19,7 +19,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);displa
 
 /* SIDEBAR — same as dashboard */
 .sb{width:var(--sb-w);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.sb-brand{display:flex;align-items:center;gap:10px;padding:18px 16px 16px;border-bottom:1px solid var(--border)}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:18px 16px 16px;border-bottom:1px solid var(--border);text-decoration:none;cursor:pointer;}
 .sb-icon{width:30px;height:30px;background:var(--sketch);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sb-bname{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--txt);font-weight:500}
 .sb-btag{font-size:10px;color:var(--txt3);margin-top:1px}
@@ -103,10 +103,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);displa
 
 <!-- SIDEBAR -->
 <aside class="sb">
-  <div class="sb-brand">
+  <a href="/" class="sb-brand">
     <div class="sb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="2" stroke="white" stroke-width="1.3"/><line x1="5" y1="5" x2="11" y2="5" stroke="white" stroke-width="1.1" stroke-linecap="round"/><line x1="5" y1="8" x2="11" y2="8" stroke="white" stroke-width="1.1" stroke-linecap="round"/><line x1="5" y1="11" x2="8" y2="11" stroke="white" stroke-width="1.1" stroke-linecap="round"/></svg></div>
-    <div><div class="sb-bname">SAHAIYAK</div><div class="sb-btag">Legal Intelligence</div></div>
-  </div>
+    <div><div class="sb-bname">SahAIyak</div><div class="sb-btag">Legal Intelligence</div></div>
+  </a>
   <nav class="sb-nav">
     <div class="sb-lbl">Navigation</div>
     <a href="dashboard.html" class="sb-item"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="7.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>Overview</a>
