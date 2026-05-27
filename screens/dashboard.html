@@ -1448,18 +1448,15 @@ async function sentryVoice() {
 
 function speakWinSummary() {
   const text = window._winSpeechText;
-  if (!text) {
-    speakBrowser('Analysis is still loading. Please wait a moment.');
-    return;
-  }
+  if (!text) { speakText('Analysis is still loading. Please wait a moment.', 'en'); return; }
   speakText(text, 'en');
 }
 
 function sentrySpeakLast() {
   const msgs = document.querySelectorAll('#sentryMsgs .ai-msg.bot');
-  if (!msgs.length) { speakBrowser('No Sentry message yet. Ask me something first.'); return; }
+  if (!msgs.length) { speakText('No Sentry message yet. Ask me something first.', 'en'); return; }
   const last = msgs[msgs.length - 1];
-  speakBrowser(last.textContent || last.innerText);
+  speakText(last.textContent || last.innerText, 'en');
 }
 </script>
 <script>

@@ -123,7 +123,13 @@ body{
   <!-- Right: Sentry coaching -->
   <div class="coach-panel">
     <div class="coach-hdr">
-      <div class="coach-hdr-title"><span class="coach-dot"></span>SENTRY COACH</div>
+      <div class="coach-hdr-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:8px"><span class="coach-dot"></span>SENTRY COACH</span>
+        <button class="coach-voice-btn" onclick="speakLastWhisper()" title="Read last tip aloud via ElevenLabs">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 3.5h2l2-2v8l-2-2H2V3.5z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M7.5 3.5c.8.6 1.3 1.5 1.3 2.5s-.5 1.9-1.3 2.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          SPEAK
+        </button>
+      </div>
       <div class="coach-sub">Real-time legal advice while you negotiate. Only visible to you.</div>
     </div>
     <div class="coach-whispers" id="whispers">
@@ -208,15 +214,23 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// Detect if text is predominantly Hindi (Devanagari block U+0900–U+097F)
+function detectLang(text) {
+  const hindiChars = (text.match(/[ऀ-ॿ]/g) || []).length;
+  return hindiChars > 2 ? 'hi' : 'en';
+}
+
+let _lastLang = 'en'; // track language of conversation
+
 async function sendMove() {
   const input = document.getElementById('negInput');
   const txt = input.value.trim();
   if (!txt) return;
+  _lastLang = detectLang(txt);
   addMsg(txt, 'you');
   input.value = '';
   addTyping();
 
-  // Build history for context
   _history.push({ role: 'user', parts: [{ text: 'User says: ' + txt }] });
 
   try {
@@ -224,6 +238,7 @@ async function sendMove() {
       message: txt,
       history: _history.slice(-10),
       description: _caseData?.description || '',
+      lang: _lastLang,
     };
     const endpt = (_caseId && _caseId !== 'demo')
       ? `/api/v1/cases/${_caseId}/negotiate`
@@ -235,7 +250,6 @@ async function sendMove() {
     if (r.history_entry) _history.push(r.history_entry);
   } catch (e) {
     document.getElementById('typing-indicator')?.remove();
-    // Offline fallback
     const fallbacks = [
       { opp: "I've already told you — I am not responsible for normal wear and tear.", coach: "They are deflecting. Ask them to provide itemized damage evidence within 15 days. No list = no deduction under Consumer Protection Act." },
       { opp: "My maximum offer is 60% of the amount. This is goodwill.", coach: "Do not accept. 60% is below your BATNA. Counter with 95% and cite Sharma v. Mehta 2022." },
@@ -245,6 +259,14 @@ async function sendMove() {
     addMsg(fb.opp, 'opp');
     addWhisper(fb.coach);
   }
+}
+
+function speakLastWhisper() {
+  const whispers = document.querySelectorAll('#whispers .whisper');
+  if (!whispers.length) { speakText('No coaching tip yet. Start negotiating first.', 'en'); return; }
+  const last = whispers[whispers.length - 1];
+  const text = last.textContent || last.innerText;
+  speakText(text.replace('👤 Sentry', '').trim(), 'en');
 }
 
 function useStrategy(btn) {

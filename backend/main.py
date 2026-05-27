@@ -299,9 +299,10 @@ async def negotiate_endpoint(case_id: str, payload: dict, db: AsyncSession = Dep
     description = case.description if case else payload.get("description", "")
     user_msg = (payload.get("message") or "").strip()
     history  = payload.get("history", [])
+    lang     = payload.get("lang", "en")
     if not user_msg:
         raise HTTPException(status_code=400, detail="message is required")
-    reply = await negotiate_turn(description, user_msg, history)
+    reply = await negotiate_turn(description, user_msg, history, lang=lang)
     return reply
 
 

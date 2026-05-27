@@ -36,6 +36,7 @@ async def negotiate_turn(
     case_description: str,
     user_message: str,
     history: list,
+    lang: str = "en",
 ) -> dict:
     settings = get_settings()
 
@@ -49,10 +50,16 @@ async def negotiate_turn(
     else:
         stance = f"Round {round_num}: near-full settlement (85-95%) or propose to settle fully with a condition."
 
+    lang_instruction = (
+        "IMPORTANT: The user is writing in Hindi. You MUST reply in Hindi for both OPPONENT and COACH."
+        if lang == "hi" else
+        "IMPORTANT: The user is writing in English. You MUST reply in English for both OPPONENT and COACH."
+    )
     system_prompt = (
         _SYSTEM
         + f"\n\nCASE SUMMARY: {case_description[:600]}"
         + f"\n\nCURRENT ROUND INSTRUCTION: {stance}"
+        + f"\n\n{lang_instruction}"
     )
 
     # Build messages in OpenAI format
