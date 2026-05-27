@@ -1498,18 +1498,11 @@ function setTab(id, btn) {
   history.replaceState(null, '', location.pathname + location.search + '#' + id);
 }
 
-function _restoreTab() {
-  const VALID = ['overview','winprob','evidence','fileat','similar'];
-  // 1. Prefer URL hash (direct link / back-navigation)
-  let id = location.hash.replace('#','');
-  // 2. Fall back to sessionStorage
-  if (!VALID.includes(id)) { try { id = sessionStorage.getItem('dash_tab') || ''; } catch(e){} }
-  if (!VALID.includes(id)) id = 'overview';
-  const btn = document.querySelector(`.sb-item[onclick*="'${id}'"]`);
-  setTab(id, btn || document.querySelector('.sb-item'));
-}
-// Restore tab on load
-document.addEventListener('DOMContentLoaded', _restoreTab);
+// Always open Overview on load
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector(`.sb-item[onclick*="'overview'"]`);
+  setTab('overview', btn || document.querySelector('.sb-item'));
+});
 
 function togglePlay(id) {
   const c = document.getElementById(id);
