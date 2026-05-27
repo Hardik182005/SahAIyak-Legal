@@ -1090,7 +1090,7 @@ body{
     _renderEvidenceCoachTab(d);
 
     // ── Legal Journey Pathway ──
-    updatePathway({ ...d, win_probability: winPct, avg_months: avgMonths ? avgMonths + ' mo' : null, avg_award: avgAward });
+    updatePathway({ ...d, win_probability: winPct, avg_months: avgMonths || null, avg_award: avgAward });
 
     // ── Where to File tab ──
     if (d.authority) {
@@ -1349,11 +1349,14 @@ function updatePathway(d) {
 
   if (d.avg_months) {
     const mEl = document.getElementById('pathwayMonths');
-    if (mEl) mEl.textContent = d.avg_months;
+    const mNum = parseFloat(d.avg_months);
+    if (mEl && !isNaN(mNum)) mEl.textContent = mNum <= 2 ? mNum + ' mo' : Math.round(mNum) + '–' + (Math.round(mNum) + 2);
   }
   if (d.avg_award) {
+    const raw = typeof d.avg_award === 'number' ? d.avg_award
+              : parseFloat(String(d.avg_award).replace(/[₹,\s]/g, '')) || 0;
     const aEl = document.getElementById('pathwayAvgAward');
-    if (aEl) aEl.textContent = '₹' + (d.avg_award >= 100000 ? Math.round(d.avg_award / 1000) + 'K' : (d.avg_award / 1000).toFixed(0) + 'K');
+    if (aEl && raw > 0) aEl.textContent = '₹' + Math.round(raw / 1000) + 'K';
   }
 
   // Derive stage from status field
@@ -1375,7 +1378,9 @@ function updatePathway(d) {
   // Re-render step states
   document.querySelectorAll('#pathwaySteps .pw-step').forEach((step, i) => {
     const checkSvg = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const activeSvgs = ['','',
+    const activeSvgs = [
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2.5" stroke="#fff" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/></svg>',
+      '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#fff" stroke-width="1.2"/><line x1="6" y1="3.5" x2="6" y2="6.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="8.2" r=".6" fill="#fff"/></svg>',
       '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2" y="1.5" width="8" height="9" rx="1" stroke="#fff" stroke-width="1.3"/><line x1="4" y1="4.5" x2="8" y2="4.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="6.5" x2="8" y2="6.5" stroke="#fff" stroke-width="1" stroke-linecap="round"/></svg>',
       '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2" width="9" height="8" rx="1" stroke="#fff" stroke-width="1.2"/><path d="M1.5 5h9" stroke="#fff" stroke-width="1.1"/><circle cx="4" cy="8" r=".7" fill="#fff"/><circle cx="6" cy="8" r=".7" fill="#fff"/></svg>',
       '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4" stroke="#fff" stroke-width="1.2"/><polyline points="4,6 5.5,7.5 8.5,4.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
