@@ -170,6 +170,11 @@ def _embed_batch_vertex(texts: list[str], task_idx: int = 0) -> list[list[float]
                 wait = min(30 * (2 ** attempt), 120) + random.randint(0, 10)
                 print(f"  [t{task_idx}] Vertex rate limit, sleeping {wait}s")
                 time.sleep(wait)
+            elif status == 401:
+                global _token_expiry
+                _token_expiry = 0.0  # force refresh on next _get_token() call
+                print(f"  [t{task_idx}] Vertex 401 — refreshing token (attempt {attempt+1})")
+                time.sleep(2)
             else:
                 print(f"  [t{task_idx}] Vertex HTTP {status}: {e.response.text[:200]}")
                 if attempt >= 2:
