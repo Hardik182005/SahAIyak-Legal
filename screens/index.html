@@ -87,28 +87,23 @@ html{scroll-behavior:smooth}
 .legal-el{position:absolute;pointer-events:none;opacity:0;will-change:transform,opacity}
 .legal-el.loaded{opacity:1}
 
-@keyframes float-a{0%,100%{transform:translateY(0px) rotate(0deg)}33%{transform:translateY(-14px) rotate(2deg)}66%{transform:translateY(-6px) rotate(-1.5deg)}}
-@keyframes float-b{0%,100%{transform:translateY(0px) rotate(0deg)}40%{transform:translateY(-10px) rotate(-2deg)}75%{transform:translateY(-18px) rotate(1deg)}}
-@keyframes float-c{0%,100%{transform:translateY(0px) rotate(0deg)}50%{transform:translateY(-20px) rotate(3deg)}}
-@keyframes float-d{0%,100%{transform:translateY(0px) rotate(0deg)}30%{transform:translateY(-8px) rotate(-3deg)}70%{transform:translateY(-16px) rotate(2deg)}}
 @keyframes drift-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-.el-scales{top:12%;left:8%;animation:float-a 7s ease-in-out 1, drift-in .8s ease forwards .5s;opacity:0}
-.el-gavel{top:18%;right:10%;animation:float-b 9s ease-in-out 1, drift-in .8s ease forwards .8s;opacity:0}
-.el-doc{bottom:22%;left:6%;animation:float-c 11s ease-in-out 1, drift-in .8s ease forwards 1s;opacity:0}
-.el-section{bottom:28%;right:8%;animation:float-d 8s ease-in-out 1, drift-in .8s ease forwards .7s;opacity:0}
-.el-stamp{top:55%;left:14%;animation:float-b 10s ease-in-out 1, drift-in .8s ease forwards 1.2s;opacity:0}
-.el-ipc{top:72%;right:14%;animation:float-a 12s ease-in-out 1, drift-in .8s ease forwards 1.4s;opacity:0}
-.el-para{top:38%;right:5%;animation:float-c 9s ease-in-out 1, drift-in .8s ease forwards .6s;opacity:0}
-.el-ring{bottom:12%;right:20%;animation:float-d 13s ease-in-out 1, drift-in .8s ease forwards 1.6s;opacity:0}
-/* new elements */
-.el-art21{top:6%;right:22%;animation:float-b 10s ease-in-out 1, drift-in .8s ease forwards 1.8s;opacity:0}
-.el-whereas{top:80%;left:2%;animation:float-a 14s ease-in-out 1, drift-in .8s ease forwards 2s;opacity:0}
-.el-order{top:30%;left:2%;animation:float-c 11s ease-in-out 1, drift-in .8s ease forwards 1.1s;opacity:0}
-.el-book{bottom:5%;left:28%;animation:float-b 8s ease-in-out 1, drift-in .8s ease forwards 1.3s;opacity:0}
-.el-env{top:62%;right:2%;animation:float-d 10s ease-in-out 1, drift-in .8s ease forwards .9s;opacity:0}
-.el-cpc{bottom:38%;left:18%;animation:float-a 9s ease-in-out 1, drift-in .8s ease forwards 1.5s;opacity:0}
-.el-const{top:48%;right:26%;animation:float-c 12s ease-in-out 1, drift-in .8s ease forwards 1.7s;opacity:0}
+.el-scales{top:12%;left:8%;animation:drift-in .8s ease forwards .5s;opacity:0}
+.el-gavel{top:18%;right:10%;animation:drift-in .8s ease forwards .8s;opacity:0}
+.el-doc{bottom:22%;left:6%;animation:drift-in .8s ease forwards 1s;opacity:0}
+.el-section{bottom:28%;right:8%;animation:drift-in .8s ease forwards .7s;opacity:0}
+.el-stamp{top:55%;left:14%;animation:drift-in .8s ease forwards 1.2s;opacity:0}
+.el-ipc{top:72%;right:14%;animation:drift-in .8s ease forwards 1.4s;opacity:0}
+.el-para{top:38%;right:5%;animation:drift-in .8s ease forwards .6s;opacity:0}
+.el-ring{bottom:12%;right:20%;animation:drift-in .8s ease forwards 1.6s;opacity:0}
+.el-art21{top:6%;right:22%;animation:drift-in .8s ease forwards 1.8s;opacity:0}
+.el-whereas{top:80%;left:2%;animation:drift-in .8s ease forwards 2s;opacity:0}
+.el-order{top:30%;left:2%;animation:drift-in .8s ease forwards 1.1s;opacity:0}
+.el-book{bottom:5%;left:28%;animation:drift-in .8s ease forwards 1.3s;opacity:0}
+.el-env{top:62%;right:2%;animation:drift-in .8s ease forwards .9s;opacity:0}
+.el-cpc{bottom:38%;left:18%;animation:drift-in .8s ease forwards 1.5s;opacity:0}
+.el-const{top:48%;right:26%;animation:drift-in .8s ease forwards 1.7s;opacity:0}
 
 /* ── NUMBERS ── */
 .nums{background:var(--ink);padding:100px 52px}
