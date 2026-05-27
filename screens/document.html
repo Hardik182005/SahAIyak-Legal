@@ -163,6 +163,17 @@ body{
 .chat-send:hover{background:#333}
 
 @media(max-width:900px){.doc-layout{grid-template-columns:1fr}.chat-panel{display:none}}
+
+/* ── PRINT / PDF STYLES ── */
+@media print{
+  html,body{overflow:visible!important;height:auto!important;background:#fff!important;background-image:none!important}
+  .sb,.toolbar,.chat-panel,.edit-hint{display:none!important}
+  .doc-main{height:auto!important}
+  .doc-layout{display:block!important}
+  .doc-panel{overflow:visible!important;padding:0!important;background:#fff!important;background-image:none!important;display:block!important}
+  .doc-page{box-shadow:none!important;max-width:100%!important;padding:20mm 20mm!important}
+  [contenteditable]{outline:none!important;background:transparent!important;box-shadow:none!important}
+}
 </style>
 <link rel="stylesheet" href="static/rupee-fix.css">
 </head>
@@ -252,8 +263,8 @@ body{
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="4" y="4" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.1"/><path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
       Copy
     </button>
-    <button class="tool-btn tool-btn-primary">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 9l2.5 2.5L11 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <button class="tool-btn tool-btn-primary" id="downloadBtn" onclick="downloadPDF()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7M3.5 5.5L6.5 8l3-2.5M2 10.5h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Download PDF
     </button>
   </div>
@@ -366,6 +377,8 @@ body{
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="static/api.js"></script>
 <script>
 // ── PAGE LINKING + SIDEBAR DATA ───────────────────────────────────────────
@@ -495,6 +508,76 @@ function copyNotice() {
     btn.innerHTML = '✓ Copied';
     setTimeout(() => { btn.innerHTML = orig; }, 2000);
   });
+}
+
+async function downloadPDF() {
+  const btn = document.getElementById('downloadBtn');
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.3" stroke-dasharray="8 8"><animateTransform attributeName="transform" type="rotate" from="0 6.5 6.5" to="360 6.5 6.5" dur="0.8s" repeatCount="indefinite"/></circle></svg> Generating...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const page = document.getElementById('docPage');
+
+    // Temporarily hide non-print elements
+    const sidebar = document.querySelector('.sb');
+    const toolbar = document.querySelector('.toolbar');
+    const chatPanel = document.querySelector('.chat-panel');
+    const editHint = document.getElementById('editHint');
+    const hidden = [];
+    [sidebar, toolbar, chatPanel, editHint].forEach(el => {
+      if (el) { hidden.push([el, el.style.display]); el.style.display = 'none'; }
+    });
+
+    // Expand page for capture
+    const docMain = document.querySelector('.doc-main');
+    const docPanel = document.querySelector('.doc-panel');
+    const prevMainStyle = docMain ? docMain.getAttribute('style') : null;
+    const prevPanelStyle = docPanel ? docPanel.getAttribute('style') : null;
+    if (docMain) { docMain.style.height = 'auto'; docMain.style.overflow = 'visible'; }
+    if (docPanel) { docPanel.style.height = 'auto'; docPanel.style.overflow = 'visible'; }
+
+    const canvas = await window.html2canvas(page, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#FFFFFF',
+      logging: false,
+    });
+
+    // Restore hidden elements
+    hidden.forEach(([el, disp]) => { el.style.display = disp; });
+    if (docMain) { if (prevMainStyle) docMain.setAttribute('style', prevMainStyle); else docMain.removeAttribute('style'); }
+    if (docPanel) { if (prevPanelStyle) docPanel.setAttribute('style', prevPanelStyle); else docPanel.removeAttribute('style'); }
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = pageW - 20;
+    const imgH = (canvas.height * imgW) / canvas.width;
+    let yPos = 10;
+    let remaining = imgH;
+
+    while (remaining > 0) {
+      pdf.addImage(imgData, 'PNG', 10, yPos, imgW, imgH);
+      remaining -= (pageH - 20);
+      if (remaining > 0) {
+        pdf.addPage();
+        yPos = 10 - (imgH - remaining);
+      }
+    }
+
+    const caseId = getCaseId();
+    pdf.save(`SahAIyak_LegalNotice_${caseId ? caseId.slice(0, 8).toUpperCase() : 'DRAFT'}.pdf`);
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    // Fallback to print dialog
+    window.print();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = orig;
+  }
 }
 </script>
 </div><!-- /doc-main -->
