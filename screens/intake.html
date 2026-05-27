@@ -238,9 +238,12 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
 
   <div class="lang-row">
     <button class="lang-pill active" onclick="setLang(this,'EN','en-IN')">EN</button>
+    <button class="lang-pill" onclick="setLang(this,'Hinglish','hi-IN')">Hinglish</button>
     <button class="lang-pill" onclick="setLang(this,'हिं','hi-IN')">हिंदी</button>
     <button class="lang-pill" onclick="setLang(this,'मरा','mr-IN')">मराठी</button>
     <button class="lang-pill" onclick="setLang(this,'தமி','ta-IN')">தமிழ்</button>
+    <button class="lang-pill" onclick="setLang(this,'తెలు','te-IN')">తెలుగు</button>
+    <button class="lang-pill" onclick="setLang(this,'ગુ','gu-IN')">ગુજરાતી</button>
     <button class="lang-pill" onclick="setLang(this,'বাং','bn-IN')">বাংলা</button>
     <button class="lang-pill" onclick="setLang(this,'ਪੰਜ','pa-IN')">ਪੰਜਾਬੀ</button>
     <button class="lang-pill" onclick="setLang(this,'ಕನ್','kn-IN')">ಕನ್ನಡ</button>
@@ -491,7 +494,15 @@ async function submitCase() {
 
   let caseId = null;
   try {
-    const langMap = { 'EN': 'EN', 'हिं': 'HI', 'मरा': 'MR' };
+    const langMap = {
+      'EN': 'EN',
+      'हिं': 'HI',
+      'मरा': 'MR',
+      'தமி': 'TA',
+      'বাং': 'BN',
+      'ਪੰਜ': 'PA',
+      'ಕನ್': 'KN'
+    };
     const result = await apiPost('/api/v1/cases', {
       description,
       state: state || 'Maharashtra',

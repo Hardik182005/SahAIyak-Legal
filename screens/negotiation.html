@@ -87,6 +87,7 @@ body{
 <div class="topbar">
   <a class="topbar-back" href="/" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--ink);text-decoration:none;font-weight:500;margin-right:8px">SahAIyak</a>
   <a class="topbar-back" id="backBtn" href="dashboard.html">← Back to Analysis</a>
+  <a class="topbar-back" id="rtiBtn" href="rti.html" style="margin-left: 16px;">📂 RTI Generator</a>
   <span class="topbar-title">Negotiation Simulator</span>
   <span class="topbar-badge">ADR PRACTICE MODE</span>
 </div>
@@ -154,8 +155,10 @@ let _caseData = null;
 (async function init() {
   _caseId = getCaseId();
   const backBtn = document.getElementById('backBtn');
+  const rtiBtn = document.getElementById('rtiBtn');
   if (_caseId && _caseId !== 'demo') {
     backBtn.href = `dashboard.html?case=${_caseId}`;
+    if (rtiBtn) rtiBtn.href = `rti.html?case=${_caseId}`;
     try {
       _caseData = await apiGet('/api/v1/cases/' + _caseId);
       // Personalise opponent label
@@ -214,10 +217,13 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Detect if text is predominantly Hindi (Devanagari block U+0900–U+097F)
+// Detect language: Devanagari → Hindi, Hindi words in Latin script → Hinglish, else English
+const _HINGLISH_WORDS = /\b(mera|meri|aapka|nahi|hai|raha|tha|kar|dena|lena|karo|bhai|yaar|hoga|kuch|baat|paisa|paise|deposit|nahi|aur|lekin|toh|kyun|kya|acha|theek|sahi|galat|abhi|kal|aaj)\b/i;
 function detectLang(text) {
   const hindiChars = (text.match(/[ऀ-ॿ]/g) || []).length;
-  return hindiChars > 2 ? 'hi' : 'en';
+  if (hindiChars > 2) return 'hi';
+  if (_HINGLISH_WORDS.test(text)) return 'hinglish';
+  return 'en';
 }
 
 let _lastLang = 'en'; // track language of conversation

@@ -28,6 +28,8 @@ from .agents.sentry import sentry_chat, drafter_chat
 from .agents.voice import speak
 from .agents.negotiation import negotiate_turn
 from .agents.ocr import analyze_document
+from .agents.rti_generator import generate_rti
+from .agents.whatsapp_bot import handle_whatsapp
 from .utils.cleanup import start_cleanup_scheduler, stop_cleanup_scheduler
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(name)s  %(message)s")
@@ -306,6 +308,33 @@ async def negotiate_endpoint(case_id: str, payload: dict, db: AsyncSession = Dep
     return reply
 
 
+@app.post("/api/v1/rti")
+async def rti_endpoint(payload: dict):
+    dept = (payload.get("department") or "").strip()
+    state = (payload.get("state") or "Central Government").strip()
+    info = (payload.get("information_needed") or "").strip()
+    name = (payload.get("applicant_name") or "The Applicant").strip()
+    lang = payload.get("language", "en")
+    if not dept or not info:
+        raise HTTPException(status_code=400, detail="department and information_needed are required")
+    result = await generate_rti(dept, state, info, name, lang)
+    return result
+
+
+@app.post("/api/v1/whatsapp")
+async def whatsapp_webhook(request: Request):
+    """Twilio WhatsApp webhook — receives incoming messages."""
+    form = await request.form()
+    from_number = str(form.get("From", "")).replace("whatsapp:", "")
+    body = str(form.get("Body", "")).strip()
+    if not from_number or not body:
+        return Response(content="", media_type="text/plain")
+    reply = await handle_whatsapp(from_number, body, _redis)
+    twiml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Response><Message>{reply}</Message></Response>"""
+    return Response(content=twiml, media_type="application/xml")
+
+
 @app.post("/api/v1/ocr")
 async def ocr_endpoint(request: Request):
     import io
@@ -374,6 +403,7 @@ _HTML_MAP = {
     "dashboard": "dashboard.html", "document": "document.html",
     "manifesto": "manifesto.html", "settings": "settings.html",
     "negotiation": "negotiation.html", "edaakhil": "edaakhil.html",
+    "rti": "rti.html",
 }
 
 @app.get("/{page_path:path}", include_in_schema=False)

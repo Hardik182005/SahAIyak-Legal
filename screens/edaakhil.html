@@ -92,23 +92,23 @@ body{background:var(--bg);color:var(--txt);display:flex;flex-direction:column;mi
     <div class="packet-section">
       <div class="sec-title">01 — Parties to the Complaint</div>
       <div class="field-row">
-        <div class="field"><div class="field-lbl">Complainant (You)</div><div class="field-val" id="pk-complainant">_______________________</div></div>
-        <div class="field"><div class="field-lbl">State</div><div class="field-val" id="pk-state">Maharashtra</div></div>
+        <div class="field"><div class="field-lbl">Complainant (You)</div><div class="field-val" id="pk-complainant" contenteditable="true">_______________________</div></div>
+        <div class="field"><div class="field-lbl">State</div><div class="field-val" id="pk-state" contenteditable="true">Maharashtra</div></div>
       </div>
       <div class="field-row">
-        <div class="field"><div class="field-lbl">Opposite Party</div><div class="field-val" id="pk-opp">Landlord / Employer / Seller (as applicable)</div></div>
-        <div class="field"><div class="field-lbl">Claim Amount</div><div class="field-val" id="pk-amount">₹ ________________</div></div>
+        <div class="field"><div class="field-lbl">Opposite Party</div><div class="field-val" id="pk-opp" contenteditable="true">Landlord / Employer / Seller (as applicable)</div></div>
+        <div class="field"><div class="field-lbl">Claim Amount</div><div class="field-val" id="pk-amount" contenteditable="true">₹ ________________</div></div>
       </div>
     </div>
 
     <!-- Section 2: Subject matter -->
     <div class="packet-section">
       <div class="sec-title">02 — Subject Matter of Complaint</div>
-      <div class="field"><div class="field-lbl">Brief Description</div><div class="field-val" style="min-height:60px;line-height:1.7" id="pk-desc">Loading...</div></div>
+      <div class="field"><div class="field-lbl">Brief Description</div><div class="field-val" style="min-height:60px;line-height:1.7" id="pk-desc" contenteditable="true">Loading...</div></div>
       <div class="field-row" style="margin-top:14px">
-        <div class="field"><div class="field-lbl">Date of Cause of Action</div><div class="field-val" id="pk-date">________________</div></div>
-        <div class="field"><div class="field-lbl">Filing Fee Enclosed</div><div class="field-val" id="pk-fee">₹200</div></div>
-        <div class="field"><div class="field-lbl">Recommended Forum</div><div class="field-val" id="pk-forum">DCDRC</div></div>
+        <div class="field"><div class="field-lbl">Date of Cause of Action</div><div class="field-val" id="pk-date" contenteditable="true">________________</div></div>
+        <div class="field"><div class="field-lbl">Filing Fee Enclosed</div><div class="field-val" id="pk-fee" contenteditable="true">₹200</div></div>
+        <div class="field"><div class="field-lbl">Recommended Forum</div><div class="field-val" id="pk-forum" contenteditable="true">DCDRC</div></div>
       </div>
     </div>
 
@@ -118,9 +118,9 @@ body{background:var(--bg);color:var(--txt);display:flex;flex-direction:column;mi
       <table class="chronology-table" id="pk-chrono">
         <thead><tr><th style="width:140px">Date</th><th>Event</th><th style="width:120px">Evidence</th></tr></thead>
         <tbody id="pk-chrono-body">
-          <tr><td id="chrono-date-1">Date of payment</td><td>Deposit / payment made to opposite party</td><td>Bank transfer / receipt</td></tr>
-          <tr><td id="chrono-date-2">Date of dispute</td><td>Opposite party refused refund / payment</td><td>WhatsApp / email</td></tr>
-          <tr><td>Today</td><td>Legal notice issued via Registered Post (AD)</td><td>Postal receipt</td></tr>
+          <tr><td id="chrono-date-1" contenteditable="true">Date of payment</td><td contenteditable="true">Deposit / payment made to opposite party</td><td contenteditable="true">Bank transfer / receipt</td></tr>
+          <tr><td id="chrono-date-2" contenteditable="true">Date of dispute</td><td contenteditable="true">Opposite party refused refund / payment</td><td contenteditable="true">WhatsApp / email</td></tr>
+          <tr><td contenteditable="true">Today</td><td contenteditable="true">Legal notice issued via Registered Post (AD)</td><td contenteditable="true">Postal receipt</td></tr>
         </tbody>
       </table>
     </div>
@@ -140,9 +140,9 @@ body{background:var(--bg);color:var(--txt);display:flex;flex-direction:column;mi
       <div class="affidavit-text">
         The Complainant most respectfully prays that this Hon'ble Commission may be pleased to:
         <br><br>
-        a) Direct the Opposite Party to refund / pay <strong id="pk-relief-amount">the full claimed amount</strong> along with <strong>12% per annum interest</strong> from the date of cause of action;<br>
-        b) Award compensation of <strong>₹25,000</strong> for mental agony, harassment, and deficiency in service;<br>
-        c) Direct the Opposite Party to pay <strong>₹10,000</strong> towards cost of legal proceedings;<br>
+        a) Direct the Opposite Party to refund / pay <strong id="pk-relief-amount" contenteditable="true">the full claimed amount</strong> along with <strong>12% per annum interest</strong> from the date of cause of action;<br>
+        b) Award compensation of <strong contenteditable="true">₹25,000</strong> for mental agony, harassment, and deficiency in service;<br>
+        c) Direct the Opposite Party to pay <strong contenteditable="true">₹10,000</strong> towards cost of legal proceedings;<br>
         d) Grant such other and further relief as this Hon'ble Commission deems fit and proper.
       </div>
     </div>
@@ -151,9 +151,9 @@ body{background:var(--bg);color:var(--txt);display:flex;flex-direction:column;mi
     <div class="packet-section">
       <div class="sec-title">06 — Verification / Affidavit</div>
       <div class="affidavit-text">
-        I, <strong id="pk-veri-name">__________________ (Complainant)</strong>, do hereby solemnly affirm and declare that the contents of the above complaint are true and correct to the best of my knowledge and belief. No material fact has been concealed.
+        I, <strong id="pk-veri-name" contenteditable="true">__________________ (Complainant)</strong>, do hereby solemnly affirm and declare that the contents of the above complaint are true and correct to the best of my knowledge and belief. No material fact has been concealed.
         <br><br>
-        Verified at <strong id="pk-veri-city">______________</strong> on this <strong>________________</strong> day of <strong>________________</strong> 2025.
+        Verified at <strong id="pk-veri-city" contenteditable="true">______________</strong> on this <strong id="pk-veri-date" contenteditable="true">________________</strong> day of <strong id="pk-veri-month" contenteditable="true">________________</strong> 2026.
       </div>
       <div class="sig-block">
         <div class="sig-line">Complainant's Signature</div>
@@ -202,10 +202,46 @@ function populatePacket(d) {
   setText('pk-state', d.state || 'Maharashtra');
   setText('pk-amount', d.amount ? '₹' + d.amount : '₹ ________________');
   setText('pk-desc', (d.description || '').slice(0, 280) + (d.description?.length > 280 ? '...' : ''));
-  setText('pk-date', d.date_started || '________________');
+  setText('pk-date', d.date_started || '10 April, 2026');
   setText('pk-fee', auth.filing_fee || '₹200');
   setText('pk-relief-amount', d.amount ? '₹' + d.amount : 'the full claimed amount');
   setText('pk-veri-city', d.state || '______________');
+
+  // Pre-populate complainant name and opposite party details based on dispute type
+  setText('pk-complainant', 'Arjun Kumar');
+  setText('pk-veri-name', 'Arjun Kumar');
+
+  const desc = (d.description || "").toLowerCase();
+  let oppType = "Opposite Party (Seller)";
+  if (desc.includes("rent") || desc.includes("deposit") || desc.includes("landlord") || desc.includes("tenant")) {
+    oppType = "Ramesh Malhotra (Landlord)";
+  } else if (desc.includes("salary") || desc.includes("wage") || desc.includes("employer") || desc.includes("unpaid")) {
+    oppType = "Acme Corp (Employer)";
+  } else {
+    oppType = "XYZ E-Commerce Private Limited (Seller)";
+  }
+  setText('pk-opp', oppType);
+
+  // Chronology date calculations
+  const dateStarted = d.date_started || '10 April, 2026';
+  setText('chrono-date-1', dateStarted);
+  let dateDispute = '12 May, 2026';
+  try {
+    const pDate = new Date(dateStarted);
+    if (!isNaN(pDate.getTime())) {
+      pDate.setDate(pDate.getDate() + 30);
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      dateDispute = pDate.toLocaleDateString('en-GB', options);
+    }
+  } catch(e) {}
+  setText('chrono-date-2', dateDispute);
+
+  // Verification dates
+  const today = new Date();
+  const optionsDay = { day: 'numeric' };
+  const optionsMonth = { month: 'long' };
+  setText('pk-veri-date', today.toLocaleDateString('en-GB', optionsDay));
+  setText('pk-veri-month', today.toLocaleDateString('en-GB', optionsMonth));
 
   // Evidence index
   const evEl = document.getElementById('pk-evidence');
@@ -218,7 +254,7 @@ function populatePacket(d) {
       { title: 'Postal Receipt + Acknowledgement Card', sub: 'Proof of delivery to opposite party' },
     ];
     [...baseEvidence, ...strengths.slice(0, 5).map((s, i) => ({
-      title: s.title || ('Evidence ' + (i + 1)),
+      title: s.title || s || ('Evidence ' + (i + 1)),
       sub: s.impact ? 'Impact: ' + s.impact : 'Supporting document',
     }))].forEach(item => {
       const row = document.createElement('div');
@@ -230,7 +266,7 @@ function populatePacket(d) {
 
   // Laws in subject matter
   if (d.laws?.length) {
-    const lawText = d.laws.slice(0, 3).map(l => l.short_name || l.name || l).join(', ');
+    const lawText = d.laws.slice(0, 3).map(l => l.short_name || l.name || l.act || l).join(', ');
     const descEl = document.getElementById('pk-desc');
     if (descEl) descEl.textContent += `\n\nApplicable laws: ${lawText}`;
   }
@@ -241,6 +277,24 @@ function showDemo() {
   document.getElementById('packetContent').style.display = '';
   document.getElementById('packetStatus').textContent = 'DEMO MODE';
   document.getElementById('packetStatus').style.color = 'var(--warn)';
+  populatePacket({
+    description: "My landlord Ramesh Malhotra is refusing to return my security deposit of ₹80,000 after flat surrender...",
+    state: "Maharashtra",
+    amount: "80,000",
+    date_started: "10 April, 2026",
+    authority: {
+      forum: "District Consumer Disputes Redressal Commission, Pune",
+      filing_fee: "₹200",
+    },
+    evidence_strengths: [
+      { title: "NEFT Transfer Receipt of ₹80,000", impact: "Direct proof of deposit payment on 11 April 2023" },
+      { title: "WhatsApp Chats with Ramesh Malhotra", sub: "Landlord acknowledging flat handover and key return" }
+    ],
+    laws: [
+      "Consumer Protection Act, 2019",
+      "Indian Contract Act, 1872"
+    ]
+  });
 }
 </script>
 </body>

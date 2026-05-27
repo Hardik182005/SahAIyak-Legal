@@ -55,6 +55,7 @@ async def analyze_case(
         evidence=ev_result,
         state=state,
         amount=amount,
+        language=language,
     )
 
     opponent_args = _build_opponent_args(anon_desc, law_result)

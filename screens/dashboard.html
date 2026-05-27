@@ -514,6 +514,11 @@ body{
       <span class="sb-badge" id="sbSimilarCount">—</span>
     </button>
 
+    <button class="sb-item" onclick="setTab('deadline',this)">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="5.5" x2="13" y2="5.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="1" x2="4" y2="4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="1" x2="10" y2="4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="4.5" cy="9" r=".9" fill="currentColor"/><circle cx="7" cy="9" r=".9" fill="currentColor"/><circle cx="9.5" cy="9" r=".9" fill="currentColor"/></svg>
+      Deadlines & Checklist
+    </button>
+
     <div class="sb-divider"></div>
     <div class="sb-lbl">Power Tools</div>
     <a href="negotiation.html" class="sb-item" id="negLink">
@@ -525,6 +530,16 @@ body{
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><line x1="4.5" y1="4.5" x2="9.5" y2="4.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="7" x2="9.5" y2="7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="9.5" x2="7" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
       e-Daakhil Packet
       <span class="sb-badge">New</span>
+    </a>
+    <a href="rti.html" class="sb-item" id="rtiLink">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12V3a1 1 0 011-1h8a1 1 0 011 1v9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="4" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="7.5" x2="10" y2="7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4" y1="10" x2="7" y2="10" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      RTI Generator
+      <span class="sb-badge">New</span>
+    </a>
+    <a href="rti.html" class="sb-item" id="rtiLink">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6h6M4 8.5h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      RTI Generator
+      <span class="sb-badge">RTI</span>
     </a>
     <div class="sb-divider"></div>
     <div class="sb-lbl">Quick Actions</div>
@@ -891,15 +906,44 @@ body{
             <div class="file-info-card"><div class="file-info-lbl">Claim Limit</div><div class="file-info-val" id="fileat-limit">Up to &#8377;50 lakh</div></div>
             <div class="file-info-card"><div class="file-info-lbl">Your Immediate Next Step</div><div class="file-info-val" id="fileat-next" style="font-size:13px">Send the legal notice first</div></div>
           </div>
+
+          <!-- Court Deadline Card -->
+          <div class="ev-card" style="margin-top: 16px; border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.01); padding: 20px 24px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6" stroke="#ef4444" stroke-width="1.2"/>
+                <path d="M8 4.5v4l2.5 1.5" stroke="#ef4444" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #ef4444; font-weight: 600;">Court Filing Limitation Period</span>
+            </div>
+            <div id="fileat-deadline-title" style="font-size: 16px; font-weight: 600; color: #0A0A0A; margin-bottom: 4px;">3 Years from Cause of Action</div>
+            <div id="fileat-deadline-desc" style="font-size: 12.5px; color: #6B6B6B; line-height: 1.5;">Under the Limitation Act, 1963, civil claims must be filed within 3 years from when the dispute first arose. Delaying beyond this limit may bar your claim entirely unless delay condonation is formally requested and accepted by the court.</div>
+          </div>
+
           <!-- Step-by-step guide -->
-          <div class="s-lbl">Step-by-Step Filing Guide</div>
-          <div class="ev-card" style="padding:4px 20px 8px">
+          <div class="s-lbl" style="margin-top: 24px;">Step-by-Step Filing Guide</div>
+          <div class="ev-card" style="padding:4px 20px 8px; margin-bottom: 24px;">
             <div class="file-steps">
               <div class="file-step"><div class="file-step-n">1</div><div class="file-step-body"><div class="file-step-title">Send the legal notice via Registered Post (AD)</div><div class="file-step-desc">Use the notice we drafted. Send via Registered Post with Acknowledgement Due. Keep the postal receipt and the acknowledgement card when it comes back — the court will ask for both. Wait 15 days for the opponent's response.</div></div></div>
               <div class="file-step"><div class="file-step-n">2</div><div class="file-step-body"><div class="file-step-title">Prepare three sets of documents</div><div class="file-step-desc">Print 3 copies of: (a) the filled Consumer Complaint Form, (b) all your evidence — WhatsApp screenshots, agreements, NEFT receipts, (c) the legal notice + postal receipt. Staple each set separately. Attach a &#8377;200 court fee stamp purchased from any post office.</div></div></div>
               <div class="file-step"><div class="file-step-n">3</div><div class="file-step-body"><div class="file-step-title">File at the District Consumer Forum counter</div><div class="file-step-desc">Visit the District Consumer Disputes Redressal Commission between 10am and 4pm on a working day. Submit your 3 sets at the filing counter. You will receive an acknowledgement slip with your unique complaint number — keep this safe.</div></div></div>
               <div class="file-step"><div class="file-step-n">4</div><div class="file-step-body"><div class="file-step-title">Attend the first hearing (usually within 21 days)</div><div class="file-step-desc">The forum issues a notice to your opponent. If they fail to appear, the forum may decide ex-parte (without them) in your favour. In deposit disputes, most opponents settle at this stage after receiving a formal notice from the court.</div></div></div>
               <div class="file-step"><div class="file-step-n">5</div><div class="file-step-body"><div class="file-step-title">Enforce the order if needed</div><div class="file-step-desc">Consumer Forum orders are enforceable like civil court decrees. If the opponent ignores the order, file an Execution Petition — the forum can direct attachment of their bank account or property. This step is rarely needed; most cases end at hearing 1 or 2.</div></div></div>
+            </div>
+          </div>
+
+          <!-- Required Documents Checklist -->
+          <div class="s-lbl" style="margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+            <span>Required Documents Checklist</span>
+            <button class="tool-btn" onclick="printChecklist()" style="padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--rule); border-radius: 4px; background: transparent; cursor: pointer; font-family: inherit; color: var(--ink); transition: all 0.2s;">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="stroke: currentColor; stroke-width: 1.2;"><path d="M3 4V1h6v3M3 8H1V5h10v3H9M3 6h6v5H3V6z" stroke="currentColor" stroke-width="1.1"/></svg>
+              Print Checklist
+            </button>
+          </div>
+          <div class="ev-card" id="checklistCard" style="padding: 24px 28px; margin-bottom: 24px;">
+            <p style="font-size: 12.5px; color: #6B6B6B; margin-bottom: 16px; line-height: 1.5;">Check off original documents and copies required before counter filing:</p>
+            <div id="checklistItems" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Populated by JS -->
             </div>
           </div>
         </div>
@@ -933,6 +977,125 @@ body{
         </div>
 
       </div>
+
+        <!-- ── DEADLINE & CHECKLIST TAB ── -->
+        <div id="tab-deadline" class="tab-pane">
+          <div class="page-hdr">
+            <div class="page-hdr-top">
+              <h1 class="page-title">Deadlines & Checklist</h1>
+            </div>
+            <p class="page-sub">Know exactly when to act and what to bring to court — calculated from your case data.</p>
+          </div>
+
+          <!-- Limitation Period Card -->
+          <div class="s-lbl">Limitation Period</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px" id="dlCards">
+            <div class="file-info-card">
+              <div class="file-info-lbl">Case Type</div>
+              <div class="file-info-val" id="dlCaseType">Consumer Dispute</div>
+            </div>
+            <div class="file-info-card" style="border-color:rgba(180,83,9,.25);background:rgba(180,83,9,.03)">
+              <div class="file-info-lbl" style="color:var(--warn)">Limitation Period</div>
+              <div class="file-info-val" id="dlLimit" style="color:var(--warn)">2 Years</div>
+            </div>
+            <div class="file-info-card" style="border-color:rgba(37,99,235,.25);background:rgba(37,99,235,.03)">
+              <div class="file-info-lbl" style="color:var(--sketch)">File Before</div>
+              <div class="file-info-val" id="dlDeadline" style="color:var(--sketch);font-size:13px">Calculate below</div>
+            </div>
+          </div>
+
+          <!-- Date Calculator -->
+          <div class="s-lbl">Calculate Your Filing Deadline</div>
+          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:20px 24px;margin-bottom:20px">
+            <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-end">
+              <div>
+                <div class="file-info-lbl">Date of Incident / Cause of Action</div>
+                <input type="date" id="dlDateInput" style="width:100%;border:1px solid var(--c-border);border-radius:6px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--c-ink);outline:none;background:var(--c-bg)" onchange="calcDeadline()">
+              </div>
+              <div>
+                <div class="file-info-lbl">Case Category</div>
+                <select id="dlCategorySelect" style="width:100%;border:1px solid var(--c-border);border-radius:6px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--c-ink);outline:none;background:var(--c-bg);cursor:pointer" onchange="calcDeadline()">
+                  <option value="consumer:2">Consumer Dispute (2 years)</option>
+                  <option value="wages:1">Unpaid Wages / Labour (1 year)</option>
+                  <option value="civil:3">Civil Suit — Money Recovery (3 years)</option>
+                  <option value="rent:3">Rent / Tenancy Dispute (3 years)</option>
+                  <option value="rera:5">RERA — Real Estate (5 years)</option>
+                  <option value="criminal:3">Criminal Complaint (3 years)</option>
+                  <option value="insurance:3">Insurance Claim Dispute (3 years)</option>
+                </select>
+              </div>
+              <button onclick="calcDeadline()" style="background:var(--c-ink);color:#fff;border:none;padding:9px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif">Calculate</button>
+            </div>
+            <div id="dlResult" style="display:none;margin-top:16px;padding:14px 16px;border-radius:6px;border:1px solid rgba(21,128,61,.2);background:rgba(21,128,61,.04)">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--success);margin-bottom:6px">Filing Deadline</div>
+              <div id="dlResultText" style="font-size:14px;font-weight:600;color:var(--c-ink)"></div>
+              <div id="dlDaysLeft" style="font-size:12px;color:var(--c-mute);margin-top:4px"></div>
+            </div>
+          </div>
+
+          <!-- Notice Timeline -->
+          <div class="s-lbl">Key Dates After Sending Notice</div>
+          <div class="file-steps" style="background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:8px 20px;margin-bottom:20px">
+            <div class="file-step">
+              <div class="file-step-n">1</div>
+              <div class="file-step-body">
+                <div class="file-step-title">Send Legal Notice via Registered Post AD</div>
+                <div class="file-step-desc">Keep the postal receipt and the returned acknowledgement card. This is your proof.</div>
+              </div>
+            </div>
+            <div class="file-step">
+              <div class="file-step-n">2</div>
+              <div class="file-step-body">
+                <div class="file-step-title">Wait 15–30 Days for Response</div>
+                <div class="file-step-desc">Most cases settle here. If no response or refusal, proceed to filing.</div>
+              </div>
+            </div>
+            <div class="file-step">
+              <div class="file-step-n">3</div>
+              <div class="file-step-body">
+                <div class="file-step-title">File Complaint at the Forum</div>
+                <div class="file-step-desc">Attach: complaint form, notice copy, postal receipt, AD card, evidence. Pay filing fee.</div>
+              </div>
+            </div>
+            <div class="file-step">
+              <div class="file-step-n">4</div>
+              <div class="file-step-body">
+                <div class="file-step-title">First Hearing (avg 30–60 days)</div>
+                <div class="file-step-desc">Appear in person or through an advocate. Bring originals of all documents.</div>
+              </div>
+            </div>
+            <div class="file-step">
+              <div class="file-step-n">5</div>
+              <div class="file-step-body">
+                <div class="file-step-title">Resolution (avg 3–5 months)</div>
+                <div class="file-step-desc">Consumer forums are bound to decide within 5 months under CP Act 2019.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Checklist -->
+          <div class="s-lbl">Document Checklist — <span id="dlForumLabel">Consumer Forum</span></div>
+          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:20px">
+            <div style="padding:12px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase">Required Documents</div>
+              <button onclick="printChecklist()" style="background:transparent;border:1px solid var(--c-border);color:var(--c-mute);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--c-ink)';this.style.color='var(--c-ink)'" onmouseout="this.style.borderColor='var(--c-border)';this.style.color='var(--c-mute)'">&#128438; Print Checklist</button>
+            </div>
+            <div id="dlChecklist" style="padding:8px 0"></div>
+          </div>
+
+          <!-- RTI Tip -->
+          <div style="background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.15);border-radius:8px;padding:16px 20px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px">
+            <div style="font-size:22px;flex-shrink:0">📋</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--c-ink);margin-bottom:4px">Need Government Records? Use RTI.</div>
+              <div style="font-size:12px;color:var(--c-mute);line-height:1.6">File an RTI to compel any government department to give you documents within 30 days. Useful for property records, complaints, licenses, etc.</div>
+              <a href="rti.html" id="rtiChipLink" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sketch);text-decoration:none">Generate RTI Application →</a>
+            </div>
+          </div>
+
+        </div>
+
+    </div>
     </div>
 
     <!-- Action bar -->
@@ -943,6 +1106,7 @@ body{
       </a>
       <a href="edaakhil.html" class="btn-act-s" id="actionEdaakhilBtn">e-DAAKHIL PACKET</a>
       <a href="negotiation.html" class="btn-act-s" id="actionNegBtn">PRACTICE NEGOTIATION</a>
+      <a href="rti.html" class="btn-act-s" id="actionRtiBtn">RTI GENERATOR</a>
       <div class="spacer"></div>
       <a href="#" class="btn-link">Get 1-on-1 Lawyer (₹499)</a>
     </div>
@@ -999,6 +1163,8 @@ body{
     if (negLink) negLink.href = `negotiation.html?case=${caseId}`;
     const edLink = document.getElementById('edaakhilLink');
     if (edLink) edLink.href = `edaakhil.html?case=${caseId}`;
+    const rtiLink = document.getElementById('rtiLink');
+    if (rtiLink) rtiLink.href = `rti.html?case=${caseId}`;
     const actionNeg = document.getElementById('actionNegBtn');
     if (actionNeg) actionNeg.href = `negotiation.html?case=${caseId}`;
     const actionEd = document.getElementById('actionEdaakhilBtn');
@@ -1109,6 +1275,62 @@ body{
       setEl('fileat-next', auth.next_step || 'Send the legal notice first');
     }
 
+    // ── Court Deadline & Document Checklist Calculations ──
+    const descText = (d.description || "").toLowerCase();
+    const deadlineTitle = document.getElementById('fileat-deadline-title');
+    const deadlineDesc = document.getElementById('fileat-deadline-desc');
+    const checklistItems = document.getElementById('checklistItems');
+
+    let deadlineVal = "3 Years from Cause of Action";
+    let deadlineInfo = "Under the Limitation Act, 1963, civil claims must be filed within 3 years from when the dispute first arose. Delaying beyond this limit may bar your claim entirely unless delay condonation is formally requested and accepted by the court.";
+    let checklist = [];
+
+    if (descText.includes("rent") || descText.includes("deposit") || descText.includes("landlord") || descText.includes("flat") || descText.includes("tenant")) {
+      deadlineVal = "3 Years from Date of Refusal / Lease Termination";
+      deadlineInfo = "Under Article 22 of the Limitation Act, 1963, suits for recovery of security deposit must be filed within 3 years from the date of lease termination, tenancy surrender, or explicit refusal to return the deposit by the landlord.";
+      checklist = [
+        { title: "Original Registered Rental / Lease Agreement", sub: "Shows the exact refundable deposit amount, notice period, and terms of tenancy." },
+        { title: "Bank Statements / Transaction Receipts of Security Deposit Payment", sub: "NEFT slips, UPI receipt, or cheque details showing clear transfer to the landlord's account." },
+        { title: "WhatsApp Chats / Email Correspondence on Vacating", sub: "Proves you gave prior notice, handed over keys, and demanded the deposit return." },
+        { title: "Legal Notice + Speed Post Receipt & Delivery Report", sub: "Indispensable proof showing you served a formal notice demanding settlement and waited 15 days." }
+      ];
+    } else if (descText.includes("salary") || descText.includes("wage") || descText.includes("employer") || descText.includes("payout") || descText.includes("unpaid")) {
+      deadlineVal = "3 Years from Accrual of Wages / Dues";
+      deadlineInfo = "Under Section 15 of the Payment of Wages Act, 1936 / Limitation Act, claims for unpaid wages must be filed within 3 years from the date they became due. Keep records of your monthly pay-days.";
+      checklist = [
+        { title: "Appointment Letter & Employment Contract", sub: "Proves employment relationship, monthly wage amount, and termination/resignation clauses." },
+        { title: "Monthly Salary Slips (Last 6 Months)", sub: "Verifies your base earnings, tax deductions, and standard monthly payouts." },
+        { title: "Bank Statements Showing Non-Credit of Salary", sub: "Shows no incoming wages for the disputed months." },
+        { title: "WhatsApp / Slack / Email Work Communication", sub: "Confirms active attendance/contribution during unpaid months and demands made." },
+        { title: "Legal Notice + Postal Receipts", sub: "Proves formal opportunity was given to the employer to settle before litigation." }
+      ];
+    } else {
+      // Default to Consumer
+      deadlineVal = "2 Years from Cause of Action";
+      deadlineInfo = "Under Section 69 of the Consumer Protection Act, 2019, you must file your complaint within 2 years from the date of the cause of action (the dispute onset/service refusal). Failing to do so makes your case inadmissible unless condonation of delay is approved.";
+      checklist = [
+        { title: "Original Purchase Invoice / Tax Bill", sub: "Verifies merchant name, purchase date, payment proof, and product/service identity." },
+        { title: "Product Warranty Card & Defect Photos/Videos", sub: "Indicates active warranty coverage and captures physical/functional flaws clearly." },
+        { title: "Customer Care Chats / Support Ticket Emails", sub: "Confirms you raised grievances immediately and they were ignored or refused." },
+        { title: "Legal Notice + Postal Dispatch & Delivery Card", sub: "Demonstrates formal legal compliance of giving 15-day pre-filing notice." }
+      ];
+    }
+
+    if (deadlineTitle) deadlineTitle.textContent = deadlineVal;
+    if (deadlineDesc) deadlineDesc.textContent = deadlineInfo;
+
+    if (checklistItems) {
+      checklistItems.innerHTML = checklist.map((item, idx) => `
+        <label style="display: flex; align-items: flex-start; gap: 12px; font-size: 13.5px; color: #0A0A0A; cursor: pointer; border-bottom: 1px solid #F0EFEA; padding-bottom: 12px;">
+          <input type="checkbox" style="margin-top: 3px; cursor: pointer;" id="chk-${idx}" />
+          <div style="margin-left: 8px;">
+            <strong style="color: #0A0A0A; font-weight: 600;">${item.title}</strong>
+            <div style="font-size: 11.5px; color: #6B6B6B; margin-top: 2px;">${item.sub}</div>
+          </div>
+        </label>
+      `).join('');
+    }
+
     // ── Similar Cases tab stats ──
     const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     const totalStr = total > 0 ? total.toLocaleString('en-IN') : '—';
@@ -1145,6 +1367,31 @@ body{
     const tip = d.coaching_tip ? ' Key tip: ' + d.coaching_tip : '';
     window._winSpeechText = `Your case has a ${winPct}% win probability. ` +
       `${ob.won_pct ?? '—'}% of similar cases were won outright. Recommended forum: ${forum}. Evidence score: ${score}.${tip}`;
+
+    // ── Wire up Deadline & Checklist tab ──
+    const fl = forum.toLowerCase();
+    const isLabour = fl.includes('labour') || fl.includes('wage');
+    const isRera   = fl.includes('rera') || fl.includes('real estate');
+    const isCivil  = fl.includes('civil') || fl.includes('district court');
+    let caseType = 'Consumer Dispute'; let limitYears = 2; let dlCat = 'consumer:2';
+    if (isLabour) { caseType = 'Labour / Wages Dispute'; limitYears = 1; dlCat = 'wages:1'; }
+    else if (isRera) { caseType = 'RERA Dispute'; limitYears = 5; dlCat = 'rera:5'; }
+    else if (isCivil) { caseType = 'Civil Suit'; limitYears = 3; dlCat = 'civil:3'; }
+    const dlCaseTypeEl = document.getElementById('dlCaseType');
+    const dlLimitEl    = document.getElementById('dlLimit');
+    const dlForumEl    = document.getElementById('dlForumLabel');
+    const dlCatSel     = document.getElementById('dlCategorySelect');
+    const dlRtiLink    = document.getElementById('rtiChipLink');
+    if (dlCaseTypeEl) dlCaseTypeEl.textContent = caseType;
+    if (dlLimitEl)    dlLimitEl.textContent = limitYears + (limitYears === 1 ? ' Year' : ' Years');
+    if (dlForumEl)    dlForumEl.textContent = forum;
+    if (dlCatSel)     dlCatSel.value = dlCat;
+    if (dlRtiLink && caseId) dlRtiLink.href = `rti.html?case=${caseId}`;
+    if (d.date_started) {
+      const dlDateEl = document.getElementById('dlDateInput');
+      if (dlDateEl) { dlDateEl.value = d.date_started; calcDeadline(); }
+    }
+    _renderChecklist(_getChecklist(forum));
 
   } catch (e) {
     console.warn('Live data load failed, using demo data:', e.message);
@@ -1461,7 +1708,7 @@ function sentrySpeakLast() {
 </script>
 <script>
 function setTab(id, btn) {
-  const VALID = ['overview','winprob','evidence','fileat','similar'];
+  const VALID = ['overview','winprob','evidence','fileat','similar','deadline'];
   if (!VALID.includes(id)) id = 'overview';
   document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
@@ -1497,9 +1744,119 @@ function setTab(id, btn) {
   history.replaceState(null, '', location.pathname + location.search + '#' + id);
 }
 
+// ── DEADLINE CALCULATOR ──────────────────────────────────────────────
+const _CHECKLISTS = {
+  consumer: [
+    {doc:'Complaint Form (3 copies)',note:'Available at forum counter or download from edaakhil.gov.in'},
+    {doc:'Affidavit (3 copies)',note:'Self-sworn, to be signed before notary at forum'},
+    {doc:'Legal Notice Copy',note:'Generated by SahAIyak — required evidence'},
+    {doc:'Postal Receipt + AD Card',note:'Proof notice was delivered to opposite party'},
+    {doc:'Proof of Payment / Purchase',note:'Bank transfer, bill, receipt — whatever applies'},
+    {doc:'WhatsApp / Email Screenshots',note:'Print and self-certify each page'},
+    {doc:'Agreement / Contract (if any)',note:'Rental agreement, purchase agreement, service contract'},
+    {doc:'Court Fee (DD or cash)',note:'₹200 for claims up to ₹5 lakh — varies by state'},
+    {doc:'ID Proof (Aadhaar / PAN)',note:'Self-attested copy'},
+  ],
+  labour: [
+    {doc:'Claim Form (Form C or D)',note:'Available at Labour Commissioner office'},
+    {doc:'Appointment Letter / Offer Letter',note:'Proof of employment relationship'},
+    {doc:'Salary Slips (last 6 months)',note:'Or bank statements showing salary credits'},
+    {doc:'Notice of Termination / Resignation',note:'If applicable'},
+    {doc:'Legal Notice Copy + Postal Proof',note:'Proof you demanded unpaid dues'},
+    {doc:'Bank Statements',note:'Showing gap in salary credits'},
+    {doc:'ID + Address Proof',note:'Aadhaar / PAN, self-attested'},
+  ],
+  civil: [
+    {doc:'Plaint (with certified copies)',note:'Drafted by advocate — sets out your claim'},
+    {doc:'Vakalatnama',note:'Authority given to your advocate — required if represented'},
+    {doc:'Affidavit in Support',note:'Sworn statement supporting the plaint'},
+    {doc:'All Documents Relied Upon',note:'Original + 2 certified copies each'},
+    {doc:'Court Fee Stamp',note:'Calculated as % of claim value'},
+    {doc:'Legal Notice + Postal Proof',note:'Evidence of pre-litigation demand'},
+  ],
+  rera: [
+    {doc:'Complaint Form (RERA portal)',note:'File online at your state RERA portal'},
+    {doc:'Builder Agreement / Allotment Letter',note:'Registered sale/allotment agreement'},
+    {doc:'Payment Receipts',note:'All instalments paid — bank transfers'},
+    {doc:'Possession Certificate / Demand Letter',note:'Builder\'s communications'},
+    {doc:'Legal Notice Copy',note:'Demand for possession / refund'},
+    {doc:'ID Proof + Address Proof',note:'Aadhaar / PAN'},
+  ],
+};
+
+function _getChecklist(forum) {
+  const fl = (forum || '').toLowerCase();
+  if (fl.includes('labour') || fl.includes('wage')) return _CHECKLISTS.labour;
+  if (fl.includes('rera') || fl.includes('real estate')) return _CHECKLISTS.rera;
+  if (fl.includes('civil') || fl.includes('district court')) return _CHECKLISTS.civil;
+  return _CHECKLISTS.consumer;
+}
+
+function _renderChecklist(items) {
+  const el = document.getElementById('dlChecklist');
+  if (!el) return;
+  el.innerHTML = items.map((item, i) => `
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:12px 20px;border-bottom:1px solid var(--c-border);cursor:pointer" onclick="toggleCheck(this)">
+      <div style="width:18px;height:18px;border:1.5px solid var(--c-border);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all .2s" class="chk-box"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500;color:var(--c-ink)">${String(i+1).padStart(2,'0')}. ${item.doc}</div>
+        <div style="font-size:11px;color:var(--c-mute);margin-top:2px">${item.note}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleCheck(row) {
+  const box = row.querySelector('.chk-box');
+  const checked = box.style.background === 'var(--success)';
+  if (checked) {
+    box.style.background = '';
+    box.style.borderColor = 'var(--c-border)';
+    box.innerHTML = '';
+    row.style.opacity = '1';
+  } else {
+    box.style.background = 'var(--success)';
+    box.style.borderColor = 'var(--success)';
+    box.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    row.style.opacity = '.5';
+  }
+}
+
+function calcDeadline() {
+  const dateVal = document.getElementById('dlDateInput')?.value;
+  const catVal  = document.getElementById('dlCategorySelect')?.value || 'consumer:2';
+  if (!dateVal) return;
+  const [,years] = catVal.split(':');
+  const incident = new Date(dateVal);
+  const deadline = new Date(incident);
+  deadline.setFullYear(deadline.getFullYear() + parseInt(years));
+  const today = new Date();
+  const daysLeft = Math.round((deadline - today) / 86400000);
+
+  const opts = {year:'numeric',month:'long',day:'numeric'};
+  document.getElementById('dlDeadline').textContent = deadline.toLocaleDateString('en-IN', opts);
+  document.getElementById('dlResult').style.display = 'block';
+  document.getElementById('dlResultText').textContent =
+    `File your case before: ${deadline.toLocaleDateString('en-IN', opts)}`;
+  const dlEl = document.getElementById('dlDaysLeft');
+  if (daysLeft < 0) {
+    dlEl.textContent = `⚠ Deadline passed ${Math.abs(daysLeft)} days ago. Consult a lawyer immediately about condonation of delay.`;
+    dlEl.style.color = 'var(--warn)';
+    document.getElementById('dlResult').style.borderColor = 'rgba(180,83,9,.3)';
+    document.getElementById('dlResult').style.background = 'rgba(180,83,9,.04)';
+  } else if (daysLeft < 90) {
+    dlEl.textContent = `⚠ Only ${daysLeft} days remaining — act urgently.`;
+    dlEl.style.color = 'var(--warn)';
+  } else {
+    dlEl.textContent = `✓ ${daysLeft} days remaining. You have time, but don't delay.`;
+    dlEl.style.color = 'var(--success)';
+  }
+}
+
+function printChecklist() { window.print(); }
+
 // On load: new case → Overview; same case mid-session → restore last tab
 document.addEventListener('DOMContentLoaded', () => {
-  const VALID = ['overview','winprob','evidence','fileat','similar'];
+  const VALID = ['overview','winprob','evidence','fileat','similar','deadline'];
   const caseId = getCaseId();
   let id = 'overview';
   if (caseId) {
@@ -1546,6 +1903,39 @@ const ro = new IntersectionObserver(entries => {
   });
 }, { threshold: .1 });
 document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+function printChecklist() {
+  const title = "SahAIyak Court Filing Documents Checklist";
+  const content = document.getElementById('checklistCard').innerHTML;
+
+  const win = window.open('', '', 'width=600,height=600');
+  win.document.write(`
+    <html>
+      <head>
+        <title>${title}</title>
+        <style>
+          body { font-family: 'Inter', sans-serif; color: #0A0A0A; padding: 40px; line-height: 1.6; }
+          h2 { font-family: 'Fraunces', serif; font-size: 24px; font-weight: normal; border-bottom: 2px solid #0A0A0A; padding-bottom: 12px; margin-bottom: 24px; }
+          p { font-size: 13px; color: #4A4A4A; }
+          label { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; margin-bottom: 16px; border-bottom: 1px solid #E8E5DE; padding-bottom: 12px; }
+          input[type="checkbox"] { margin-top: 4px; transform: scale(1.1); }
+          strong { display: block; color: #0A0A0A; }
+          div { margin-left: 8px; }
+          small { display: block; font-size: 11px; color: #6B6B6B; margin-top: 3px; }
+          button { display: none; } /* Hide print button inside check content */
+        </style>
+      </head>
+      <body>
+        <h2>${title}</h2>
+        ${content}
+        <script>
+          window.onload = function() { window.print(); window.close(); }
+        </scr` + `ipt>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
 </script>
 </body>
 </html>

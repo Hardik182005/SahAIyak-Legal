@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SahAIyak — RTI Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0A0A;--paper:#FAFAF7;--paper-pure:#FFFFFF;--rule:#E8E5DE;--mute:#6B6B6B;--soft:#9A9A9A;
+  --sketch:#2563EB;--sketch-s:#93C5FD;--success:#15803D;--warn:#B45309;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif}
+body{background:var(--paper);color:var(--ink);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOPBAR */
+.topbar{height:52px;background:var(--paper-pure);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.topbar-home{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--ink);text-decoration:none;font-weight:500;margin-right:4px}
+.topbar-back{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--mute);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.topbar-back:hover{color:var(--ink)}
+.topbar-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.topbar-badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--sketch);background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);padding:3px 10px;border-radius:100px}
+.btn-download{background:var(--ink);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;cursor:pointer;transition:background .2s;text-transform:uppercase;margin-left:12px}
+.btn-download:hover{background:#333}
+.btn-download:disabled{opacity:.4;cursor:not-allowed}
+
+/* LAYOUT */
+.arena{flex:1;display:grid;grid-template-columns:400px 1fr;overflow:hidden}
+
+/* LEFT FORM PANEL */
+.form-panel{background:var(--paper-pure);border-right:1px solid var(--rule);display:flex;flex-direction:column;overflow:hidden}
+.form-hdr{padding:24px 28px 20px;border-bottom:1px solid var(--rule);flex-shrink:0}
+.form-badge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--sketch);background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);padding:3px 10px;border-radius:100px;margin-bottom:12px}
+.form-title{font-family:'Fraunces',serif;font-size:28px;font-weight:400;letter-spacing:-0.03em;line-height:1.05;margin-bottom:6px}
+.form-sub{font-size:12px;color:var(--mute);line-height:1.6}
+.form-body{flex:1;overflow-y:auto;padding:20px 28px 28px;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.08) transparent}
+
+.form-group{margin-bottom:16px}
+.form-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:7px}
+.form-input,.form-select,.form-textarea{
+  width:100%;border:1px solid var(--rule);border-radius:8px;padding:10px 13px;
+  font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--paper);
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--ink);background:var(--paper-pure)}
+.form-textarea{min-height:110px;resize:vertical;line-height:1.6}
+.form-select{cursor:pointer}
+
+.dept-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.dept-chip{padding:5px 12px;border-radius:100px;border:1px solid var(--rule);font-size:11px;cursor:pointer;background:transparent;font-family:'Inter',sans-serif;transition:all .2s;color:var(--mute)}
+.dept-chip:hover,.dept-chip.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.lang-row{display:flex;gap:8px;margin-top:7px}
+.lang-pill{padding:5px 14px;border-radius:100px;border:1px solid var(--rule);font-size:12px;cursor:pointer;background:transparent;font-family:'Inter',sans-serif;transition:all .2s;color:var(--mute)}
+.lang-pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.btn-gen{
+  width:100%;background:var(--sketch);color:#fff;font-size:13px;font-weight:600;
+  padding:13px;border-radius:8px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:background .2s;margin-top:6px;font-family:'Inter',sans-serif;
+}
+.btn-gen:hover{background:#1d4ed8}
+.btn-gen:disabled{opacity:.5;cursor:not-allowed}
+.spinner{width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RIGHT RESULT PANEL */
+.result-panel{background:var(--paper);overflow-y:auto;padding:0;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.08) transparent}
+.result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;text-align:center;padding:48px 32px}
+.result-empty-icon{font-size:48px;margin-bottom:16px;opacity:.35}
+.result-empty-title{font-family:'Fraunces',serif;font-size:26px;font-weight:400;letter-spacing:-0.02em;color:var(--mute);margin-bottom:8px}
+.result-empty-sub{font-size:13px;color:var(--soft);max-width:280px;line-height:1.7}
+
+.result-loaded{display:none;padding:28px 32px 48px}
+
+/* Result header */
+.r-badge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:16px;background:rgba(21,128,61,.08);color:var(--success);border:1px solid rgba(21,128,61,.2)}
+
+.r-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.r-meta-card{background:var(--paper-pure);border:1px solid var(--rule);border-radius:8px;padding:12px 16px;text-align:center}
+.r-meta-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:5px}
+.r-meta-val{font-size:12px;font-weight:600;color:var(--ink);line-height:1.3}
+
+/* Application box */
+.r-section-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:10px;margin-top:0;display:flex;align-items:center;justify-content:space-between}
+.btn-copy{background:transparent;border:1px solid var(--rule);color:var(--mute);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s}
+.btn-copy:hover{border-color:var(--ink);color:var(--ink)}
+.btn-copy.copied{border-color:var(--success);color:var(--success)}
+.application-box{background:var(--paper-pure);border:1px solid var(--rule);border-radius:8px;padding:24px 28px;margin-bottom:20px;font-size:13px;line-height:2;color:var(--ink);white-space:pre-wrap;font-family:'Inter',sans-serif}
+
+/* Tips */
+.tip-row{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--paper-pure);border:1px solid var(--rule);border-radius:6px;margin-bottom:8px;font-size:12px;color:var(--ink);line-height:1.6}
+.tip-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sketch);min-width:22px;font-weight:600;flex-shrink:0}
+
+/* Followup box */
+.followup-box{background:rgba(180,83,9,.04);border:1px solid rgba(180,83,9,.2);border-radius:8px;padding:14px 18px;font-size:12px;color:var(--ink);line-height:1.7;margin-top:20px}
+.followup-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--warn);margin-bottom:7px}
+
+/* RTI info boxes */
+.info-strip{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.info-row{display:flex;align-items:flex-start;gap:10px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:11px 13px;font-size:12px;color:var(--mute);line-height:1.5}
+.info-icon{font-size:16px;flex-shrink:0}
+
+@media(max-width:768px){.arena{grid-template-columns:1fr}.form-panel{max-height:60vh}}
+@media print{.topbar,.form-panel{display:none!important}.arena{display:block}.result-panel{padding:0}}
+</style>
+<link rel="stylesheet" href="static/rupee-fix.css">
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="topbar-home">SahAIyak</a>
+  <a class="topbar-back" href="javascript:history.back()">← Back</a>
+  <span class="topbar-title">RTI Generator</span>
+  <span class="topbar-badge">RTI ACT 2005</span>
+  <button class="btn-download" id="downloadBtn" onclick="window.print()" disabled>&#128438; Print / PDF</button>
+</div>
+
+<div class="arena">
+
+  <!-- LEFT: Form -->
+  <div class="form-panel">
+    <div class="form-hdr">
+      <div class="form-badge">Right to Information</div>
+      <h1 class="form-title">RTI Application</h1>
+      <p class="form-sub">Make any government department answer you within 30 days — it's the law.</p>
+    </div>
+    <div class="form-body">
+
+      <div class="form-group">
+        <label class="form-lbl">Department / Ministry *</label>
+        <input class="form-input" id="deptInput" placeholder="e.g. Municipal Corporation, EPFO, Income Tax" oninput="syncChips()">
+        <div class="dept-chips">
+          <button class="dept-chip" onclick="pickDept(this,'Municipal Corporation')">🏛 Municipal Corp</button>
+          <button class="dept-chip" onclick="pickDept(this,'EPFO (Provident Fund)')">💼 EPFO</button>
+          <button class="dept-chip" onclick="pickDept(this,'Income Tax Department')">📊 Income Tax</button>
+          <button class="dept-chip" onclick="pickDept(this,'Police Department')">👮 Police</button>
+          <button class="dept-chip" onclick="pickDept(this,'Electricity Board')">⚡ Electricity Board</button>
+          <button class="dept-chip" onclick="pickDept(this,'Housing Board / MHADA')">🏠 Housing Board</button>
+          <button class="dept-chip" onclick="pickDept(this,'Passport Office')">🛂 Passport Office</button>
+          <button class="dept-chip" onclick="pickDept(this,'District Collector Office')">🏢 District Collector</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-lbl">State (or Central)</label>
+        <select class="form-select" id="stateSelect">
+          <option value="Central Government">Central Government</option>
+          <option>Maharashtra</option><option>Delhi</option><option>Karnataka</option>
+          <option>Tamil Nadu</option><option>Gujarat</option><option>Rajasthan</option>
+          <option>Uttar Pradesh</option><option>West Bengal</option><option>Telangana</option>
+          <option>Andhra Pradesh</option><option>Kerala</option><option>Punjab</option>
+          <option>Haryana</option><option>Madhya Pradesh</option><option>Bihar</option>
+          <option>Odisha</option><option>Assam</option><option>Jharkhand</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-lbl">What information do you need? *</label>
+        <textarea class="form-textarea" id="infoInput" placeholder="Be specific. Example:&#10;• Status of building plan approval submitted 6 months ago (file no. XYZ)&#10;• Reason for EPFO claim rejection in writing with section cited&#10;• Record of complaints filed against my employer in last 2 years"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-lbl">Your Name</label>
+        <input class="form-input" id="nameInput" placeholder="Full name (will appear in application)">
+      </div>
+
+      <div class="form-group">
+        <label class="form-lbl">Language</label>
+        <div class="lang-row">
+          <button class="lang-pill active" onclick="setLang(this,'en')">English</button>
+          <button class="lang-pill" onclick="setLang(this,'hinglish')">Hinglish</button>
+          <button class="lang-pill" onclick="setLang(this,'hi')">हिंदी</button>
+        </div>
+      </div>
+
+      <button class="btn-gen" id="genBtn" onclick="generateRTI()">
+        <span class="spinner" id="genSpinner"></span>
+        <span id="genBtnText">⚡ Generate RTI Application</span>
+      </button>
+
+      <div class="info-strip">
+        <div class="info-row"><div class="info-icon">⚖️</div>RTI Act 2005 mandates response within 30 days. No reason required. Filing fee: only ₹10.</div>
+        <div class="info-row"><div class="info-icon">📬</div>Send via Speed Post AD, or online via rtionline.gov.in for Central departments.</div>
+        <div class="info-row"><div class="info-icon">🛡️</div>If refused, file First Appeal (30 days). Then Second Appeal to State/Central Information Commission.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Result -->
+  <div class="result-panel">
+
+    <div class="result-empty" id="resultEmpty">
+      <div class="result-empty-icon">📋</div>
+      <div class="result-empty-title">Your RTI application<br>will appear here</div>
+      <div class="result-empty-sub">Fill in the department and information needed, then click Generate. Ready in under 10 seconds.</div>
+    </div>
+
+    <div class="result-loaded" id="resultLoaded">
+      <div class="r-badge">✓ RTI Application Ready</div>
+
+      <div class="r-meta">
+        <div class="r-meta-card">
+          <div class="r-meta-lbl">Filing Fee</div>
+          <div class="r-meta-val" id="resFee">₹10</div>
+        </div>
+        <div class="r-meta-card">
+          <div class="r-meta-lbl">Response Deadline</div>
+          <div class="r-meta-val" id="resDeadline">30 days</div>
+        </div>
+        <div class="r-meta-card">
+          <div class="r-meta-lbl">Address To</div>
+          <div class="r-meta-val" id="resDeptHead" style="font-size:11px">Public Information Officer</div>
+        </div>
+      </div>
+
+      <div class="r-section-lbl">
+        <span>Application Text</span>
+        <button class="btn-copy" id="copyBtn" onclick="copyApp()">Copy</button>
+      </div>
+      <div class="application-box" id="applicationText"></div>
+
+      <div class="r-section-lbl" style="margin-top:0">Filing Tips</div>
+      <div id="tipsList"></div>
+
+      <div class="followup-box">
+        <div class="followup-lbl">If they don't respond or refuse</div>
+        <div id="followupText"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="static/api.js"></script>
+<script>
+let _lang = 'en';
+
+(async function init() {
+  const caseId = getCaseId();
+  if (!caseId || caseId === 'demo') return;
+  try {
+    const d = await apiGet('/api/v1/cases/' + caseId);
+    if (d) {
+      const stateEl = document.getElementById('stateSelect');
+      if (stateEl && d.state) {
+        stateEl.value = d.state;
+      }
+      document.getElementById('nameInput').value = 'Arjun Kumar';
+
+      const desc = (d.description || '').toLowerCase();
+      let rtiDept = "Department of Labor";
+      let rtiInfo = "Status and details of all labor complaints filed against opposite party regarding non-payment of employee salaries and statutory dues. Also request standard timeline for dispute redressal.";
+
+      if (desc.includes("rent") || desc.includes("deposit") || desc.includes("landlord") || desc.includes("tenant")) {
+        rtiDept = "Local Municipal Corporation / Rent Control Authority";
+        rtiInfo = "Official record of building clearances, occupancy certificate status, and standard legal guidelines regarding recovery of tenant security deposits in case of landlord non-compliance.";
+      } else if (desc.includes("consumer") || desc.includes("product") || desc.includes("defective") || desc.includes("refund")) {
+        rtiDept = "Department of Consumer Affairs";
+        rtiInfo = "Status of regular compliance audits and customer dispute resolution records filed against the seller/company. Request the department's standard rules for e-commerce vendor registration.";
+      }
+
+      document.getElementById('deptInput').value = rtiDept;
+      document.getElementById('infoInput').value = rtiInfo;
+      syncChips();
+    }
+  } catch (e) {
+    console.warn('RTI case pre-populate failed:', e);
+  }
+})();
+
+function setLang(btn, lang) {
+  _lang = lang;
+  document.querySelectorAll('.lang-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function pickDept(btn, name) {
+  document.getElementById('deptInput').value = name;
+  document.querySelectorAll('.dept-chip').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function syncChips() {
+  const val = document.getElementById('deptInput').value.toLowerCase().trim();
+  document.querySelectorAll('.dept-chip').forEach(b => {
+    b.classList.toggle('sel', val.length > 2 && b.textContent.toLowerCase().includes(val));
+  });
+}
+
+async function generateRTI() {
+  const dept = document.getElementById('deptInput').value.trim();
+  const state = document.getElementById('stateSelect').value;
+  const info = document.getElementById('infoInput').value.trim();
+  const name = document.getElementById('nameInput').value.trim() || 'The Applicant';
+
+  if (!dept) { alert('Please enter a department name.'); return; }
+  if (info.length < 20) { alert('Please describe the information you need in more detail.'); return; }
+
+  const btn = document.getElementById('genBtn');
+  document.getElementById('genSpinner').style.display = 'block';
+  document.getElementById('genBtnText').textContent = 'Generating...';
+  btn.disabled = true;
+
+  try {
+    const res = await apiPost('/api/v1/rti', { department: dept, state, information_needed: info, applicant_name: name, language: _lang });
+
+    document.getElementById('resultEmpty').style.display = 'none';
+    const loaded = document.getElementById('resultLoaded');
+    loaded.style.display = 'block';
+
+    document.getElementById('resFee').textContent = res.fee || '₹10';
+    document.getElementById('resDeadline').textContent = res.expected_response_days || '30 days';
+    document.getElementById('resDeptHead').textContent = res.department_head || 'Public Information Officer';
+    document.getElementById('applicationText').textContent = res.application_text || '';
+    document.getElementById('followupText').textContent = res.follow_up_if_denied || '';
+
+    const tipsList = document.getElementById('tipsList');
+    tipsList.innerHTML = '';
+    (res.tips || []).forEach((tip, i) => {
+      const row = document.createElement('div');
+      row.className = 'tip-row';
+      row.innerHTML = `<span class="tip-num">${String(i+1).padStart(2,'0')}</span>${tip}`;
+      tipsList.appendChild(row);
+    });
+
+    document.getElementById('downloadBtn').disabled = false;
+    loaded.scrollIntoView({ behavior: 'smooth' });
+  } catch (e) {
+    alert('Generation failed: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('genSpinner').style.display = 'none';
+    document.getElementById('genBtnText').textContent = '⚡ Generate RTI Application';
+  }
+}
+
+function copyApp() {
+  const text = document.getElementById('applicationText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

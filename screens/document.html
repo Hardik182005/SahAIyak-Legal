@@ -217,6 +217,11 @@ body{
     </a>
     <div class="sb-divider"></div>
     <div class="sb-lbl">Actions</div>
+    <a href="rti.html" class="sb-item">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="2" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 5.5h5M4 8h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      RTI Generator
+      <span class="sb-badge">RTI</span>
+    </a>
     <a href="settings.html" class="sb-item">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2" stroke="currentColor" stroke-width="1.1"/><path d="M6.5 1v1.5M6.5 10v1.5M1 6.5h1.5M10 6.5h1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
       Settings
@@ -381,9 +386,12 @@ body{
 (async function initPage() {
   const caseId = getCaseId();
 
-  // Fix all dashboard.html links to carry case_id
+  // Fix all dashboard.html and rti.html links to carry case_id
   document.querySelectorAll('a[href="dashboard.html"]').forEach(a => {
     a.href = caseId && caseId !== 'demo' ? `dashboard.html?case=${caseId}` : 'dashboard.html';
+  });
+  document.querySelectorAll('a[href="rti.html"]').forEach(a => {
+    a.href = caseId && caseId !== 'demo' ? `rti.html?case=${caseId}` : 'rti.html';
   });
 
   if (!caseId || caseId === 'demo') return;
@@ -529,57 +537,179 @@ async function downloadPDF() {
 
   try {
     const { jsPDF } = window.jspdf;
-    const page = document.getElementById('docPage');
+    const caseId = getCaseId();
 
-    // Temporarily hide non-print elements
-    const sidebar = document.querySelector('.sb');
-    const toolbar = document.querySelector('.toolbar');
-    const chatPanel = document.querySelector('.chat-panel');
-    const editHint = document.getElementById('editHint');
-    const hidden = [];
-    [sidebar, toolbar, chatPanel, editHint].forEach(el => {
-      if (el) { hidden.push([el, el.style.display]); el.style.display = 'none'; }
+    // 1. Fetch Case Details dynamically for the Cover Sheet
+    let caseData = {
+      case_id: caseId || 'DEMO-2026',
+      state: 'Maharashtra',
+      amount: '80,000',
+      win_probability: 72,
+      days_active: 45,
+      evidence_score: '5/10',
+      coaching_tip: 'Keep rental agreement, WhatsApp chats, and speed post receipt.',
+      authority: { forum: 'District Consumer Disputes Redressal Commission' },
+      laws: [
+        { act: 'Consumer Protection Act, 2019', sections: ['Section 2(11)', 'Section 2(47)'], plain_english: 'Covers deficiency in service and unfair trade practices.' },
+        { act: 'Indian Contract Act, 1872', sections: ['Section 73'], plain_english: 'Allows recovery of deposit and compensation for breach of lease contract.' }
+      ]
+    };
+
+    if (caseId && caseId !== 'demo') {
+      try {
+        caseData = await apiGet('/api/v1/cases/' + caseId);
+      } catch (e) {
+        console.warn('API error fetching case for cover page:', e);
+      }
+    }
+
+    // 2. Classify dispute type for Limitation Period
+    const desc = (caseData.description || "").toLowerCase();
+    let deadlineText = "3 Years from Cause of Action (Limitation Act, 1963)";
+    if (desc.includes("rent") || desc.includes("deposit") || desc.includes("landlord") || desc.includes("flat") || desc.includes("tenant")) {
+      deadlineText = "3 Years from Date of Refusal / Lease Termination (Limitation Act, 1963)";
+    } else if (desc.includes("salary") || desc.includes("wage") || desc.includes("employer") || desc.includes("payout") || desc.includes("unpaid")) {
+      deadlineText = "3 Years from Accrual of Wages (Payment of Wages Act, 1936)";
+    } else if (desc.includes("consumer") || desc.includes("product") || desc.includes("defective") || desc.includes("refund") || desc.includes("warranty") || desc.includes("service")) {
+      deadlineText = "2 Years from Cause of Action (Consumer Protection Act, 2019, Sec 69)";
+    }
+
+    // 3. Construct cover sheet container off-screen
+    const coverEl = document.createElement('div');
+    coverEl.style.position = 'absolute';
+    coverEl.style.left = '-9999px';
+    coverEl.style.top = '-9999px';
+    coverEl.style.width = '800px';
+    coverEl.style.backgroundColor = '#FFFFFF';
+    coverEl.style.padding = '80px 100px';
+    coverEl.style.boxSizing = 'border-box';
+    coverEl.style.fontFamily = "'Inter', sans-serif";
+    coverEl.style.color = '#0A0A0A';
+    coverEl.innerHTML = `
+      <div style="height: 1000px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <!-- Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0A0A0A; padding-bottom: 24px; margin-bottom: 48px;">
+            <div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #6B6B6B; margin-bottom: 6px;">SAHAIYAK LEGAL INTEL</div>
+              <div style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 400; color: #0A0A0A; letter-spacing: -0.02em;">Case Intelligence Dossier</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #2563EB; font-weight: 600;">CONFIDENTIAL</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #9A9A9A; margin-top: 6px;">CASE ID: #${caseData.case_id ? caseData.case_id.slice(0, 8).toUpperCase() : 'DRAFT'}</div>
+            </div>
+          </div>
+
+          <!-- Main Grid -->
+          <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; margin-bottom: 48px;">
+            <!-- Column 1: Case Details -->
+            <div>
+              <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A9A; border-bottom: 1px solid #E8E5DE; padding-bottom: 8px; margin-bottom: 20px;">Case Metadata</h3>
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                  <div style="font-size: 11px; color: #6B6B6B; margin-bottom: 4px;">Claim Amount</div>
+                  <div style="font-size: 18px; font-weight: 600; color: #0A0A0A;">₹${caseData.amount || 'As mentioned in case'}</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: #6B6B6B; margin-bottom: 4px;">State/Jurisdiction</div>
+                  <div style="font-size: 15px; font-weight: 500; color: #0A0A0A;">${caseData.state || 'Maharashtra'}</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: #6B6B6B; margin-bottom: 4px;">Filing Forum</div>
+                  <div style="font-size: 15px; font-weight: 500; color: #0A0A0A; line-height: 1.4;">${caseData.authority?.forum || 'District Consumer Forum'}</div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: #6B6B6B; margin-bottom: 4px;">Limitation Period / Deadline</div>
+                  <div style="font-size: 15px; font-weight: 500; color: #ef4444; line-height: 1.4;">${deadlineText || '3 Years from Cause of Action'}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Metrics -->
+            <div>
+              <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A9A; border-bottom: 1px solid #E8E5DE; padding-bottom: 8px; margin-bottom: 20px;">AI Assessments</h3>
+              <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                <div style="flex: 1; border: 1px solid #E8E5DE; border-radius: 8px; padding: 16px; text-align: center;">
+                  <div style="font-size: 10px; color: #6B6B6B; margin-bottom: 6px;">Win Probability</div>
+                  <div style="font-size: 26px; font-weight: 700; color: #15803D;">${caseData.win_probability || 72}%</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #E8E5DE; border-radius: 8px; padding: 16px; text-align: center;">
+                  <div style="font-size: 10px; color: #6B6B6B; margin-bottom: 6px;">Evidence Score</div>
+                  <div style="font-size: 26px; font-weight: 700; color: #2563EB;">${caseData.evidence_score || '5/10'}</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 11px; color: #6B6B6B; margin-bottom: 6px;">Critical Recommendation</div>
+                <div style="font-size: 12px; color: #0A0A0A; line-height: 1.5; background: rgba(37,99,235,0.04); border-left: 3px solid #2563EB; padding: 10px 14px; border-radius: 0 6px 6px 0;">${caseData.coaching_tip || 'Verify all payment receipts and keep proof of notice delivery.'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Applicable Laws -->
+          <div>
+            <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #9A9A9A; border-bottom: 1px solid #E8E5DE; padding-bottom: 8px; margin-bottom: 20px;">Cited Legal Foundations</h3>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              ${(caseData.laws || []).slice(0, 3).map(law => `
+                <div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A0A0A;">${law.act} &mdash; ${Array.isArray(law.sections) ? law.sections.join(', ') : law.sections}</div>
+                  <div style="font-size: 12px; color: #6B6B6B; margin-top: 4px; line-height: 1.4;">${law.plain_english}</div>
+                </div>
+              `).join('') || `
+                <div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A0A0A;">Consumer Protection Act, 2019 &mdash; Section 2(11), Section 2(47)</div>
+                  <div style="font-size: 12px; color: #6B6B6B; margin-top: 4px; line-height: 1.4;">Covers deficiency in service and unfair trade practices, enabling consumers to seek full refund and compensation.</div>
+                </div>
+                <div>
+                  <div style="font-size: 14px; font-weight: 600; color: #0A0A0A;">Indian Contract Act, 1872 &mdash; Section 73</div>
+                  <div style="font-size: 12px; color: #6B6B6B; margin-top: 4px; line-height: 1.4;">Covers breach of contract, entitling the injured party to receive compensation for any loss or damage.</div>
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclaimer footer -->
+        <div style="border-top: 1px solid #E8E5DE; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #9A9A9A; text-transform: uppercase;">PREPARED BY SAHAIYAK CO-COUNSEL ENGINE</div>
+          <div style="font-size: 10px; color: #6B6B6B; font-style: italic;">⚖ Assisting pro-se litigants across India</div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(coverEl);
+
+    // 4. Render Cover Page Canvas
+    const coverCanvas = await window.html2canvas(coverEl, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#FFFFFF',
+      logging: false,
     });
+    document.body.removeChild(coverEl);
 
-    // Expand page for capture
-    const docMain = document.querySelector('.doc-main');
-    const docPanel = document.querySelector('.doc-panel');
-    const prevMainStyle = docMain ? docMain.getAttribute('style') : null;
-    const prevPanelStyle = docPanel ? docPanel.getAttribute('style') : null;
-    if (docMain) { docMain.style.height = 'auto'; docMain.style.overflow = 'visible'; }
-    if (docPanel) { docPanel.style.height = 'auto'; docPanel.style.overflow = 'visible'; }
-
-    const canvas = await window.html2canvas(page, {
+    // 5. Render Notice Page Canvas
+    const page = document.getElementById('docPage');
+    const noticeCanvas = await window.html2canvas(page, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#FFFFFF',
       logging: false,
     });
 
-    // Restore hidden elements
-    hidden.forEach(([el, disp]) => { el.style.display = disp; });
-    if (docMain) { if (prevMainStyle) docMain.setAttribute('style', prevMainStyle); else docMain.removeAttribute('style'); }
-    if (docPanel) { if (prevPanelStyle) docPanel.setAttribute('style', prevPanelStyle); else docPanel.removeAttribute('style'); }
-
-    const imgData = canvas.toDataURL('image/png');
+    // 6. Build Multipage PDF
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
-    const imgW = pageW - 20;
-    const imgH = (canvas.height * imgW) / canvas.width;
-    let yPos = 10;
-    let remaining = imgH;
 
-    while (remaining > 0) {
-      pdf.addImage(imgData, 'PNG', 10, yPos, imgW, imgH);
-      remaining -= (pageH - 20);
-      if (remaining > 0) {
-        pdf.addPage();
-        yPos = 10 - (imgH - remaining);
-      }
-    }
+    // Page 1: Cover Sheet
+    const coverImg = coverCanvas.toDataURL('image/png');
+    pdf.addImage(coverImg, 'PNG', 0, 0, pageW, pageH);
 
-    const caseId = getCaseId();
+    // Page 2+: Legal Notice
+    pdf.addPage();
+    const noticeImg = noticeCanvas.toDataURL('image/png');
+    pdf.addImage(noticeImg, 'PNG', 0, 0, pageW, pageH);
+
     pdf.save(`SahAIyak_LegalNotice_${caseId ? caseId.slice(0, 8).toUpperCase() : 'DRAFT'}.pdf`);
   } catch (err) {
     console.error('PDF generation failed:', err);

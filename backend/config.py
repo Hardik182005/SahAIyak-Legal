@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     data_retention_days: int = 30
     environment: str = "development"
     allowed_origins: str = "*"
+    twilio_account_sid: str = ""
+    twilio_auth_token: str = ""
+    twilio_whatsapp_number: str = ""
 
     class Config:
         env_file = ".env"

@@ -21,6 +21,30 @@ _MODIFY_SYSTEM = """You are an AI legal notice editor. Given an existing notice 
 Keep the same formal structure. Return only the updated notice text (no explanations)."""
 
 
+def _get_system_prompt_for_lang(language: str) -> str:
+    lang_insts = {
+        "HI": "Write the notice in formal Hindi using Devanagari script (देवनागरी). Ensure all legal terms are translated professionally.",
+        "MR": "Write the notice in formal Marathi using Devanagari script (देवनागरी). Ensure all legal terms are translated professionally.",
+        "TA": "Write the notice in formal Tamil using Tamil script (தமிழ்). Ensure all legal terms are translated professionally.",
+        "TE": "Write the notice in formal Telugu using Telugu script (తెలుగు). Ensure all legal terms are translated professionally.",
+        "BN": "Write the notice in formal Bengali using Bengali script (বাংলা). Ensure all legal terms are translated professionally.",
+        "KN": "Write the notice in formal Kannada using Kannada script (ಕನ್ನಡ). Ensure all legal terms are translated professionally.",
+        "PA": "Write the notice in formal Punjabi using Gurmukhi script (ਗੁਰਮੁਖੀ). Ensure all legal terms are translated professionally.",
+    }
+    lang_inst = lang_insts.get(language.upper(), "Write a professional, legally sound demand notice in formal English.")
+    return f"""You are a senior Indian advocate drafting a formal legal notice.
+{lang_inst}
+The notice must:
+- Cite specific acts and section numbers
+- State facts clearly in numbered paragraphs
+- Make specific demands with a 15-day deadline
+- Reference consequences (Consumer Forum, compensation, interest at 12% p.a.)
+- Be ready to send via registered post
+
+Format as plain text (no markdown). Use formal, professional legal language of the selected language.
+Include: FROM/TO blocks, date, REF number, salutation, facts, legal basis, demands, warning, closing, signature block."""
+
+
 async def draft_notice(
     description: str,
     laws: list,
@@ -28,6 +52,7 @@ async def draft_notice(
     evidence: dict,
     state: str = "Maharashtra",
     amount: str = "",
+    language: str = "EN",
 ) -> str:
     settings = get_settings()
     client = AsyncGroq(api_key=settings.groq_api_key)
@@ -35,6 +60,8 @@ async def draft_notice(
     today = date.today().strftime("%d %B, %Y")
     laws_str = json.dumps(laws, indent=2)
     forum = authority.get("forum", "District Consumer Disputes Redressal Commission")
+
+    system_prompt = _get_system_prompt_for_lang(language)
 
     prompt = f"""Draft a complete legal notice for this case:
 
@@ -54,7 +81,7 @@ Generate a complete, ready-to-send legal notice. Plain text only, no markdown.""
         resp = await client.chat.completions.create(
             model=_MODEL,
             messages=[
-                {"role": "system", "content": _SYSTEM},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},
             ],
             max_tokens=2048,

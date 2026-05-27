@@ -50,11 +50,12 @@ async def negotiate_turn(
     else:
         stance = f"Round {round_num}: near-full settlement (85-95%) or propose to settle fully with a condition."
 
-    lang_instruction = (
-        "IMPORTANT: The user is writing in Hindi. You MUST reply in Hindi for both OPPONENT and COACH."
-        if lang == "hi" else
-        "IMPORTANT: The user is writing in English. You MUST reply in English for both OPPONENT and COACH."
-    )
+    if lang == "hi":
+        lang_instruction = "IMPORTANT: The user is writing in Hindi (Devanagari). You MUST reply in Hindi (Devanagari script) for both OPPONENT and COACH."
+    elif lang == "hinglish":
+        lang_instruction = "IMPORTANT: The user is writing in Hinglish (Hindi in Roman script). You MUST reply in Hinglish for both OPPONENT and COACH. Example: 'Bhai, itna toh possible nahi hai. Thoda adjust karo.'"
+    else:
+        lang_instruction = "IMPORTANT: The user is writing in English. You MUST reply in English for both OPPONENT and COACH."
     system_prompt = (
         _SYSTEM
         + f"\n\nCASE SUMMARY: {case_description[:600]}"
