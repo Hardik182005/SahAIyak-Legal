@@ -14,6 +14,9 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from redis.asyncio import Redis as AIORedis
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from .config import get_settings
 from .database import init_engine, create_tables, get_db
@@ -54,7 +57,10 @@ async def lifespan(app: FastAPI):
         await _redis.close()
 
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(title="SahAIyak API", version="1.0.0", lifespan=lifespan)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 settings = get_settings()
 app.add_middleware(
@@ -99,7 +105,8 @@ async def health():
 
 
 @app.post("/api/v1/cases")
-async def create_case(payload: CaseCreate, db: AsyncSession = Depends(get_db)):
+@limiter.limit("10/minute")
+async def create_case(request: Request, payload: CaseCreate, db: AsyncSession = Depends(get_db)):
     session_id = payload.session_id or str(uuid.uuid4())
 
     case = Case(
