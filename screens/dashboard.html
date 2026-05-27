@@ -353,6 +353,94 @@ body{
 
 @media(max-width:960px){.sb{display:none}.main{width:100%}}
 @media(prefers-reduced-motion:reduce){*{transition-duration:0s!important;animation-duration:0s!important}}
+
+/* ── ASSESSMENT BANNER ── */
+.assess-banner{display:flex;align-items:center;gap:16px;background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:20px 24px;margin-bottom:20px}
+.assess-icon{font-size:28px;flex-shrink:0}
+.assess-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px}
+.assess-title{font-family:'Fraunces',serif;font-size:22px;font-weight:400;letter-spacing:-0.02em}
+.assess-sub{font-size:12px;color:var(--c-mute);margin-top:3px}
+.assess-pct{font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-0.04em;margin-left:auto;flex-shrink:0}
+.assess-banner.strong .assess-pct,.assess-banner.strong .assess-title{color:var(--success)}
+.assess-banner.strong{border-color:rgba(21,128,61,.2);background:rgba(21,128,61,.03)}
+.assess-banner.moderate .assess-pct,.assess-banner.moderate .assess-title{color:var(--sketch)}
+.assess-banner.moderate{border-color:rgba(37,99,235,.2);background:rgba(37,99,235,.03)}
+.assess-banner.borderline .assess-pct,.assess-banner.borderline .assess-title{color:var(--amber)}
+.assess-banner.borderline{border-color:rgba(180,83,9,.2);background:rgba(180,83,9,.03)}
+
+/* ── FACTOR LIST ── */
+.factor-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.factor-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--c-card);border:1px solid var(--c-border);border-radius:6px}
+.factor-impact{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;min-width:80px;flex-shrink:0}
+.factor-impact.pos{color:var(--success)}.factor-impact.neg{color:var(--amber)}
+.factor-name{font-size:13px;color:var(--c-ink);flex:1}
+.factor-fix{font-size:11px;color:var(--c-mute);margin-top:2px}
+
+/* ── EVIDENCE SCORE CARD ── */
+.ev-score-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:20px 24px;margin-bottom:20px}
+.ev-score-big{font-family:'Fraunces',serif;font-size:48px;font-weight:400;letter-spacing:-0.04em;color:var(--c-ink);line-height:1}
+.ev-score-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-soft);margin-bottom:4px}
+.ev-score-tip{font-size:13px;color:var(--c-mute);line-height:1.55;max-width:480px}
+.ev-score-bar-wrap{width:120px}
+.ev-score-track{height:4px;background:rgba(0,0,0,.07);border-radius:2px;overflow:hidden;margin-top:6px}
+.ev-score-fill{height:100%;background:var(--success);border-radius:2px;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+
+/* ── ACTION PLAN ── */
+.action-plan{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ap-row{display:flex;align-items:flex-start;gap:14px;background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:14px 16px}
+.ap-num{width:22px;height:22px;border-radius:50%;background:var(--c-ink);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ap-body{flex:1}
+.ap-title{font-size:13px;font-weight:500;color:var(--c-ink);margin-bottom:3px}
+.ap-sub{font-size:12px;color:var(--c-mute);line-height:1.5}
+.ap-badge{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--amber);margin-top:4px;display:inline-block}
+
+/* ── FILING STEPS ── */
+.file-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.file-info-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:18px 20px}
+.file-info-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-soft);margin-bottom:6px}
+.file-info-val{font-size:15px;font-weight:500;color:var(--c-ink);line-height:1.4}
+.file-steps{display:flex;flex-direction:column;gap:0;margin-bottom:20px}
+.file-step{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--c-border)}
+.file-step:last-child{border-bottom:none}
+.file-step-n{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--c-border);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;color:var(--c-mute);flex-shrink:0;margin-top:2px}
+.file-step-body{flex:1}
+.file-step-title{font-size:14px;font-weight:500;color:var(--c-ink);margin-bottom:4px}
+.file-step-desc{font-size:12px;color:var(--c-mute);line-height:1.55}
+
+/* ── SIMILAR CASES STATS ── */
+.cases-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.cs-card{background:var(--c-card);border:1px solid var(--c-border);border-radius:6px;padding:14px 16px;text-align:center}
+.cs-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:500;line-height:1}
+.cs-val.g{color:var(--success)}.cs-val.b{color:var(--sketch)}.cs-val.a{color:var(--amber)}.cs-val.w{color:var(--c-ink)}
+.cs-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--c-soft);text-transform:uppercase;margin-top:4px}
+
+/* ── OUTCOME FILTER ── */
+.outcome-filter{display:flex;gap:8px;margin-bottom:14px}
+.of-btn{padding:6px 16px;border-radius:100px;border:1px solid var(--c-border);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;cursor:pointer;background:transparent;color:var(--c-mute);transition:all .2s}
+.of-btn:hover{border-color:var(--c-ink);color:var(--c-ink)}
+.of-btn.active{background:var(--c-ink);border-color:var(--c-ink);color:#fff}
+
+/* ── FLASHCARD ANIMATIONS ── */
+.factor-row{transition:transform .2s ease,box-shadow .2s ease,border-color .2s}
+.factor-row:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);border-color:rgba(0,0,0,.14)}
+.ap-row{transition:transform .2s ease,box-shadow .2s ease,border-color .2s}
+.ap-row:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08);border-color:rgba(0,0,0,.14)}
+.cs-card{transition:transform .22s ease,box-shadow .22s ease}
+.cs-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.file-info-card{transition:transform .2s ease,box-shadow .2s ease}
+.file-info-card:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(0,0,0,.08)}
+.ev-score-card{transition:transform .2s ease,box-shadow .2s ease}
+.ev-score-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.ev-card{transition:transform .2s ease,box-shadow .2s ease}
+.ev-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.assess-banner.strong{animation:glow-strong 3s ease-in-out infinite}
+.assess-banner.moderate{animation:glow-mod 3s ease-in-out infinite}
+@keyframes glow-strong{0%,100%{box-shadow:0 0 0 rgba(21,128,61,0)}50%{box-shadow:0 0 28px rgba(21,128,61,.12)}}
+@keyframes glow-mod{0%,100%{box-shadow:0 0 0 rgba(37,99,235,0)}50%{box-shadow:0 0 28px rgba(37,99,235,.1)}}
+.file-step-n{transition:background .2s,color .2s,border-color .2s}
+.file-step:hover .file-step-n{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+@keyframes fc-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fc-anim{animation:fc-in .35s ease forwards}
 </style>
 </head>
 <body>
@@ -403,6 +491,18 @@ body{
     </button>
 
     <div class="sb-divider"></div>
+    <div class="sb-lbl">Power Tools</div>
+    <a href="negotiation.html" class="sb-item" id="negLink">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 9.5C2 7.02 4.24 5 7 5s5 2.02 5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M7 5V2M4.5 4l2.5-2 2.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Negotiate (ADR)
+      <span class="sb-badge">New</span>
+    </a>
+    <a href="edaakhil.html" class="sb-item" id="edaakhilLink">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><line x1="4.5" y1="4.5" x2="9.5" y2="4.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="7" x2="9.5" y2="7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="9.5" x2="7" y2="9.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      e-Daakhil Packet
+      <span class="sb-badge">New</span>
+    </a>
+    <div class="sb-divider"></div>
     <div class="sb-lbl">Quick Actions</div>
     <a href="settings.html" class="sb-item">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.93 2.93l1.41 1.41M9.66 9.66l1.41 1.41M2.93 11.07l1.41-1.41M9.66 4.34l1.41-1.41" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -422,7 +522,8 @@ body{
     <div class="sb-albl">Agents</div>
     <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Law Finder</div><div class="sb-aval">Done</div></div>
     <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Authority</div><div class="sb-aval">Done</div></div>
-    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Win Predictor</div><div class="sb-aval">72%</div></div>
+    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Win Predictor</div><div class="sb-aval" id="sbWinPct">72%</div></div>
+    <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Evidence Coach</div><div class="sb-aval" id="sbEvScore">5/10</div></div>
     <div class="sb-arow"><div class="dot dot-g"></div><div class="sb-aname">Notice Drafter</div><div class="sb-aval">Ready</div></div>
   </div>
   <div class="sb-ws"><div class="sb-ws-dot"></div><div class="sb-ws-txt">Analysis Complete</div></div>
@@ -503,7 +604,7 @@ body{
           <!-- Evidence breakdown -->
           <div class="s-lbl reveal">Evidence Breakdown</div>
           <div class="ev-grid reveal d1">
-            <div class="ev-card">
+            <div class="ev-card" data-ev-type="str">
               <div class="ev-card-h">
                 <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5.5" stroke="#22c55e" stroke-width="1.1" fill="none"/><polyline points="3.5,6.5 5.8,8.8 9.5,4.5" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 What Helps You
@@ -526,7 +627,7 @@ body{
               </div>
             </div>
 
-            <div class="ev-card">
+            <div class="ev-card" data-ev-type="gap">
               <div class="ev-card-h">
                 <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5.5" stroke="#f59e0b" stroke-width="1.1" fill="none"/><line x1="6.5" y1="3.5" x2="6.5" y2="7" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="9.2" r=".7" fill="#f59e0b"/></svg>
                 What Hurts You
@@ -606,29 +707,149 @@ body{
 
         </div><!-- /overview -->
 
-        <!-- Other tab panes -->
+        <!-- ── WIN PROBABILITY TAB ── -->
         <div id="tab-winprob" class="tab-pane">
-          <div class="page-hdr"><h1 class="page-title">Win Probability</h1><p class="page-sub" style="margin-top:6px">Detailed probability analysis with case citations</p></div>
-          <div class="win-card" style="grid-template-columns:200px 1fr">
-            <div class="win-l"><div class="win-cap">Probability</div><div class="win-big" style="font-size:72px">72%</div><div class="win-sub">847 cases analyzed</div></div>
-            <div class="win-r"><div class="win-r-top">Strong case. WhatsApp evidence is admissible and decisive. The primary risk is the absence of a move-out inspection report — which our legal notice demands within 15 days, effectively neutralising that argument.</div></div>
+          <div class="page-hdr">
+            <h1 class="page-title">Win Probability</h1>
+            <p class="page-sub" style="margin-top:6px">Data-driven prediction from <span id="wp-total">847</span> real Indian court judgments</p>
+          </div>
+          <!-- Assessment banner -->
+          <div class="assess-banner strong" id="assessBanner">
+            <div class="assess-icon" id="assessIcon">&#128170;</div>
+            <div>
+              <div class="assess-label" id="assessLabel">Case Assessment</div>
+              <div class="assess-title" id="assessTitle">Strong Case</div>
+              <div class="assess-sub" id="assessSub">Your evidence profile is above average. Proceed with the legal notice.</div>
+            </div>
+            <div class="assess-pct" id="wpWinNum" style="font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-0.04em;margin-left:auto;color:var(--success)">72%</div>
+          </div>
+          <!-- Outcome distribution -->
+          <div class="s-lbl">Outcome Distribution — Similar Cases</div>
+          <div class="ev-card" style="padding:24px 28px;margin-bottom:20px">
+            <div style="font-size:13px;color:#6B6B6B;line-height:1.65;margin-bottom:16px" id="wp-desc">Outcome distribution across <strong>847</strong> similar cases. Avg resolution: <strong id="wp-months">4.2</strong> months. Avg award: <strong id="wp-award">&#8377;91,400</strong>.</div>
+            <div class="bars">
+              <div class="brow"><span class="blbl">Won outright</span><div class="btrack"><div class="bfill" id="wp-bar-won" data-w="58" style="background:var(--success)"></div></div><span class="bpct" id="wp-pct-won">58%</span></div>
+              <div class="brow"><span class="blbl">Settled</span><div class="btrack"><div class="bfill" id="wp-bar-set" data-w="28" style="background:var(--sketch)"></div></div><span class="bpct" id="wp-pct-set">28%</span></div>
+              <div class="brow"><span class="blbl">Lost</span><div class="btrack"><div class="bfill" id="wp-bar-lost" data-w="14" style="background:rgba(0,0,0,.12)"></div></div><span class="bpct" id="wp-pct-lost">14%</span></div>
+            </div>
+          </div>
+          <!-- Factors driving score -->
+          <div class="s-lbl">What Is Driving Your Score</div>
+          <div class="factor-list" id="wp-factors">
+            <div class="factor-row"><span class="factor-impact pos">+35%</span><div><div class="factor-name">WhatsApp proof of deposit communication</div><div class="factor-fix">Digital evidence accepted in Consumer Forums since 2020</div></div></div>
+            <div class="factor-row"><span class="factor-impact pos">+28%</span><div><div class="factor-name">Signed rental agreement with deposit clause</div><div class="factor-fix">Written contract is the single strongest proof of obligation</div></div></div>
+            <div class="factor-row"><span class="factor-impact neg">-20%</span><div><div class="factor-name">No formal demand notice sent yet</div><div class="factor-fix">Our legal notice fixes this — send it today via registered post</div></div></div>
+            <div class="factor-row"><span class="factor-impact neg">-12%</span><div><div class="factor-name">No move-out inspection record</div><div class="factor-fix">Get a neighbour/watchman to sign a one-page condition note</div></div></div>
+          </div>
+          <!-- How to improve -->
+          <div class="s-lbl">Your Action Plan to Push Above 85%</div>
+          <div class="action-plan" id="wp-improve">
+            <div class="ap-row"><div class="ap-num">1</div><div class="ap-body"><div class="ap-title">Send the legal notice today via registered post</div><div class="ap-sub">This single action cures the biggest gap in your case. Courts treat a formal legal notice as the starting point of dispute resolution and it forces a response within 15 days.</div><div class="ap-badge">HIGHEST IMPACT</div></div></div>
+            <div class="ap-row"><div class="ap-num">2</div><div class="ap-body"><div class="ap-title">Obtain a move-out inspection note signed by a witness</div><div class="ap-sub">Ask a neighbour or building watchman to sign a statement that the flat was returned in good condition. Even a WhatsApp message from them helps.</div><div class="ap-badge">+12% IF OBTAINED</div></div></div>
+            <div class="ap-row"><div class="ap-num">3</div><div class="ap-body"><div class="ap-title">File a police NCR (optional but powerful)</div><div class="ap-sub">Filing an NCR at your local police station signals seriousness to the opponent and can speed up pre-court settlement. It costs nothing.</div><div class="ap-badge">OPTIONAL +8%</div></div></div>
           </div>
         </div>
+
+        <!-- ── EVIDENCE COACH TAB ── -->
         <div id="tab-evidence" class="tab-pane">
-          <div class="page-hdr"><h1 class="page-title">Evidence Coach</h1><p class="page-sub" style="margin-top:6px">4 of 6 evidence items complete · 2 gaps identified</p></div>
-          <div class="ev-grid" style="margin-top:16px"><div class="ev-card" style="grid-column:1/-1"><div class="ev-card-h">Evidence Checklist</div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">WhatsApp messages (deposit communication)</div><div class="ev-badge pos">COMPLETE · +35%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Signed rental agreement</div><div class="ev-badge pos">COMPLETE · +28%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Bank NEFT transfer proof</div><div class="ev-badge pos">COMPLETE · +22%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Landlord acknowledgement of vacate date</div><div class="ev-badge pos">COMPLETE · +18%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Move-out inspection report</div><div class="ev-sub">→ Get a witness to sign a condition report now</div><div class="ev-badge neg">MISSING · −12%</div></div></div><div class="ev-row"><svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg><div class="ev-txt"><div class="ev-title">Police complaint (optional)</div><div class="ev-sub">→ Strengthens urgency; not required</div><div class="ev-badge neg">OPTIONAL · −8%</div></div></div></div></div>
+          <div class="page-hdr">
+            <h1 class="page-title">Evidence Coach</h1>
+            <p class="page-sub" id="ec-sub" style="margin-top:6px">Scoring your evidence and identifying critical gaps</p>
+          </div>
+          <!-- Score header -->
+          <div class="ev-score-card">
+            <div>
+              <div class="ev-score-lbl">Evidence Score</div>
+              <div class="ev-score-big" id="ec-score">5/10</div>
+            </div>
+            <div>
+              <div class="ev-score-lbl">AI Coaching Tip</div>
+              <div class="ev-score-tip" id="ec-tip">Send the legal notice immediately via registered post to establish a formal demand on record.</div>
+            </div>
+            <div class="ev-score-bar-wrap">
+              <div class="ev-score-lbl">Strength</div>
+              <div class="ev-score-track"><div class="ev-score-fill" id="ec-fill" style="width:50%"></div></div>
+            </div>
+          </div>
+          <!-- Evidence grid — same live data as overview -->
+          <div class="ev-grid">
+            <div class="ev-card" data-ev-type="str">
+              <div class="ev-card-h">
+                <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5.5" stroke="#22c55e" stroke-width="1.1" fill="none"/><polyline points="3.5,6.5 5.8,8.8 9.5,4.5" fill="none" stroke="#22c55e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                What Helps You
+              </div>
+            </div>
+            <div class="ev-card" data-ev-type="gap">
+              <div class="ev-card-h">
+                <svg width="13" height="13" viewBox="0 0 13 13"><circle cx="6.5" cy="6.5" r="5.5" stroke="#f59e0b" stroke-width="1.1" fill="none"/><line x1="6.5" y1="3.5" x2="6.5" y2="7" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/><circle cx="6.5" cy="9.2" r=".7" fill="#f59e0b"/></svg>
+                What Hurts You
+              </div>
+            </div>
+          </div>
+          <!-- Action plan -->
+          <div class="s-lbl" style="margin-top:24px">Evidence Action Plan</div>
+          <div class="action-plan" id="ec-action-plan">
+            <div class="ap-row"><div class="ap-num">1</div><div class="ap-body"><div class="ap-title">Send the legal notice (cures biggest gap immediately)</div><div class="ap-sub">Establishes a formal demand record. Courts require evidence you attempted resolution before filing a complaint.</div><div class="ap-badge">SEND TODAY</div></div></div>
+          </div>
         </div>
+
+        <!-- ── WHERE TO FILE TAB ── -->
         <div id="tab-fileat" class="tab-pane">
-          <div class="page-hdr"><h1 class="page-title">Where to File</h1><p class="page-sub" style="margin-top:6px">Recommended forum based on your location and claim amount</p></div>
-          <div class="win-card" style="grid-template-columns:1fr;margin-top:16px"><div class="win-r"><div class="win-cap">Recommended Forum</div><div style="font-family:'Fraunces',serif;font-size:32px;font-weight:400;color:var(--txt);margin:10px 0 6px;letter-spacing:-0.02em">District Consumer Disputes<br>Redressal Commission</div><div class="win-r-top">Mumbai Suburban District · Filing fee: <strong>₹200</strong> · Claim limit: up to ₹50 lakh · Avg resolution: 4–6 months</div></div></div>
+          <div class="page-hdr">
+            <h1 class="page-title">Where to File</h1>
+            <p class="page-sub" style="margin-top:6px">Recommended forum based on your state, claim amount, and case type</p>
+          </div>
+          <!-- Forum name -->
+          <div class="ev-card" style="margin-bottom:16px;padding:24px 28px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#9A9A9A;margin-bottom:8px">Recommended Forum</div>
+            <div id="fileat-forum" style="font-family:'Fraunces',serif;font-size:clamp(22px,2.5vw,34px);font-weight:400;color:#0A0A0A;letter-spacing:-0.03em;line-height:1.15;margin-bottom:12px">District Consumer Disputes<br>Redressal Commission</div>
+            <div id="fileat-address" style="font-size:13px;color:#6B6B6B;line-height:1.65">Your district headquarters. Contact the District Collector's office for the exact address.</div>
+          </div>
+          <!-- Info grid -->
+          <div class="file-info-grid">
+            <div class="file-info-card"><div class="file-info-lbl">Filing Fee</div><div class="file-info-val" id="fileat-fee">&#8377;200</div></div>
+            <div class="file-info-card"><div class="file-info-lbl">Avg. Resolution Time</div><div class="file-info-val" id="fileat-res">4 – 6 months</div></div>
+            <div class="file-info-card"><div class="file-info-lbl">Claim Limit</div><div class="file-info-val" id="fileat-limit">Up to &#8377;50 lakh</div></div>
+            <div class="file-info-card"><div class="file-info-lbl">Your Immediate Next Step</div><div class="file-info-val" id="fileat-next" style="font-size:13px">Send the legal notice first</div></div>
+          </div>
+          <!-- Step-by-step guide -->
+          <div class="s-lbl">Step-by-Step Filing Guide</div>
+          <div class="ev-card" style="padding:4px 20px 8px">
+            <div class="file-steps">
+              <div class="file-step"><div class="file-step-n">1</div><div class="file-step-body"><div class="file-step-title">Send the legal notice via Registered Post (AD)</div><div class="file-step-desc">Use the notice we drafted. Send via Registered Post with Acknowledgement Due. Keep the postal receipt and the acknowledgement card when it comes back — the court will ask for both. Wait 15 days for the opponent's response.</div></div></div>
+              <div class="file-step"><div class="file-step-n">2</div><div class="file-step-body"><div class="file-step-title">Prepare three sets of documents</div><div class="file-step-desc">Print 3 copies of: (a) the filled Consumer Complaint Form, (b) all your evidence — WhatsApp screenshots, agreements, NEFT receipts, (c) the legal notice + postal receipt. Staple each set separately. Attach a &#8377;200 court fee stamp purchased from any post office.</div></div></div>
+              <div class="file-step"><div class="file-step-n">3</div><div class="file-step-body"><div class="file-step-title">File at the District Consumer Forum counter</div><div class="file-step-desc">Visit the District Consumer Disputes Redressal Commission between 10am and 4pm on a working day. Submit your 3 sets at the filing counter. You will receive an acknowledgement slip with your unique complaint number — keep this safe.</div></div></div>
+              <div class="file-step"><div class="file-step-n">4</div><div class="file-step-body"><div class="file-step-title">Attend the first hearing (usually within 21 days)</div><div class="file-step-desc">The forum issues a notice to your opponent. If they fail to appear, the forum may decide ex-parte (without them) in your favour. In deposit disputes, most opponents settle at this stage after receiving a formal notice from the court.</div></div></div>
+              <div class="file-step"><div class="file-step-n">5</div><div class="file-step-body"><div class="file-step-title">Enforce the order if needed</div><div class="file-step-desc">Consumer Forum orders are enforceable like civil court decrees. If the opponent ignores the order, file an Execution Petition — the forum can direct attachment of their bank account or property. This step is rarely needed; most cases end at hearing 1 or 2.</div></div></div>
+            </div>
+          </div>
         </div>
+
+        <!-- ── SIMILAR CASES TAB ── -->
         <div id="tab-similar" class="tab-pane">
-          <div class="page-hdr"><h1 class="page-title">Similar Cases</h1><p class="page-sub" style="margin-top:6px">847 cases analyzed · 72% won or settled</p></div>
-          <div class="cases-table" style="margin-top:16px">
+          <div class="page-hdr">
+            <h1 class="page-title">Similar Cases</h1>
+            <p class="page-sub" id="sim-sub" style="margin-top:6px">847 cases analyzed — 86% won or settled</p>
+          </div>
+          <!-- Stats row -->
+          <div class="cases-stats">
+            <div class="cs-card"><div class="cs-val w" id="sim-total">847</div><div class="cs-lbl">Cases Analyzed</div></div>
+            <div class="cs-card"><div class="cs-val g" id="sim-won">58%</div><div class="cs-lbl">Won Outright</div></div>
+            <div class="cs-card"><div class="cs-val b" id="sim-settled">28%</div><div class="cs-lbl">Settled</div></div>
+            <div class="cs-card"><div class="cs-val w" id="sim-award">&#8377;91,400</div><div class="cs-lbl">Avg Award</div></div>
+          </div>
+          <!-- Filter buttons -->
+          <div class="outcome-filter">
+            <button class="of-btn active" onclick="filterCases('all',this)">All</button>
+            <button class="of-btn" onclick="filterCases('WON',this)">Won</button>
+            <button class="of-btn" onclick="filterCases('SETTLED',this)">Settled</button>
+            <button class="of-btn" onclick="filterCases('LOST',this)">Lost</button>
+          </div>
+          <div class="cases-table" id="sim-table">
             <div class="ct-head"><div class="ct-head-col">Year</div><div class="ct-head-col">Court</div><div class="ct-head-col">Outcome</div><div class="ct-head-col">Amount</div><div class="ct-head-col">Key Facts</div></div>
-            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">Consumer Forum, Pune</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹75,000</div><div class="ct-fact">WhatsApp proof accepted. Full award + damages.</div></div>
-            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">DCDRC, Mumbai</div><div class="ct-outcome s"><span style="width:5px;height:5px;border-radius:50%;background:var(--sketch-s);display:inline-block"></span>SETTLED</div><div class="ct-amount">₹90,000</div><div class="ct-fact">Settled before first hearing.</div></div>
-            <div class="ct-row"><div class="ct-year">2023</div><div class="ct-court">Consumer Forum, Nagpur</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">₹60,000</div><div class="ct-fact">Bank transfer decisive. Interest awarded.</div></div>
+            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">Consumer Forum, Pune</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">&#8377;75,000</div><div class="ct-fact">WhatsApp proof accepted. Full award + damages.</div></div>
+            <div class="ct-row"><div class="ct-year">2024</div><div class="ct-court">DCDRC, Mumbai</div><div class="ct-outcome s"><span style="width:5px;height:5px;border-radius:50%;background:var(--sketch);display:inline-block"></span>SETTLED</div><div class="ct-amount">&#8377;90,000</div><div class="ct-fact">Settled before first hearing after legal notice.</div></div>
+            <div class="ct-row"><div class="ct-year">2023</div><div class="ct-court">Consumer Forum, Nagpur</div><div class="ct-outcome w"><span class="dot dot-g"></span>WON</div><div class="ct-amount">&#8377;60,000</div><div class="ct-fact">Bank transfer decisive. Interest awarded.</div></div>
           </div>
         </div>
 
@@ -637,11 +858,12 @@ body{
 
     <!-- Action bar -->
     <div class="action-bar">
-      <a href="document.html" class="btn-act-p">
+      <a href="document.html" class="btn-act-p" id="actionNoticeBtn">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 2h8v9h-8V2z" stroke="currentColor" stroke-width="1.2"/><line x1="4.5" y1="5" x2="8.5" y2="5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="4.5" y1="7" x2="8.5" y2="7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
         VIEW LEGAL NOTICE →
       </a>
-      <button class="btn-act-s">FILE WITH CONSUMER FORUM</button>
+      <a href="edaakhil.html" class="btn-act-s" id="actionEdaakhilBtn">e-DAAKHIL PACKET</a>
+      <a href="negotiation.html" class="btn-act-s" id="actionNegBtn">PRACTICE NEGOTIATION</a>
       <div class="spacer"></div>
       <a href="#" class="btn-link">Get 1-on-1 Lawyer (₹499)</a>
     </div>
@@ -690,10 +912,19 @@ body{
 (async function loadCaseData() {
   const caseId = getCaseId();
 
-  // Wire all document.html links to carry case_id
   document.querySelectorAll('a[href="document.html"]').forEach(a => {
     a.href = caseId && caseId !== 'demo' ? `document.html?case=${caseId}` : 'document.html';
   });
+  if (caseId && caseId !== 'demo') {
+    const negLink = document.getElementById('negLink');
+    if (negLink) negLink.href = `negotiation.html?case=${caseId}`;
+    const edLink = document.getElementById('edaakhilLink');
+    if (edLink) edLink.href = `edaakhil.html?case=${caseId}`;
+    const actionNeg = document.getElementById('actionNegBtn');
+    if (actionNeg) actionNeg.href = `negotiation.html?case=${caseId}`;
+    const actionEd = document.getElementById('actionEdaakhilBtn');
+    if (actionEd) actionEd.href = `edaakhil.html?case=${caseId}`;
+  }
 
   if (!caseId || caseId === 'demo') return;
   try {
@@ -701,57 +932,58 @@ body{
     window._caseData = d;
 
     const winPct    = d.win_probability || 72;
-    const total     = d.total_analyzed  || d.similar_cases_count || 26688;
+    const total     = d.total_analyzed  || d.similar_cases_count || 847;
     const ob        = d.outcome_breakdown || { won_pct: 58, settled_pct: 28, lost_pct: 14 };
     const avgMonths = d.avg_resolution_months || '4.2';
     const avgAward  = d.avg_award || '₹91,400';
 
-    // ── Sidebar case info ──
+    // ── Sidebar ──
     document.querySelectorAll('.sb-cid').forEach(el =>
       el.textContent = 'Case #' + caseId.slice(0, 8).toUpperCase());
     document.querySelectorAll('.sb-cname').forEach(el =>
       el.textContent = (d.amount ? '₹' + d.amount + ' ' : '') + 'Legal Dispute');
-
-    // ── Sidebar badges ──
     document.querySelectorAll('.sb-badge').forEach(el => {
       const t = el.textContent.trim();
       if (t.includes('%'))  el.textContent = winPct + '%';
       if (/^\d+$/.test(t)) el.textContent = total.toLocaleString('en-IN');
+      if (t.includes('/'))  el.textContent = d.evidence_score || t;
     });
+    const sbWin = document.getElementById('sbWinPct');
+    const sbEv  = document.getElementById('sbEvScore');
+    if (sbWin) sbWin.textContent = winPct + '%';
+    if (sbEv)  sbEv.textContent  = d.evidence_score || '5/10';
 
-    // ── Win number (animate with real value) ──
+    // ── Win counter ──
     _winProbability = winPct;
     counted = false;
     document.querySelectorAll('.win-big').forEach(el => el.textContent = winPct + '%');
     doCount();
 
-    // ── "Based on N similar cases" ──
-    document.querySelectorAll('.win-sub').forEach(el => {
-      if (el.textContent.includes('cases'))
-        el.innerHTML = `Based on ${total.toLocaleString('en-IN')} similar<br>cases · 2015–2025`;
-    });
-
-    // ── Outcome distribution bars ──
+    // ── Outcome bars (overview) ──
     document.querySelectorAll('.brow').forEach(row => {
       const lbl   = (row.querySelector('.blbl')?.textContent || '').toLowerCase();
       const fill  = row.querySelector('.bfill');
       const pctEl = row.querySelector('.bpct');
-      let pct = lbl.includes('won') ? ob.won_pct
-              : lbl.includes('settled') ? ob.settled_pct
-              : lbl.includes('lost') ? ob.lost_pct : null;
+      const pct   = lbl.includes('won') ? ob.won_pct
+                  : lbl.includes('settled') ? ob.settled_pct
+                  : lbl.includes('lost') ? ob.lost_pct : null;
       if (pct !== null) {
         if (fill)  { fill.dataset.w = pct; fill.style.width = pct + '%'; }
         if (pctEl) pctEl.textContent = pct + '%';
       }
     });
 
-    // ── Win distribution description text ──
+    // ── win-r-top description ──
     document.querySelectorAll('.win-r-top').forEach(el => {
       if (el.textContent.includes('similar cases') || el.textContent.includes('847'))
         el.innerHTML = `Outcome distribution across <strong>${total.toLocaleString('en-IN')} similar cases</strong>. Avg resolution: ${avgMonths} months. Avg award: ${avgAward}.`;
     });
+    document.querySelectorAll('.win-sub').forEach(el => {
+      if (el.textContent.includes('cases'))
+        el.innerHTML = `Based on ${total.toLocaleString('en-IN')} similar<br>cases · 2015–2025`;
+    });
 
-    // ── Stat items (stats bar) ──
+    // ── Stats bar ──
     document.querySelectorAll('.stat-item').forEach(el => {
       const lbl = (el.querySelector('.stat-lbl')?.textContent || '').toLowerCase();
       const val = el.querySelector('.stat-val');
@@ -759,97 +991,246 @@ body{
       if (lbl.includes('win'))     val.textContent = winPct + '%';
       if (lbl.includes('similar')) val.textContent = total.toLocaleString('en-IN');
       if (lbl.includes('claim') && d.amount) val.textContent = '₹' + d.amount;
+      if (lbl.includes('days') && d.days_active !== undefined) val.textContent = d.days_active;
+      if (lbl.includes('evidence') && d.evidence_score) val.textContent = d.evidence_score;
     });
 
-    // ── Overview page header ──
-    const overviewHdr = document.querySelector('#tab-overview .page-hdr');
-    if (overviewHdr) {
-      if (d.amount) {
-        const t = overviewHdr.querySelector('.page-title');
-        if (t) t.textContent = '₹' + d.amount + ' Legal Dispute';
-      }
-      if (d.law_summary) {
-        const s = overviewHdr.querySelector('.page-sub');
-        if (s) s.textContent = d.law_summary;
-      }
+    // ── Overview header ──
+    const ovHdr = document.querySelector('#tab-overview .page-hdr');
+    if (ovHdr) {
+      if (d.amount) { const t = ovHdr.querySelector('.page-title'); if (t) t.textContent = '₹' + d.amount + ' Legal Dispute'; }
+      if (d.law_summary) { const s = ovHdr.querySelector('.page-sub'); if (s) s.textContent = d.law_summary; }
     }
 
-    // ── Similar Cases tab heading ──
-    document.querySelectorAll('.page-sub').forEach(el => {
-      if (el.textContent.includes('cases analyzed'))
-        el.textContent = `${total.toLocaleString('en-IN')} cases analyzed · ${ob.won_pct + ob.settled_pct}% won or settled`;
-    });
+    // ── Win Probability tab ──
+    _renderWinProbTab(d, winPct, ob, total, avgMonths, avgAward);
 
     // ── Evidence Coach tab ──
-    if (d.evidence_score) {
-      document.querySelectorAll('#tab-evidence .page-sub').forEach(el =>
-        el.textContent = `Evidence score: ${d.evidence_score} · ${d.coaching_tip || 'Review gaps below'}`);
-    }
+    _renderEvidenceCoachTab(d);
 
     // ── Where to File tab ──
     if (d.authority) {
-      document.querySelectorAll('#tab-fileat .win-r').forEach(el => {
-        const fEl = el.querySelector('[style*="Fraunces"]') || el.querySelector('[style*="serif"]');
-        if (fEl) fEl.innerHTML = (d.authority.forum || '').replace(' ', '<br>');
-        const top = el.querySelector('.win-r-top');
-        if (top) top.innerHTML = `${d.authority.address || ''} · Filing fee: <strong>${d.authority.filing_fee || '₹200'}</strong> · ${d.authority.jurisdiction_notes || ''}`;
-      });
+      const auth = d.authority;
+      const setEl = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+      const forum = auth.forum || 'District Consumer Disputes Redressal Commission';
+      const forumEl = document.getElementById('fileat-forum');
+      if (forumEl) forumEl.textContent = forum;
+      setEl('fileat-address', auth.address || 'Your district headquarters. Contact the District Collector office for the exact address.');
+      setEl('fileat-fee', auth.filing_fee || '₹200');
+      setEl('fileat-res', auth.avg_resolution || '4 – 6 months');
+      setEl('fileat-next', auth.next_step || 'Send the legal notice first');
     }
 
-    // ── Similar cases tables (both overview + similar tab) ──
-    if (d.similar_cases?.length) _renderSimilarCases(d.similar_cases);
+    // ── Similar Cases tab stats ──
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('sim-total',   total.toLocaleString('en-IN'));
+    setTxt('sim-won',     ob.won_pct + '%');
+    setTxt('sim-settled', ob.settled_pct + '%');
+    setTxt('sim-award',   avgAward);
+    const simSub = document.getElementById('sim-sub');
+    if (simSub) simSub.textContent = `${total.toLocaleString('en-IN')} cases analyzed · ${ob.won_pct + ob.settled_pct}% won or settled`;
 
-    // ── Evidence cards ──
+    // ── Tables ──
+    if (d.similar_cases?.length) {
+      window._allCases = d.similar_cases;
+      _renderSimilarCases(d.similar_cases);
+    }
+
+    // ── Evidence cards (ALL [data-ev-type] across page) ──
     if (d.evidence_strengths?.length || d.evidence_gaps?.length)
       _renderEvidence(d.evidence_strengths || [], d.evidence_gaps || []);
+
+    // ── Auto-speak win summary ──
+    setTimeout(() => {
+      const forum = d.authority?.forum || 'Consumer Forum';
+      const score = d.evidence_score || '5/10';
+      const tip = d.coaching_tip ? ' Key tip: ' + d.coaching_tip : '';
+      speakBrowser(
+        `Analysis complete. Your case has a ${winPct}% win probability based on ${total.toLocaleString('en-IN')} similar Indian cases. ` +
+        `${ob.won_pct}% won outright. Recommended forum: ${forum}. Evidence score: ${score}.${tip}`
+      );
+    }, 1200);
 
   } catch (e) {
     console.warn('Live data load failed, using demo data:', e.message);
   }
 })();
 
-function _renderSimilarCases(cases) {
-  const tables = document.querySelectorAll('.cases-table');
-  tables.forEach(table => {
-    const head = table.querySelector('.ct-head');
-    if (!head) return;
-    const existing = table.querySelectorAll('.ct-row');
-    existing.forEach(r => r.remove());
-    cases.forEach(c => {
-      const outcomeClass = c.outcome === 'WON' ? 'w' : c.outcome === 'SETTLED' ? 's' : 'l';
-      const dot = c.outcome === 'WON' ? '<span class="dot dot-g"></span>' : c.outcome === 'SETTLED' ? '<span style="width:5px;height:5px;border-radius:50%;background:#93C5FD;display:inline-block"></span>' : '<span style="width:5px;height:5px;border-radius:50%;background:#B45309;display:inline-block"></span>';
+// ── RENDER WIN PROBABILITY TAB ────────────────────────────────────────
+function _renderWinProbTab(d, winPct, ob, total, avgMonths, avgAward) {
+  const banner = document.getElementById('assessBanner');
+  if (banner) {
+    const cls = winPct >= 70 ? 'strong' : winPct >= 55 ? 'moderate' : 'borderline';
+    banner.className = 'assess-banner ' + cls;
+  }
+  const wpNum = document.getElementById('wpWinNum');
+  if (wpNum) wpNum.textContent = winPct + '%';
+  const assessTitle = document.getElementById('assessTitle');
+  const assessSub   = document.getElementById('assessSub');
+  const assessIcon  = document.getElementById('assessIcon');
+  if (winPct >= 70) {
+    if (assessTitle) assessTitle.textContent = 'Strong Case';
+    if (assessSub)   assessSub.textContent   = 'Your evidence profile is above average. Proceed with the legal notice today.';
+    if (assessIcon)  assessIcon.innerHTML    = '&#128170;';
+  } else if (winPct >= 55) {
+    if (assessTitle) assessTitle.textContent = 'Moderate Case';
+    if (assessSub)   assessSub.textContent   = 'Winnable with the right moves. Fix the evidence gaps first.';
+    if (assessIcon)  assessIcon.innerHTML    = '&#9878;&#65039;';
+  } else {
+    if (assessTitle) assessTitle.textContent = 'Borderline Case';
+    if (assessSub)   assessSub.textContent   = 'Evidence gaps reduce your odds. Follow the action plan carefully.';
+    if (assessIcon)  assessIcon.innerHTML    = '&#9888;&#65039;';
+  }
+
+  const wpTotal = document.getElementById('wp-total');
+  if (wpTotal) wpTotal.textContent = total.toLocaleString('en-IN');
+
+  const setBar = (barId, pctId, pct) => {
+    const b = document.getElementById(barId), p = document.getElementById(pctId);
+    if (b) { b.dataset.w = pct; b.style.width = pct + '%'; }
+    if (p) p.textContent = pct + '%';
+  };
+  setBar('wp-bar-won', 'wp-pct-won', ob.won_pct);
+  setBar('wp-bar-set', 'wp-pct-set', ob.settled_pct);
+  setBar('wp-bar-lost','wp-pct-lost', ob.lost_pct);
+
+  const wpDesc = document.getElementById('wp-desc');
+  if (wpDesc) wpDesc.innerHTML = `Outcome distribution across <strong>${total.toLocaleString('en-IN')}</strong> similar cases. Avg resolution: <strong>${avgMonths}</strong> months. Avg award: <strong>${avgAward}</strong>.`;
+
+  // Factor list
+  const factorList = document.getElementById('wp-factors');
+  if (factorList) {
+    const str = d.evidence_strengths || [], gaps = d.evidence_gaps || [];
+    if (str.length || gaps.length) {
+      factorList.innerHTML = '';
+      str.slice(0, 3).forEach(s => {
+        const row = document.createElement('div');
+        row.className = 'factor-row fc-anim';
+        const impact = (s.impact || '').replace(' WIN IMPACT', '');
+        row.innerHTML = `<span class="factor-impact pos">${impact}</span><div><div class="factor-name">${s.title}</div>${s.sub ? `<div class="factor-fix">${s.sub}</div>` : ''}</div>`;
+        factorList.appendChild(row);
+      });
+      gaps.slice(0, 2).forEach(g => {
+        const row = document.createElement('div');
+        row.className = 'factor-row fc-anim';
+        const impact = (g.impact || '').replace(' WITHOUT THIS', '');
+        row.innerHTML = `<span class="factor-impact neg">${impact}</span><div><div class="factor-name">${g.title}</div>${g.sub ? `<div class="factor-fix">${g.sub}</div>` : ''}</div>`;
+        factorList.appendChild(row);
+      });
+    }
+  }
+
+  // Action plan
+  const actionPlan = document.getElementById('wp-improve');
+  if (actionPlan) {
+    const gaps = d.evidence_gaps || [];
+    if (gaps.length) {
+      actionPlan.innerHTML = '';
+      gaps.slice(0, 3).forEach((g, i) => {
+        const row = document.createElement('div');
+        row.className = 'ap-row fc-anim';
+        const badge = i === 0 ? 'HIGHEST IMPACT' : (g.impact || '').replace(' WITHOUT THIS', '');
+        row.innerHTML = `<div class="ap-num">${i+1}</div><div class="ap-body"><div class="ap-title">${g.title}</div><div class="ap-sub">${g.sub || 'Address this gap to strengthen your case.'}</div><div class="ap-badge">${badge}</div></div>`;
+        actionPlan.appendChild(row);
+      });
+    }
+  }
+}
+
+// ── RENDER EVIDENCE COACH TAB ─────────────────────────────────────────
+function _renderEvidenceCoachTab(d) {
+  const score = d.evidence_score || '5/10';
+  const tip   = d.coaching_tip  || 'Gather all written evidence before filing.';
+  const ecScore = document.getElementById('ec-score');
+  const ecTip   = document.getElementById('ec-tip');
+  const ecFill  = document.getElementById('ec-fill');
+  if (ecScore) ecScore.textContent = score;
+  if (ecTip)   ecTip.textContent   = tip;
+  if (ecFill) {
+    const parts = score.split('/');
+    const pct = parts.length === 2 ? Math.round((+parts[0] / +parts[1]) * 100) : 50;
+    ecFill.style.width = pct + '%';
+    ecFill.style.background = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--sketch)' : 'var(--amber)';
+  }
+  const ecActionPlan = document.getElementById('ec-action-plan');
+  if (ecActionPlan && d.evidence_gaps?.length) {
+    ecActionPlan.innerHTML = '';
+    d.evidence_gaps.forEach((g, i) => {
       const row = document.createElement('div');
-      row.className = 'ct-row';
-      row.innerHTML = `<div class="ct-year">${c.year}</div><div class="ct-court">${c.court}</div><div class="ct-outcome ${outcomeClass}">${dot}${c.outcome}</div><div class="ct-amount">${c.amount || '—'}</div><div class="ct-fact">${c.key_fact}</div>`;
-      table.appendChild(row);
+      row.className = 'ap-row fc-anim';
+      row.innerHTML = `<div class="ap-num">${i+1}</div><div class="ap-body"><div class="ap-title">${g.title}</div><div class="ap-sub">${g.sub || 'Fix this to improve your position.'}</div></div>`;
+      ecActionPlan.appendChild(row);
+    });
+  }
+}
+
+// ── RENDER SIMILAR CASES ──────────────────────────────────────────────
+function _renderSimilarCases(cases) {
+  const simTable = document.getElementById('sim-table');
+  if (simTable) {
+    simTable.querySelectorAll('.ct-row').forEach(r => r.remove());
+    cases.forEach(c => _appendCaseRow(simTable, c));
+  }
+  const ovTable = document.querySelector('#tab-overview .cases-table');
+  if (ovTable) {
+    ovTable.querySelectorAll('.ct-row').forEach(r => r.remove());
+    cases.forEach(c => _appendCaseRow(ovTable, c));
+  }
+}
+
+function _appendCaseRow(table, c) {
+  const cls = c.outcome === 'WON' ? 'w' : c.outcome === 'SETTLED' ? 's' : 'l';
+  const dot = c.outcome === 'WON'
+    ? '<span class="dot dot-g"></span>'
+    : c.outcome === 'SETTLED'
+    ? '<span style="width:5px;height:5px;border-radius:50%;background:#93C5FD;display:inline-block"></span>'
+    : '<span style="width:5px;height:5px;border-radius:50%;background:#B45309;display:inline-block"></span>';
+  const row = document.createElement('div');
+  row.className = 'ct-row';
+  row.dataset.outcome = c.outcome;
+  row.innerHTML = `<div class="ct-year">${c.year}</div><div class="ct-court">${c.court}</div><div class="ct-outcome ${cls}">${dot}${c.outcome}</div><div class="ct-amount">${c.amount || '—'}</div><div class="ct-fact">${c.key_fact}</div>`;
+  table.appendChild(row);
+}
+
+// ── RENDER EVIDENCE (all [data-ev-type] across page) ──────────────────
+function _renderEvidence(strengths, gaps) {
+  const checkSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+  const crossSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+
+  document.querySelectorAll('[data-ev-type="str"]').forEach(card => {
+    card.querySelectorAll('.ev-row').forEach(r => r.remove());
+    strengths.slice(0, 4).forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'ev-row';
+      div.innerHTML = `${checkSvg}<div class="ev-txt"><div class="ev-title">${s.title}</div><div class="ev-badge pos">${s.impact}</div></div>`;
+      card.appendChild(div);
+    });
+  });
+
+  document.querySelectorAll('[data-ev-type="gap"]').forEach(card => {
+    card.querySelectorAll('.ev-row').forEach(r => r.remove());
+    gaps.slice(0, 3).forEach(g => {
+      const div = document.createElement('div');
+      div.className = 'ev-row';
+      div.innerHTML = `${crossSvg}<div class="ev-txt"><div class="ev-title">${g.title}</div>${g.sub ? `<div class="ev-sub">→ ${g.sub}</div>` : ''}<div class="ev-badge neg">${g.impact}</div></div>`;
+      card.appendChild(div);
     });
   });
 }
 
-function _renderEvidence(strengths, gaps) {
-  const cards = document.querySelectorAll('.ev-card');
-  if (cards.length < 2) return;
-  const posCard = cards[0], negCard = cards[1];
-  const posBody = posCard.querySelectorAll('.ev-row');
-  const negBody = negCard.querySelectorAll('.ev-row');
-  posBody.forEach(r => r.remove());
-  negBody.forEach(r => r.remove());
-  const checkSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>`;
-  const crossSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>`;
-  strengths.slice(0, 4).forEach(s => {
-    const div = document.createElement('div'); div.className = 'ev-row';
-    div.innerHTML = `${checkSvg}<div class="ev-txt"><div class="ev-title">${s.title}</div><div class="ev-badge pos">${s.impact}</div></div>`;
-    posCard.appendChild(div);
-  });
-  gaps.slice(0, 3).forEach(g => {
-    const div = document.createElement('div'); div.className = 'ev-row';
-    div.innerHTML = `${crossSvg}<div class="ev-txt"><div class="ev-title">${g.title}</div>${g.sub ? `<div class="ev-sub">→ ${g.sub}</div>` : ''}<div class="ev-badge neg">${g.impact}</div></div>`;
-    negCard.appendChild(div);
+// ── FILTER SIMILAR CASES ─────────────────────────────────────────────
+let _allCases = [];
+function filterCases(outcome, btn) {
+  document.querySelectorAll('.of-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const table = document.getElementById('sim-table');
+  if (!table) return;
+  table.querySelectorAll('.ct-row').forEach(row => {
+    row.style.display = (outcome === 'all' || row.dataset.outcome === outcome) ? '' : 'none';
   });
 }
 
-// ── SENTRY — wire to real API ────────────────────────────────────────────
-const _origSentryChat = typeof sentryChat !== 'undefined' ? sentryChat : null;
+// ── SENTRY — wire to real API ─────────────────────────────────────────
 async function sentryChat() {
   const input = document.getElementById('sentryInput');
   const txt = input?.value?.trim();
@@ -1033,7 +1414,29 @@ function setTab(id, btn) {
   document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
   const pane = document.getElementById('tab-' + id);
-  if (pane) pane.classList.add('active');
+  if (pane) {
+    pane.classList.add('active');
+    // Staggered card entrance
+    const cards = pane.querySelectorAll('.factor-row,.ap-row,.cs-card,.file-info-card,.file-step,.ev-score-card,.assess-banner');
+    cards.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        el.style.transition = 'opacity .3s ease, transform .3s ease';
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      }, i * 55);
+    });
+    // Re-animate progress bars
+    setTimeout(() => {
+      pane.querySelectorAll('.bfill').forEach(b => {
+        const w = b.dataset.w;
+        if (w) { b.style.transition = 'none'; b.style.width = '0%'; requestAnimationFrame(() => { b.style.transition = ''; b.style.width = w + '%'; }); }
+      });
+      const fill = pane.querySelector('.ev-score-fill');
+      if (fill) { const w = fill.style.width; fill.style.transition = 'none'; fill.style.width = '0%'; requestAnimationFrame(() => { fill.style.transition = ''; fill.style.width = w; }); }
+    }, 100);
+  }
   btn.classList.add('active');
 }
 

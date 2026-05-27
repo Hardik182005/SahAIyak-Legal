@@ -80,13 +80,34 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
 .mic-icon{width:14px;height:14px;position:relative}
 
 /* ── LANGUAGE PILLS ── */
-.lang-row{display:flex;gap:8px;margin:20px 0}
+.lang-row{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
 .lang-pill{
-  padding:7px 18px;border-radius:100px;border:1px solid var(--rule);
-  font-size:13px;font-weight:500;cursor:pointer;background:transparent;
+  padding:7px 16px;border-radius:100px;border:1px solid var(--rule);
+  font-size:12px;font-weight:500;cursor:pointer;background:transparent;
   font-family:'Inter',sans-serif;transition:all .2s;
 }
 .lang-pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ── OCR UPLOAD ── */
+.ocr-section{margin:20px 0 0;border:1px dashed var(--rule);border-radius:8px;padding:20px;transition:border-color .2s;background:rgba(37,99,235,.02)}
+.ocr-section:hover,.ocr-section.drag{border-color:var(--sketch);background:rgba(37,99,235,.04)}
+.ocr-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute-soft);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ocr-lbl-new{background:rgba(37,99,235,.12);color:var(--sketch);padding:2px 8px;border-radius:100px;font-size:8px;letter-spacing:.08em}
+.ocr-drop{display:flex;align-items:center;gap:14px;cursor:pointer}
+.ocr-icon{width:40px;height:40px;border-radius:6px;background:rgba(37,99,235,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ocr-text-wrap{flex:1}
+.ocr-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.ocr-sub{font-size:12px;color:var(--mute)}
+.ocr-browse{font-size:12px;color:var(--sketch);text-decoration:underline;cursor:pointer}
+.ocr-results{margin-top:14px;display:none}
+.ocr-result-card{background:var(--paper-pure);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;font-size:12px;line-height:1.7}
+.ocr-result-type{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--sketch);margin-bottom:6px}
+.ocr-result-summary{color:var(--ink);margin-bottom:8px}
+.ocr-result-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ocr-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.06em;background:rgba(37,99,235,.08);color:var(--sketch);padding:3px 8px;border-radius:100px}
+.ocr-tag.amt{background:rgba(21,128,61,.08);color:var(--success)}
+.ocr-spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--rule);border-top-color:var(--sketch);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ── CONTEXT FIELDS ── */
 .ctx-fields{display:flex;flex-direction:column;gap:0;overflow:hidden}
@@ -222,9 +243,13 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
   </div>
 
   <div class="lang-row">
-    <button class="lang-pill active" onclick="setLang(this,'EN')">EN</button>
-    <button class="lang-pill" onclick="setLang(this,'हिं')">हिं</button>
-    <button class="lang-pill" onclick="setLang(this,'मरा')">मरा</button>
+    <button class="lang-pill active" onclick="setLang(this,'EN','en-IN')">EN</button>
+    <button class="lang-pill" onclick="setLang(this,'हिं','hi-IN')">हिंदी</button>
+    <button class="lang-pill" onclick="setLang(this,'मरा','mr-IN')">मराठी</button>
+    <button class="lang-pill" onclick="setLang(this,'தமி','ta-IN')">தமிழ்</button>
+    <button class="lang-pill" onclick="setLang(this,'বাং','bn-IN')">বাংলা</button>
+    <button class="lang-pill" onclick="setLang(this,'ਪੰਜ','pa-IN')">ਪੰਜਾਬੀ</button>
+    <button class="lang-pill" onclick="setLang(this,'ಕನ್','kn-IN')">ಕನ್ನಡ</button>
   </div>
 
   <div class="ctx-fields">
@@ -259,6 +284,22 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
         <input type="text" placeholder="e.g. WhatsApp chats, receipts, emails, agreement..." />
       </div>
     </div>
+  </div>
+
+  <!-- OCR Upload -->
+  <div class="ocr-section" id="ocrSection" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+    <div class="ocr-lbl">Upload Documents <span class="ocr-lbl-new">NEW — AI OCR</span></div>
+    <div class="ocr-drop" onclick="document.getElementById('ocrFile').click()">
+      <div class="ocr-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14h12M9 3v8M6 6l3-3 3 3" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="ocr-text-wrap">
+        <div class="ocr-title">Upload WhatsApp screenshots, agreements, receipts</div>
+        <div class="ocr-sub">AI extracts key facts automatically · JPEG, PNG, PDF <span class="ocr-browse">Browse files</span></div>
+      </div>
+      <input type="file" id="ocrFile" accept="image/*,.pdf" multiple style="display:none" onchange="handleOcrUpload(this.files)">
+    </div>
+    <div class="ocr-results" id="ocrResults"></div>
   </div>
 
   <div class="submit-row">
@@ -335,11 +376,27 @@ function onInput() {
 }
 
 // ── LANGUAGE SELECTOR ─────────────────────────────────────────────────────
-function setLang(btn, lang) {
+let _voiceLangCode = 'en-IN';
+function setLang(btn, lang, voiceCode) {
   document.querySelectorAll('.lang-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  const placeholder = { EN: "I'm having a problem with...", 'हिं': "मुझे एक समस्या है...", 'मरा': "मला एक समस्या आहे..." };
-  document.getElementById('caseInput').placeholder = placeholder[lang] || placeholder.EN;
+  _voiceLangCode = voiceCode || 'en-IN';
+  const placeholder = {
+    'EN': "I'm having a problem with...",
+    'हिं': 'मुझे एक समस्या है...',
+    'मरा': 'मला एक समस्या आहे...',
+    'தமி': 'என் பிரச்சினை என்னவென்றால்...',
+    'বাং': 'আমার সমস্যা হলো...',
+    'ਪੰਜ': 'ਮੇਰੀ ਸਮੱਸਿਆ ਹੈ...',
+    'ಕನ್': 'ನನ್ನ ಸಮಸ್ಯೆ...',
+  };
+  document.getElementById('caseInput').placeholder = placeholder[lang] || placeholder['EN'];
+  // Update active recognition language if voice is running
+  if (voiceActive && recognition) {
+    recognition.stop();
+    recognition.lang = voiceCode;
+    recognition.start();
+  }
 }
 
 // ── VOICE TOGGLE ─────────────────────────────────────────────────────────
@@ -353,7 +410,7 @@ function toggleVoice() {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognition = new SR();
-      recognition.lang = 'en-IN';
+      recognition.lang = _voiceLangCode || 'en-IN';
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.onresult = e => {
@@ -403,6 +460,14 @@ async function submitCase() {
     '▸ NOTICE DRAFTER — Composing personalized legal notice...'
   ];
 
+  const agentSpeech = [
+    'Law Finder Agent activated. Scanning Indian Penal Code, Consumer Protection Act, and Rent Control laws.',
+    'Authority Agent mapping the correct legal forum and jurisdiction for your state.',
+    'Win Predictor comparing your case against ten thousand real Indian court judgments using AI embeddings.',
+    'Evidence Coach scoring your evidence and identifying critical gaps that could affect your outcome.',
+    'Notice Drafter composing a personalized legal notice citing applicable laws and your specific facts.'
+  ];
+
   const barEl = document.getElementById('loadBar');
   let barPct = 0;
   const barInterval = setInterval(() => {
@@ -410,13 +475,18 @@ async function submitCase() {
     barEl.style.width = barPct + '%';
   }, 80);
 
+  // Announce analysis start
+  speakBrowserQueue('Analyzing your case. Five AI agents are now running in parallel.');
+
   // Start the agent animation in parallel with the API call
   const animPromise = (async () => {
+    await new Promise(r => setTimeout(r, 700));
     for (let i = 0; i < agentLabels.length; i++) {
       const line = document.getElementById('al' + (i + 1));
       const check = document.getElementById('ac' + (i + 1));
       const text = document.getElementById('at' + (i + 1));
       line.classList.add('show');
+      speakBrowserQueue(agentSpeech[i], 1.1);
       await typeText(text, agentLabels[i], 22);
       await new Promise(r => setTimeout(r, 300));
       check.classList.add('done');
@@ -448,10 +518,86 @@ async function submitCase() {
   barEl.style.width = '100%';
   const complete = document.getElementById('loadComplete');
   complete.classList.add('show');
-  await new Promise(r => setTimeout(r, 800));
+  speakBrowser('Analysis complete. Opening your case report now.');
+  await new Promise(r => setTimeout(r, 900));
   window.location.href = caseId && caseId !== 'demo'
     ? `dashboard.html?case=${caseId}`
     : 'dashboard.html';
+}
+
+// ── OCR DOCUMENT UPLOAD ───────────────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('ocrSection').classList.remove('drag');
+  const files = e.dataTransfer?.files;
+  if (files?.length) handleOcrUpload(files);
+}
+
+async function handleOcrUpload(files) {
+  const resultsEl = document.getElementById('ocrResults');
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute)"><span class="ocr-spinner"></span> Analyzing document with AI...</div>';
+
+  const formData = new FormData();
+  formData.append('file', files[0]);
+
+  try {
+    const resp = await fetch('/api/v1/ocr', { method: 'POST', body: formData });
+    if (!resp.ok) throw new Error(resp.statusText);
+    const data = await resp.json();
+
+    resultsEl.innerHTML = '';
+    const card = document.createElement('div');
+    card.className = 'ocr-result-card';
+
+    const type = data.document_type || 'Document';
+    const summary = data.summary || 'Document analyzed successfully.';
+    const amounts = (data.amounts || []).join(', ');
+    const dates   = (data.dates   || []).join(', ');
+    const clauses = (data.key_clauses || []).slice(0, 3);
+    const evType  = data.evidence_type || 'MODERATE';
+
+    const evColor = evType === 'STRONG' ? 'var(--success)' : evType === 'WEAK' ? 'var(--warn)' : 'var(--sketch)';
+
+    card.innerHTML = `
+      <div class="ocr-result-type">${type} &nbsp;·&nbsp; <span style="color:${evColor}">${evType} EVIDENCE</span></div>
+      <div class="ocr-result-summary">${summary}</div>
+      <div class="ocr-result-tags">
+        ${amounts ? `<span class="ocr-tag amt">₹ ${amounts}</span>` : ''}
+        ${dates   ? `<span class="ocr-tag">${dates}</span>` : ''}
+        ${clauses.map(c => `<span class="ocr-tag">${c.slice(0,50)}</span>`).join('')}
+      </div>`;
+    resultsEl.appendChild(card);
+
+    // Auto-populate the evidence field
+    const evInput = document.querySelector('#field4 input');
+    if (evInput && summary) {
+      const existing = evInput.value;
+      evInput.value = existing ? existing + '; ' + type : type + ': ' + summary.slice(0, 80);
+    }
+
+    // If amounts found, auto-populate the amount field
+    if (amounts) {
+      const amtInput = document.querySelector('#field3 input');
+      if (amtInput && !amtInput.value) {
+        const match = amounts.match(/[\d,]+/);
+        if (match) amtInput.value = match[0].replace(/,/g, '');
+      }
+    }
+
+    // Reveal context fields if not shown
+    document.getElementById('field4')?.classList.add('visible');
+
+  } catch (err) {
+    resultsEl.innerHTML = `<div class="ocr-result-card" style="color:var(--mute)">Could not analyze document — it has been noted as uploaded.</div>`;
+    // Still populate evidence field with file name
+    const evInput = document.querySelector('#field4 input');
+    if (evInput) {
+      const name = files[0]?.name || 'Uploaded document';
+      evInput.value = evInput.value ? evInput.value + '; ' + name : name;
+    }
+    document.getElementById('field4')?.classList.add('visible');
+  }
 }
 </script>
 </body>

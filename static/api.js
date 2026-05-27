@@ -36,13 +36,35 @@ async function speakText(text, lang) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: text.slice(0, 500), lang: lang || 'en' }),
     });
-    if (!r.ok) return;
+    if (!r.ok) { speakBrowser(text); return; }
     const blob = await r.blob();
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audio.play();
     audio.onended = () => URL.revokeObjectURL(url);
   } catch (e) {
-    console.warn('Voice unavailable:', e);
+    console.warn('ElevenLabs unavailable, using browser TTS:', e);
+    speakBrowser(text);
   }
+}
+
+function speakBrowser(text, rate, pitch) {
+  if (!text || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-IN';
+  utt.rate = rate || 1.05;
+  utt.pitch = pitch || 1.0;
+  utt.volume = 1.0;
+  window.speechSynthesis.speak(utt);
+}
+
+function speakBrowserQueue(text, rate) {
+  if (!text || !window.speechSynthesis) return;
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-IN';
+  utt.rate = rate || 1.05;
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+  window.speechSynthesis.speak(utt);
 }

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SahAIyak — e-Daakhil Filing Packet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,300&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D0D0D;--bg2:#141414;--border:rgba(255,255,255,.08);--txt:#F0EFEA;--txt2:rgba(255,255,255,.5);--txt3:rgba(255,255,255,.25);--sketch:#2563EB;--sketch-s:#93C5FD;--success:#22c55e;--warn:#f59e0b;--c-bg:#FAFAF7;--c-card:#FFFFFF;--c-border:#E8E5DE;--c-ink:#0A0A0A;--c-mute:#6B6B6B;--c-soft:#9A9A9A}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif}
+body{background:var(--bg);color:var(--txt);display:flex;flex-direction:column;min-height:100vh}
+
+.topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;position:sticky;top:0;z-index:100}
+.topbar-back{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--txt3);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.topbar-back:hover{color:var(--txt)}
+.topbar-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--txt2);text-transform:uppercase}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.btn-print{background:var(--sketch);color:#fff;border:none;padding:8px 18px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;cursor:pointer;transition:background .2s;text-transform:uppercase}
+.btn-print:hover{background:#1d4ed8}
+.topbar-status{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--success);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);padding:3px 10px;border-radius:100px}
+
+.outer{flex:1;overflow-y:auto;padding:32px;background:var(--c-bg)}
+/* Print area — looks like real court paper */
+.packet{max-width:800px;margin:0 auto;background:var(--c-card);border:1px solid var(--c-border);border-radius:4px;box-shadow:0 2px 24px rgba(0,0,0,.06)}
+.packet-head{text-align:center;padding:32px 40px 24px;border-bottom:2px solid var(--c-ink)}
+.packet-court{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--c-mute);margin-bottom:8px}
+.packet-title{font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-0.01em;color:var(--c-ink);margin-bottom:4px}
+.packet-subtitle{font-size:12px;color:var(--c-mute)}
+.packet-section{padding:28px 40px;border-bottom:1px solid var(--c-border)}
+.packet-section:last-child{border-bottom:none}
+.sec-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--c-soft);margin-bottom:16px}
+.field-row{display:flex;gap:40px;margin-bottom:14px}
+.field{flex:1}
+.field-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-soft);margin-bottom:4px}
+.field-val{font-size:13px;color:var(--c-ink);line-height:1.5;border-bottom:1px solid var(--c-border);padding-bottom:4px;min-height:24px}
+.chronology-table{width:100%;border-collapse:collapse}
+.chronology-table th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-soft);text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--c-border)}
+.chronology-table td{font-size:12px;color:var(--c-ink);padding:10px 12px 10px 0;border-bottom:1px solid rgba(0,0,0,.04);vertical-align:top}
+.evidence-index{display:flex;flex-direction:column;gap:8px}
+.ei-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:rgba(0,0,0,.02);border:1px solid var(--c-border);border-radius:4px}
+.ei-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--c-soft);min-width:24px;flex-shrink:0}
+.ei-body{flex:1}
+.ei-title{font-size:13px;color:var(--c-ink)}
+.ei-sub{font-size:11px;color:var(--c-mute);margin-top:2px}
+.affidavit-text{font-size:13px;color:var(--c-mute);line-height:1.9}
+.affidavit-text strong{color:var(--c-ink)}
+.sig-block{margin-top:32px;display:flex;justify-content:space-between;align-items:flex-end}
+.sig-line{border-bottom:1px solid var(--c-ink);width:180px;text-align:center;padding-top:28px;font-size:11px;color:var(--c-mute)}
+.loading-state{padding:60px 40px;text-align:center;color:var(--c-soft);font-size:14px}
+
+/* Print styles */
+@media print{
+  body{background:#fff}
+  .topbar{display:none}
+  .outer{padding:0}
+  .packet{box-shadow:none;border:none;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="topbar-back" id="backBtn" href="dashboard.html">← Dashboard</a>
+  <span class="topbar-title">e-Daakhil Filing Packet</span>
+  <div class="topbar-right">
+    <span class="topbar-status" id="packetStatus">GENERATING...</span>
+    <button class="btn-print" onclick="window.print()">&#128438; PRINT / SAVE PDF</button>
+  </div>
+</div>
+
+<div class="outer">
+<div class="packet" id="packet">
+
+  <div class="loading-state" id="loadingState">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9A9A9A;margin-bottom:8px">GENERATING PACKET</div>
+    <div>Building your e-Daakhil complaint packet from case data...</div>
+  </div>
+
+  <!-- Filled by JS -->
+  <div id="packetContent" style="display:none">
+
+    <div class="packet-head">
+      <div class="packet-court" id="pk-court">District Consumer Disputes Redressal Commission</div>
+      <div class="packet-title">Consumer Complaint Form</div>
+      <div class="packet-subtitle">Consumer Protection Act, 2019 · Section 35</div>
+    </div>
+
+    <!-- Section 1: Parties -->
+    <div class="packet-section">
+      <div class="sec-title">01 — Parties to the Complaint</div>
+      <div class="field-row">
+        <div class="field"><div class="field-lbl">Complainant (You)</div><div class="field-val" id="pk-complainant">_______________________</div></div>
+        <div class="field"><div class="field-lbl">State</div><div class="field-val" id="pk-state">Maharashtra</div></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><div class="field-lbl">Opposite Party</div><div class="field-val" id="pk-opp">Landlord / Employer / Seller (as applicable)</div></div>
+        <div class="field"><div class="field-lbl">Claim Amount</div><div class="field-val" id="pk-amount">₹ ________________</div></div>
+      </div>
+    </div>
+
+    <!-- Section 2: Subject matter -->
+    <div class="packet-section">
+      <div class="sec-title">02 — Subject Matter of Complaint</div>
+      <div class="field"><div class="field-lbl">Brief Description</div><div class="field-val" style="min-height:60px;line-height:1.7" id="pk-desc">Loading...</div></div>
+      <div class="field-row" style="margin-top:14px">
+        <div class="field"><div class="field-lbl">Date of Cause of Action</div><div class="field-val" id="pk-date">________________</div></div>
+        <div class="field"><div class="field-lbl">Filing Fee Enclosed</div><div class="field-val" id="pk-fee">₹200</div></div>
+        <div class="field"><div class="field-lbl">Recommended Forum</div><div class="field-val" id="pk-forum">DCDRC</div></div>
+      </div>
+    </div>
+
+    <!-- Section 3: Chronological events -->
+    <div class="packet-section">
+      <div class="sec-title">03 — Chronology of Events</div>
+      <table class="chronology-table" id="pk-chrono">
+        <thead><tr><th style="width:140px">Date</th><th>Event</th><th style="width:120px">Evidence</th></tr></thead>
+        <tbody id="pk-chrono-body">
+          <tr><td id="chrono-date-1">Date of payment</td><td>Deposit / payment made to opposite party</td><td>Bank transfer / receipt</td></tr>
+          <tr><td id="chrono-date-2">Date of dispute</td><td>Opposite party refused refund / payment</td><td>WhatsApp / email</td></tr>
+          <tr><td>Today</td><td>Legal notice issued via Registered Post (AD)</td><td>Postal receipt</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 4: Evidence index -->
+    <div class="packet-section">
+      <div class="sec-title">04 — Index of Documents / Evidence</div>
+      <div class="evidence-index" id="pk-evidence">
+        <div class="ei-row"><div class="ei-num">1.</div><div class="ei-body"><div class="ei-title">Legal Notice</div><div class="ei-sub">Generated by SahAIyak · sent via Registered Post AD</div></div></div>
+        <div class="ei-row"><div class="ei-num">2.</div><div class="ei-body"><div class="ei-title">Postal Receipt + Acknowledgement Card</div><div class="ei-sub">Proof of delivery to opposite party</div></div></div>
+      </div>
+    </div>
+
+    <!-- Section 5: Relief sought -->
+    <div class="packet-section">
+      <div class="sec-title">05 — Relief Sought</div>
+      <div class="affidavit-text">
+        The Complainant most respectfully prays that this Hon'ble Commission may be pleased to:
+        <br><br>
+        a) Direct the Opposite Party to refund / pay <strong id="pk-relief-amount">the full claimed amount</strong> along with <strong>12% per annum interest</strong> from the date of cause of action;<br>
+        b) Award compensation of <strong>₹25,000</strong> for mental agony, harassment, and deficiency in service;<br>
+        c) Direct the Opposite Party to pay <strong>₹10,000</strong> towards cost of legal proceedings;<br>
+        d) Grant such other and further relief as this Hon'ble Commission deems fit and proper.
+      </div>
+    </div>
+
+    <!-- Section 6: Affidavit verification -->
+    <div class="packet-section">
+      <div class="sec-title">06 — Verification / Affidavit</div>
+      <div class="affidavit-text">
+        I, <strong id="pk-veri-name">__________________ (Complainant)</strong>, do hereby solemnly affirm and declare that the contents of the above complaint are true and correct to the best of my knowledge and belief. No material fact has been concealed.
+        <br><br>
+        Verified at <strong id="pk-veri-city">______________</strong> on this <strong>________________</strong> day of <strong>________________</strong> 2025.
+      </div>
+      <div class="sig-block">
+        <div class="sig-line">Complainant's Signature</div>
+        <div class="sig-line">Date</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script src="static/api.js"></script>
+<script>
+(async function buildPacket() {
+  const caseId = getCaseId();
+  const backBtn = document.getElementById('backBtn');
+  if (caseId && caseId !== 'demo') {
+    backBtn.href = `dashboard.html?case=${caseId}`;
+  }
+
+  if (!caseId || caseId === 'demo') {
+    showDemo();
+    return;
+  }
+
+  try {
+    const d = await apiGet(`/api/v1/cases/${caseId}/filing-packet`);
+    populatePacket(d);
+  } catch (e) {
+    console.warn('Could not load filing packet:', e.message);
+    showDemo();
+  }
+})();
+
+function setText(id, val) { const el = document.getElementById(id); if (el && val) el.textContent = val; }
+
+function populatePacket(d) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('packetContent').style.display = '';
+  document.getElementById('packetStatus').textContent = 'READY TO FILE';
+  document.getElementById('packetStatus').style.color = 'var(--success)';
+
+  const auth = d.authority || {};
+  setText('pk-court', auth.forum || 'District Consumer Disputes Redressal Commission');
+  setText('pk-forum', auth.forum || 'DCDRC');
+  setText('pk-state', d.state || 'Maharashtra');
+  setText('pk-amount', d.amount ? '₹' + d.amount : '₹ ________________');
+  setText('pk-desc', (d.description || '').slice(0, 280) + (d.description?.length > 280 ? '...' : ''));
+  setText('pk-date', d.date_started || '________________');
+  setText('pk-fee', auth.filing_fee || '₹200');
+  setText('pk-relief-amount', d.amount ? '₹' + d.amount : 'the full claimed amount');
+  setText('pk-veri-city', d.state || '______________');
+
+  // Evidence index
+  const evEl = document.getElementById('pk-evidence');
+  if (evEl) {
+    const strengths = d.evidence_strengths || [];
+    let idx = 1;
+    evEl.innerHTML = '';
+    const baseEvidence = [
+      { title: 'Legal Notice', sub: 'Generated by SahAIyak · sent via Registered Post AD' },
+      { title: 'Postal Receipt + Acknowledgement Card', sub: 'Proof of delivery to opposite party' },
+    ];
+    [...baseEvidence, ...strengths.slice(0, 5).map((s, i) => ({
+      title: s.title || ('Evidence ' + (i + 1)),
+      sub: s.impact ? 'Impact: ' + s.impact : 'Supporting document',
+    }))].forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'ei-row';
+      row.innerHTML = `<div class="ei-num">${idx++}.</div><div class="ei-body"><div class="ei-title">${item.title}</div><div class="ei-sub">${item.sub}</div></div>`;
+      evEl.appendChild(row);
+    });
+  }
+
+  // Laws in subject matter
+  if (d.laws?.length) {
+    const lawText = d.laws.slice(0, 3).map(l => l.short_name || l.name || l).join(', ');
+    const descEl = document.getElementById('pk-desc');
+    if (descEl) descEl.textContent += `\n\nApplicable laws: ${lawText}`;
+  }
+}
+
+function showDemo() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('packetContent').style.display = '';
+  document.getElementById('packetStatus').textContent = 'DEMO MODE';
+  document.getElementById('packetStatus').style.color = 'var(--warn)';
+}
+</script>
+</body>
+</html>
