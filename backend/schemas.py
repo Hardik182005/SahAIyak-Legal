@@ -64,7 +64,7 @@ class NoticeResponse(BaseModel):
 
 class ChatMessage(BaseModel):
     message: str
-    case_id: str
+    case_id: Optional[str] = None
 
 
 class ChatResponse(BaseModel):

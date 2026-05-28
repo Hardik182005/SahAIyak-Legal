@@ -96,17 +96,21 @@ _secret() {
 set -a; source .env; set +a
 
 _secret GEMINI_API_KEY "${GEMINI_API_KEY}"
+_secret OPENAI_API_KEY "${OPENAI_API_KEY}"
 _secret GROQ_API_KEY "${GROQ_API_KEY}"
 _secret ELEVENLABS_API_KEY "${ELEVENLABS_API_KEY}"
 _secret PINECONE_API_KEY "${PINECONE_API_KEY}"
 _secret PINECONE_HOST "${PINECONE_HOST}"
 _secret DATABASE_URL "${DATABASE_URL}"
 _secret REDIS_URL "${REDIS_URL}"
+_secret TWILIO_ACCOUNT_SID "${TWILIO_ACCOUNT_SID}"
+_secret TWILIO_AUTH_TOKEN "${TWILIO_AUTH_TOKEN}"
+_secret TWILIO_WHATSAPP_NUMBER "${TWILIO_WHATSAPP_NUMBER}"
 
 # Grant Cloud Run SA access to secrets
 PROJECT_NUMBER=$(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
 SA="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
-for secret in GEMINI_API_KEY GROQ_API_KEY ELEVENLABS_API_KEY PINECONE_API_KEY PINECONE_HOST DATABASE_URL REDIS_URL; do
+for secret in GEMINI_API_KEY OPENAI_API_KEY GROQ_API_KEY ELEVENLABS_API_KEY PINECONE_API_KEY PINECONE_HOST DATABASE_URL REDIS_URL TWILIO_ACCOUNT_SID TWILIO_AUTH_TOKEN TWILIO_WHATSAPP_NUMBER; do
   gcloud secrets add-iam-policy-binding "$secret" \
     --member="$SA" \
     --role="roles/secretmanager.secretAccessor" 2>/dev/null || true
@@ -132,7 +136,7 @@ gcloud run deploy ${SERVICE_NAME} \
   --timeout=300 \
   --vpc-connector=${VPC_CONNECTOR} \
   --vpc-egress=private-ranges-only \
-  --set-secrets="GEMINI_API_KEY=GEMINI_API_KEY:latest,GROQ_API_KEY=GROQ_API_KEY:latest,ELEVENLABS_API_KEY=ELEVENLABS_API_KEY:latest,PINECONE_API_KEY=PINECONE_API_KEY:latest,PINECONE_HOST=PINECONE_HOST:latest,DATABASE_URL=DATABASE_URL:latest,REDIS_URL=REDIS_URL:latest" \
+  --set-secrets="GEMINI_API_KEY=GEMINI_API_KEY:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest,GROQ_API_KEY=GROQ_API_KEY:latest,ELEVENLABS_API_KEY=ELEVENLABS_API_KEY:latest,PINECONE_API_KEY=PINECONE_API_KEY:latest,PINECONE_HOST=PINECONE_HOST:latest,DATABASE_URL=DATABASE_URL:latest,REDIS_URL=REDIS_URL:latest,TWILIO_ACCOUNT_SID=TWILIO_ACCOUNT_SID:latest,TWILIO_AUTH_TOKEN=TWILIO_AUTH_TOKEN:latest,TWILIO_WHATSAPP_NUMBER=TWILIO_WHATSAPP_NUMBER:latest" \
   --set-env-vars="ENVIRONMENT=production,PINECONE_INDEX=sahayak-judgments,DATA_RETENTION_DAYS=30"
 
 CLOUD_RUN_URL=$(gcloud run services describe ${SERVICE_NAME} --region=${REGION} --format='value(status.url)')

@@ -207,7 +207,10 @@ async def get_case(case_id: str, db: AsyncSession = Depends(get_db)):
     total_analyzed = stored_total if stored_total > 0 else len(cases)
 
     from datetime import datetime, timezone as _tz
-    days_active = (datetime.now(_tz.utc) - case.created_at).days if case.created_at else 0
+    ca = case.created_at
+    if ca and ca.tzinfo is None:
+        ca = ca.replace(tzinfo=_tz.utc)
+    days_active = (datetime.now(_tz.utc) - ca).days if ca else 0
 
     response = {
         "case_id": case.id,
