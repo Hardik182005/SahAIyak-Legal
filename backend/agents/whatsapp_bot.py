@@ -79,15 +79,51 @@ async def handle_whatsapp(from_number: str, body: str, redis=None) -> str:
         if any(w in body_lower for w in ("new", "another", "नई", "start over")):
             await _set_state(from_number, None, redis)
             return "Starting fresh! Please describe your new problem."
-        return (
-            "I'm here to help! You can:\n"
-            "• Type *new* to start a fresh case\n"
-            "• Type *notice* to get a legal notice\n"
-            "• Type *rti* for RTI help\n"
-            "• Visit: sahayak-api-202376712479.asia-south1.run.app"
-        )
+        # Answer follow-up questions with AI using case context
+        return await _answer_followup(body, state.get("description", ""), settings)
 
     return "Type *hi* to start."
+
+
+async def _answer_followup(question: str, case_desc: str, settings) -> str:
+    """Use AI to answer follow-up questions after initial analysis."""
+    system = """You are a concise Indian legal assistant on WhatsApp. The user already received their case analysis.
+Now they are asking a follow-up question. Answer helpfully in under 150 words.
+Use *bold* for WhatsApp formatting. Cite relevant Indian law if applicable.
+End with: _Type *new* for a fresh case or visit sahayak-api-202376712479.asia-south1.run.app_"""
+
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": f"Case context: {case_desc[:300]}\n\nFollow-up question: {question}"},
+    ]
+
+    if settings.groq_api_key:
+        try:
+            from groq import AsyncGroq
+            resp = await AsyncGroq(api_key=settings.groq_api_key).chat.completions.create(
+                model="llama-3.3-70b-versatile", messages=messages, temperature=0.4, max_tokens=250,
+            )
+            return resp.choices[0].message.content or ""
+        except Exception as e:
+            logger.warning("Groq followup failed (%s), trying OpenAI", e)
+
+    if settings.openai_api_key:
+        try:
+            from openai import AsyncOpenAI
+            resp = await AsyncOpenAI(api_key=settings.openai_api_key).chat.completions.create(
+                model="gpt-4o-mini", messages=messages, temperature=0.4, max_tokens=250,
+            )
+            return resp.choices[0].message.content or ""
+        except Exception as e:
+            logger.warning("OpenAI followup failed: %s", e)
+
+    return (
+        "I'm here to help! You can:\n"
+        "• Type *new* to start a fresh case\n"
+        "• Type *notice* to get a legal notice drafted\n"
+        "• Type *rti* for RTI application help\n"
+        "• Visit: sahayak-api-202376712479.asia-south1.run.app"
+    )
 
 
 async def _run_quick_analysis(description: str, state: str, amount: str, settings) -> str:

@@ -158,6 +158,10 @@ let _caseData = null;
   const rtiBtn = document.getElementById('rtiBtn');
   if (_caseId && _caseId !== 'demo') {
     backBtn.href = `dashboard.html?case=${_caseId}`;
+    // Reset dashboard tab to overview so back button doesn't land on evidence coach
+    backBtn.addEventListener('click', () => {
+      try { sessionStorage.setItem('dash_tab_' + _caseId, 'overview'); } catch(e) {}
+    });
     if (rtiBtn) rtiBtn.href = `rti.html?case=${_caseId}`;
     try {
       _caseData = await apiGet('/api/v1/cases/' + _caseId);
@@ -217,8 +221,9 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Detect language: Devanagari → Hindi, Hindi words in Latin script → Hinglish, else English
-const _HINGLISH_WORDS = /\b(mera|meri|aapka|nahi|hai|raha|tha|kar|dena|lena|karo|bhai|yaar|hoga|kuch|baat|paisa|paise|deposit|nahi|aur|lekin|toh|kyun|kya|acha|theek|sahi|galat|abhi|kal|aaj)\b/i;
+// Detect language: Devanagari → Hindi, Hindi-only words in Latin script → Hinglish, else English
+// Only words that are EXCLUSIVELY Hindi/Hinglish (not valid English words like "deposit", "kar", etc.)
+const _HINGLISH_WORDS = /\b(mera|meri|mujhe|aapka|aapko|nahi|nahin|hai\b|hain|raha|rahe|tha|the|dena|lena|karo|bhai|yaar|hoga|hogi|kuch|baat|paisa|paise|aur|lekin|toh|kyun|kya|acha|accha|theek|sahi|galat|abhi|kal|aaj|bahut|bohot|zaroor|bilkul|seedha|dikkat|mushkil|samajh|bolna|sunna)\b/i;
 function detectLang(text) {
   const hindiChars = (text.match(/[ऀ-ॿ]/g) || []).length;
   if (hindiChars > 2) return 'hi';
