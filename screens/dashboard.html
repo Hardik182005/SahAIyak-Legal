@@ -1262,12 +1262,38 @@ body{
       const forum = auth.forum || 'District Consumer Disputes Redressal Commission';
       const forumEl = document.getElementById('fileat-forum');
       if (forumEl) forumEl.textContent = forum;
-      setEl('fileat-address-txt', auth.address || 'Your district headquarters. Contact the District Collector office for the exact address.');
+
+      // Address — try multiple key names Groq might use, then build fallback
+      const addr = auth.address || auth.court_address || auth.address_line ||
+        (auth.locality ? `${auth.locality}, ${d.state || ''}` : '') ||
+        `${forum}, ${d.state || 'your state'} — Contact District Collector office for exact address`;
+      const addrEl = document.getElementById('fileat-address-txt');
+      if (addrEl) {
+        addrEl.textContent = addr;
+        // Add Google Maps link next to address
+        const mapsQ = encodeURIComponent(forum + ' ' + (d.state || ''));
+        const existing = document.getElementById('fileat-maps-link');
+        if (!existing) {
+          const a = document.createElement('a');
+          a.id = 'fileat-maps-link';
+          a.href = `https://www.google.com/maps/search/?api=1&query=${mapsQ}`;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.style.cssText = 'display:inline-block;margin-top:6px;font-size:11px;color:#2563EB;font-family:"JetBrains Mono",monospace;letter-spacing:.06em;text-decoration:none';
+          a.textContent = '↗ View on Google Maps';
+          addrEl.parentElement.appendChild(a);
+        }
+      }
+
       const chip = document.getElementById('fileat-locality-chip');
-      if (chip && auth.locality) { chip.textContent = auth.locality; chip.style.display = 'inline'; }
+      if (chip && (auth.locality || auth.area)) {
+        chip.textContent = auth.locality || auth.area;
+        chip.style.display = 'inline';
+      }
       setEl('fileat-fee', auth.filing_fee || '₹200');
       setEl('fileat-res', auth.avg_resolution || '4 – 6 months');
-      setEl('fileat-next', auth.next_step || 'Send the legal notice first');
+      setEl('fileat-limit', auth.claim_limit || 'Up to ₹50 lakh');
+      setEl('fileat-next', auth.next_step || 'Send the legal notice first, then file complaint');
     }
 
     // ── Court Deadline & Document Checklist Calculations ──
