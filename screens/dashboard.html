@@ -979,29 +979,28 @@ body{
             <div class="page-hdr-top">
               <h1 class="page-title">Deadlines & Checklist</h1>
             </div>
-            <p class="page-sub">Know exactly when to act and what to bring to court — calculated from your case data.</p>
+            <p class="page-sub">Filing deadlines and required documents — auto-filled from your case data.</p>
           </div>
 
-          <!-- Limitation Period Card -->
-          <div class="s-lbl">Limitation Period</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px" id="dlCards">
+          <!-- Limitation Period — 3 stat cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px">
             <div class="file-info-card">
               <div class="file-info-lbl">Case Type</div>
               <div class="file-info-val" id="dlCaseType">Consumer Dispute</div>
             </div>
-            <div class="file-info-card" style="border-color:rgba(180,83,9,.25);background:rgba(180,83,9,.03)">
+            <div class="file-info-card" style="border-color:rgba(180,83,9,.3);background:rgba(180,83,9,.03)">
               <div class="file-info-lbl" style="color:var(--warn)">Limitation Period</div>
               <div class="file-info-val" id="dlLimit" style="color:var(--warn)">2 Years</div>
             </div>
-            <div class="file-info-card" style="border-color:rgba(37,99,235,.25);background:rgba(37,99,235,.03)">
+            <div class="file-info-card" style="border-color:rgba(37,99,235,.3);background:rgba(37,99,235,.03)">
               <div class="file-info-lbl" style="color:var(--sketch)">File Before</div>
-              <div class="file-info-val" id="dlDeadline" style="color:var(--sketch);font-size:13px">Calculate below</div>
+              <div class="file-info-val" id="dlDeadline" style="color:var(--sketch);font-size:13px">Enter date below</div>
             </div>
           </div>
 
           <!-- Date Calculator -->
-          <div class="s-lbl">Calculate Your Filing Deadline</div>
-          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:20px 24px;margin-bottom:20px">
+          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:10px;padding:22px 24px;margin-bottom:24px">
+            <div style="font-size:13px;font-weight:600;color:var(--c-ink);margin-bottom:14px">Calculate Your Filing Deadline</div>
             <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:flex-end">
               <div>
                 <div class="file-info-lbl">Date of Incident / Cause of Action</div>
@@ -1012,8 +1011,8 @@ body{
                 <select id="dlCategorySelect" style="width:100%;border:1px solid var(--c-border);border-radius:6px;padding:9px 12px;font-size:13px;font-family:'Inter',sans-serif;color:var(--c-ink);outline:none;background:var(--c-bg);cursor:pointer" onchange="calcDeadline()">
                   <option value="consumer:2">Consumer Dispute (2 years)</option>
                   <option value="wages:1">Unpaid Wages / Labour (1 year)</option>
+                  <option value="rent:3">Rent / Deposit / Tenancy (3 years)</option>
                   <option value="civil:3">Civil Suit — Money Recovery (3 years)</option>
-                  <option value="rent:3">Rent / Tenancy Dispute (3 years)</option>
                   <option value="rera:5">RERA — Real Estate (5 years)</option>
                   <option value="criminal:3">Criminal Complaint (3 years)</option>
                   <option value="insurance:3">Insurance Claim Dispute (3 years)</option>
@@ -1028,62 +1027,68 @@ body{
             </div>
           </div>
 
-          <!-- Notice Timeline -->
-          <div class="s-lbl">Key Dates After Sending Notice</div>
-          <div class="file-steps" style="background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;padding:8px 20px;margin-bottom:20px">
-            <div class="file-step">
-              <div class="file-step-n">1</div>
-              <div class="file-step-body">
-                <div class="file-step-title">Send Legal Notice via Registered Post AD</div>
-                <div class="file-step-desc">Keep the postal receipt and the returned acknowledgement card. This is your proof.</div>
-              </div>
+          <!-- Key Dates Timeline -->
+          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:10px;overflow:hidden;margin-bottom:24px">
+            <div style="padding:14px 24px;border-bottom:1px solid var(--c-border)">
+              <div style="font-size:13px;font-weight:600;color:var(--c-ink)">Key Dates After Sending Notice</div>
             </div>
-            <div class="file-step">
-              <div class="file-step-n">2</div>
-              <div class="file-step-body">
-                <div class="file-step-title">Wait 15–30 Days for Response</div>
-                <div class="file-step-desc">Most cases settle here. If no response or refusal, proceed to filing.</div>
+            <div class="file-steps" style="padding:0 24px">
+              <div class="file-step">
+                <div class="file-step-n">1</div>
+                <div class="file-step-body">
+                  <div class="file-step-title">Send Legal Notice via Registered Post AD</div>
+                  <div class="file-step-desc">Keep the postal receipt and the returned acknowledgement card — these are your proof of service.</div>
+                </div>
               </div>
-            </div>
-            <div class="file-step">
-              <div class="file-step-n">3</div>
-              <div class="file-step-body">
-                <div class="file-step-title">File Complaint at the Forum</div>
-                <div class="file-step-desc">Attach: complaint form, notice copy, postal receipt, AD card, evidence. Pay filing fee.</div>
+              <div class="file-step">
+                <div class="file-step-n">2</div>
+                <div class="file-step-body">
+                  <div class="file-step-title">Wait 15–30 Days for Response</div>
+                  <div class="file-step-desc">Most cases settle here. If no response or refusal, you may proceed to filing.</div>
+                </div>
               </div>
-            </div>
-            <div class="file-step">
-              <div class="file-step-n">4</div>
-              <div class="file-step-body">
-                <div class="file-step-title">First Hearing (avg 30–60 days)</div>
-                <div class="file-step-desc">Appear in person or through an advocate. Bring originals of all documents.</div>
+              <div class="file-step">
+                <div class="file-step-n">3</div>
+                <div class="file-step-body">
+                  <div class="file-step-title">File Complaint at the Forum</div>
+                  <div class="file-step-desc">Attach: complaint form, notice copy, postal receipt, AD card, all evidence. Pay the filing fee at the counter.</div>
+                </div>
               </div>
-            </div>
-            <div class="file-step">
-              <div class="file-step-n">5</div>
-              <div class="file-step-body">
-                <div class="file-step-title">Resolution (avg 3–5 months)</div>
-                <div class="file-step-desc">Consumer forums are bound to decide within 5 months under CP Act 2019.</div>
+              <div class="file-step">
+                <div class="file-step-n">4</div>
+                <div class="file-step-body">
+                  <div class="file-step-title">First Hearing (avg 30–60 days from filing)</div>
+                  <div class="file-step-desc">Appear in person or through an advocate. Bring originals of all submitted documents.</div>
+                </div>
+              </div>
+              <div class="file-step">
+                <div class="file-step-n">5</div>
+                <div class="file-step-body">
+                  <div class="file-step-title">Resolution (avg 3–5 months)</div>
+                  <div class="file-step-desc">Consumer forums are bound to decide within 5 months under the Consumer Protection Act 2019.</div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Document Checklist -->
-          <div class="s-lbl">Document Checklist — <span id="dlForumLabel">Consumer Forum</span></div>
-          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:8px;overflow:hidden;margin-bottom:20px">
-            <div style="padding:12px 20px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--c-soft);text-transform:uppercase">Required Documents</div>
-              <button onclick="printChecklist()" style="background:transparent;border:1px solid var(--c-border);color:var(--c-mute);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--c-ink)';this.style.color='var(--c-ink)'" onmouseout="this.style.borderColor='var(--c-border)';this.style.color='var(--c-mute)'">&#128438; Print Checklist</button>
+          <div style="background:var(--c-card);border:1px solid var(--c-border);border-radius:10px;overflow:hidden;margin-bottom:24px">
+            <div style="padding:14px 24px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--c-ink)">Document Checklist</div>
+                <div style="font-size:11px;color:var(--c-mute);margin-top:2px">For <span id="dlForumLabel">Consumer Forum</span> — tick each item as you gather it</div>
+              </div>
+              <button onclick="printChecklist()" style="background:transparent;border:1px solid var(--c-border);color:var(--c-mute);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--c-ink)';this.style.color='var(--c-ink)'" onmouseout="this.style.borderColor='var(--c-border)';this.style.color='var(--c-mute)'">&#128438; Print</button>
             </div>
-            <div id="dlChecklist" style="padding:8px 0"></div>
+            <div id="dlChecklist"></div>
           </div>
 
           <!-- RTI Tip -->
-          <div style="background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.15);border-radius:8px;padding:16px 20px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px">
-            <div style="font-size:22px;flex-shrink:0">📋</div>
+          <div style="background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.15);border-radius:10px;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;margin-bottom:20px">
+            <div style="font-size:20px;flex-shrink:0;margin-top:2px">📋</div>
             <div>
               <div style="font-size:13px;font-weight:600;color:var(--c-ink);margin-bottom:4px">Need Government Records? Use RTI.</div>
-              <div style="font-size:12px;color:var(--c-mute);line-height:1.6">File an RTI to compel any government department to give you documents within 30 days. Useful for property records, complaints, licenses, etc.</div>
+              <div style="font-size:12px;color:var(--c-mute);line-height:1.6">File an RTI to compel any government department to provide documents within 30 days — useful for property records, complaints, licenses, and permits.</div>
               <a href="rti.html" id="rtiChipLink" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sketch);text-decoration:none">Generate RTI Application →</a>
             </div>
           </div>
@@ -1391,13 +1396,16 @@ body{
 
     // ── Wire up Deadline & Checklist tab ──
     const fl = forum.toLowerCase();
-    const isLabour = fl.includes('labour') || fl.includes('wage');
-    const isRera   = fl.includes('rera') || fl.includes('real estate');
+    const desc2 = (d.description || '').toLowerCase();
+    const isLabour = fl.includes('labour') || fl.includes('wage') || desc2.includes('salary') || desc2.includes('employer') || desc2.includes('unpaid');
+    const isRera   = fl.includes('rera') || fl.includes('real estate') || desc2.includes('rera') || desc2.includes('builder');
     const isCivil  = fl.includes('civil') || fl.includes('district court');
+    const isRent   = fl.includes('small causes') || fl.includes('rent') || desc2.includes('deposit') || desc2.includes('landlord') || desc2.includes('rent') || desc2.includes('tenant');
     let caseType = 'Consumer Dispute'; let limitYears = 2; let dlCat = 'consumer:2';
-    if (isLabour) { caseType = 'Labour / Wages Dispute'; limitYears = 1; dlCat = 'wages:1'; }
-    else if (isRera) { caseType = 'RERA Dispute'; limitYears = 5; dlCat = 'rera:5'; }
-    else if (isCivil) { caseType = 'Civil Suit'; limitYears = 3; dlCat = 'civil:3'; }
+    if (isLabour)     { caseType = 'Labour / Wages Dispute';    limitYears = 1; dlCat = 'wages:1'; }
+    else if (isRera)  { caseType = 'RERA Dispute';              limitYears = 5; dlCat = 'rera:5'; }
+    else if (isRent)  { caseType = 'Rent / Deposit Dispute';    limitYears = 3; dlCat = 'rent:3'; }
+    else if (isCivil) { caseType = 'Civil Suit';                limitYears = 3; dlCat = 'civil:3'; }
     const dlCaseTypeEl = document.getElementById('dlCaseType');
     const dlLimitEl    = document.getElementById('dlLimit');
     const dlForumEl    = document.getElementById('dlForumLabel');
@@ -1408,11 +1416,13 @@ body{
     if (dlForumEl)    dlForumEl.textContent = forum;
     if (dlCatSel)     dlCatSel.value = dlCat;
     if (dlRtiLink && caseId) dlRtiLink.href = `rti.html?case=${caseId}`;
-    if (d.date_started) {
-      const dlDateEl = document.getElementById('dlDateInput');
-      if (dlDateEl) { dlDateEl.value = d.date_started; calcDeadline(); }
+    // Pre-fill date from case data and auto-calculate
+    const dlDateEl = document.getElementById('dlDateInput');
+    if (dlDateEl) {
+      if (d.date_started) { dlDateEl.value = d.date_started; }
+      calcDeadline();
     }
-    _renderChecklist(_getChecklist(forum));
+    _renderChecklist(_getChecklist(forum, desc2));
 
   } catch (e) {
     console.warn('Live data load failed, using demo data:', e.message);
@@ -1803,13 +1813,25 @@ const _CHECKLISTS = {
     {doc:'Legal Notice Copy',note:'Demand for possession / refund'},
     {doc:'ID Proof + Address Proof',note:'Aadhaar / PAN'},
   ],
+  rent: [
+    {doc:'Original Rental / Lease Agreement',note:'Shows deposit amount, notice period, and tenancy terms'},
+    {doc:'Bank Statement / NEFT Receipt of Deposit Payment',note:'Proof of deposit transfer to landlord\'s account'},
+    {doc:'WhatsApp Chats / Emails About Vacating & Keys',note:'Proves you gave notice and handed over the flat'},
+    {doc:'Legal Notice Copy + Speed Post Receipt',note:'Formal demand sent to landlord — essential for court'},
+    {doc:'Acknowledgement Delivery Card (AD Card)',note:'Proof the legal notice was received by landlord'},
+    {doc:'Photos of Flat at Vacating (timestamped)',note:'Proves condition at handover — counters damage claims'},
+    {doc:'Complaint Form (3 copies)',note:'Available at Consumer Forum or Small Causes Court counter'},
+    {doc:'ID + Address Proof',note:'Aadhaar / PAN, self-attested'},
+  ],
 };
 
-function _getChecklist(forum) {
+function _getChecklist(forum, desc) {
   const fl = (forum || '').toLowerCase();
-  if (fl.includes('labour') || fl.includes('wage')) return _CHECKLISTS.labour;
-  if (fl.includes('rera') || fl.includes('real estate')) return _CHECKLISTS.rera;
+  const d2 = (desc || '').toLowerCase();
+  if (fl.includes('labour') || fl.includes('wage') || d2.includes('salary') || d2.includes('employer')) return _CHECKLISTS.labour;
+  if (fl.includes('rera') || fl.includes('real estate') || d2.includes('rera') || d2.includes('builder')) return _CHECKLISTS.rera;
   if (fl.includes('civil') || fl.includes('district court')) return _CHECKLISTS.civil;
+  if (fl.includes('small causes') || fl.includes('rent') || d2.includes('deposit') || d2.includes('landlord') || d2.includes('rent')) return _CHECKLISTS.rent || _CHECKLISTS.consumer;
   return _CHECKLISTS.consumer;
 }
 
