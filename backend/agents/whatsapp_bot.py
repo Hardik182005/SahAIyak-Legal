@@ -1,12 +1,15 @@
 """WhatsApp Bot — Twilio-powered intake and case status via WhatsApp."""
 import logging
 import re
+import time
 from ..config import get_settings
 
 logger = logging.getLogger(__name__)
 
-# Conversation state stored per phone number in Redis (key: wa_state:{phone})
 _STATE_TTL = 3600 * 6  # 6 hours
+
+# In-memory fallback when Redis is unavailable (works on single Cloud Run instance)
+_mem_store: dict[str, tuple[dict, float]] = {}  # phone -> (state, expires_at)
 
 
 async def handle_whatsapp(from_number: str, body: str, redis=None) -> str:
@@ -154,27 +157,39 @@ def _fallback_analysis(desc, state, amount):
 
 
 async def _get_state(phone: str, redis) -> dict:
-    if not redis:
-        return {}
-    try:
-        import json
-        val = await redis.get(f"wa_state:{phone}")
-        return json.loads(val) if val else {}
-    except Exception:
-        return {}
+    # Try Redis first
+    if redis:
+        try:
+            import json
+            val = await redis.get(f"wa_state:{phone}")
+            if val:
+                return json.loads(val)
+        except Exception:
+            pass
+    # Fallback: in-memory store
+    entry = _mem_store.get(phone)
+    if entry and time.time() < entry[1]:
+        return entry[0]
+    return {}
 
 
 async def _set_state(phone: str, state, redis):
-    if not redis:
-        return
-    try:
-        import json
-        if state is None:
-            await redis.delete(f"wa_state:{phone}")
-        else:
-            await redis.setex(f"wa_state:{phone}", _STATE_TTL, json.dumps(state))
-    except Exception:
-        pass
+    # Try Redis first
+    if redis:
+        try:
+            import json
+            if state is None:
+                await redis.delete(f"wa_state:{phone}")
+            else:
+                await redis.setex(f"wa_state:{phone}", _STATE_TTL, json.dumps(state))
+            return
+        except Exception:
+            pass
+    # Fallback: in-memory store
+    if state is None:
+        _mem_store.pop(phone, None)
+    else:
+        _mem_store[phone] = (state, time.time() + _STATE_TTL)
 
 
 async def send_whatsapp(to: str, message: str, settings) -> bool:
