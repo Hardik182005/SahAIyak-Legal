@@ -88,10 +88,7 @@ async def handle_whatsapp(from_number: str, body: str, redis=None) -> str:
 
 
 async def _run_quick_analysis(description: str, state: str, amount: str, settings) -> str:
-    """Quick 3-point AI analysis for WhatsApp (shorter than full web analysis)."""
-    if not settings.groq_api_key:
-        return _fallback_analysis(description, state, amount)
-
+    """Quick 3-point AI analysis for WhatsApp — Groq primary, OpenAI fallback."""
     system = """You are a concise Indian legal assistant replying via WhatsApp. Given a case, provide:
 1. WIN CHANCE: X% + one-line reason
 2. KEY LAW: Most relevant act + section (one line)
@@ -100,28 +97,49 @@ async def _run_quick_analysis(description: str, state: str, amount: str, setting
 
 Keep total response under 200 words. Use *bold* for WhatsApp formatting."""
 
-    try:
-        from groq import AsyncGroq
-        client = AsyncGroq(api_key=settings.groq_api_key)
-        resp = await client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": f"Case: {description}\nState: {state}\nAmount: {amount}"},
-            ],
-            temperature=0.4,
-            max_tokens=350,
-        )
-        analysis = resp.choices[0].message.content or ""
-        return (
-            "⚖️ *SahAIyak Quick Analysis*\n\n"
-            + analysis
-            + "\n\n📱 _For full analysis with legal notice, evidence coach & court filing guide:_\n"
-            "sahayak-api-202376712479.asia-south1.run.app"
-        )
-    except Exception as e:
-        logger.warning("WhatsApp analysis failed: %s", e)
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": f"Case: {description}\nState: {state}\nAmount: {amount}"},
+    ]
+    analysis = ""
+
+    if settings.groq_api_key:
+        try:
+            from groq import AsyncGroq
+            resp = await AsyncGroq(api_key=settings.groq_api_key).chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=messages,
+                temperature=0.4,
+                max_tokens=350,
+            )
+            analysis = resp.choices[0].message.content or ""
+            logger.info("WhatsApp analysis via Groq")
+        except Exception as e:
+            logger.warning("Groq WhatsApp failed (%s), trying OpenAI", e)
+
+    if not analysis and settings.openai_api_key:
+        try:
+            from openai import AsyncOpenAI
+            resp = await AsyncOpenAI(api_key=settings.openai_api_key).chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                temperature=0.4,
+                max_tokens=350,
+            )
+            analysis = resp.choices[0].message.content or ""
+            logger.info("WhatsApp analysis via OpenAI fallback")
+        except Exception as e:
+            logger.warning("OpenAI WhatsApp also failed: %s", e)
+
+    if not analysis:
         return _fallback_analysis(description, state, amount)
+
+    return (
+        "⚖️ *SahAIyak Quick Analysis*\n\n"
+        + analysis
+        + "\n\n📱 _For full analysis with legal notice, evidence coach & court filing guide:_\n"
+        "sahayak-api-202376712479.asia-south1.run.app"
+    )
 
 
 def _fallback_analysis(desc, state, amount):
