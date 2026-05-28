@@ -29,8 +29,16 @@ function setCaseId(id) {
 }
 
 // All voice goes through ElevenLabs via /api/v1/voice/speak
+let _currentAudio = null;
+
 async function speakText(text, lang) {
   if (!text) return;
+  // Stop any currently playing audio before starting new one
+  if (_currentAudio) {
+    _currentAudio.pause();
+    _currentAudio.src = '';
+    _currentAudio = null;
+  }
   try {
     const r = await fetch(API_BASE + '/api/v1/voice/speak', {
       method: 'POST',
@@ -41,8 +49,9 @@ async function speakText(text, lang) {
     const blob = await r.blob();
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
+    _currentAudio = audio;
     audio.play();
-    audio.onended = () => URL.revokeObjectURL(url);
+    audio.onended = () => { URL.revokeObjectURL(url); if (_currentAudio === audio) _currentAudio = null; };
   } catch (e) {
     console.warn('ElevenLabs voice unavailable:', e.message);
   }
