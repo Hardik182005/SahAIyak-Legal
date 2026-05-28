@@ -279,7 +279,30 @@ async def sentry_endpoint(case_id: str, payload: ChatMessage, db: AsyncSession =
         result2 = await db.execute(select(AnalysisResult).where(AnalysisResult.case_id == case_id))
         analysis = result2.scalars().first()
         if analysis:
-            context = f"Win probability: {analysis.win_probability}%. State: {case.state}. Amount: {case.amount}."
+            ev = analysis.evidence_data or {}
+            auth = analysis.authority_data or {}
+            law_data = analysis.law_data or {}
+            strengths_txt = ', '.join(s.get('title', '') for s in ev.get('strengths', [])[:3])
+            gaps_txt = ', '.join(g.get('title', '') for g in ev.get('gaps', [])[:3])
+            laws_txt = ', '.join(
+                f"{l.get('act','')} s.{','.join(l.get('sections',[]))}"
+                for l in law_data.get('laws', [])[:3]
+            )
+            similar = analysis.evidence_data.get('similar_cases', []) if analysis.evidence_data else []
+            context = (
+                f"Case: {case.description[:600]}. "
+                f"Win probability: {analysis.win_probability}%. "
+                f"State: {case.state}. Amount: ₹{case.amount}. "
+                f"Forum: {auth.get('forum','')}. "
+                f"Filing fee: {auth.get('filing_fee','')}. "
+                f"Avg resolution: {auth.get('avg_resolution','')}. "
+                f"Evidence score: {ev.get('score','')}. "
+                f"Coaching tip: {ev.get('tip','')}. "
+                f"Evidence strengths: {strengths_txt}. "
+                f"Evidence gaps: {gaps_txt}. "
+                f"Applicable laws: {laws_txt}. "
+                f"Law summary: {law_data.get('summary','')[:300]}."
+            )
 
     reply = await sentry_chat(payload.message, context)
     return {"reply": reply}

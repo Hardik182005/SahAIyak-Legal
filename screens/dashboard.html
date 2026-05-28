@@ -1570,25 +1570,29 @@ function _renderEvidence(strengths, gaps) {
   const checkSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><polyline points="2,6.5 5,9.5 11,3.5" fill="none" stroke="#22c55e" stroke-width="1.4" stroke-linecap="round"/></svg>`;
   const crossSvg = `<svg width="13" height="13" viewBox="0 0 13 13" style="flex-shrink:0;margin-top:2px"><line x1="2.5" y1="2.5" x2="10.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/><line x1="10.5" y1="2.5" x2="2.5" y2="10.5" stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round"/></svg>`;
 
-  document.querySelectorAll('[data-ev-type="str"]').forEach(card => {
-    card.querySelectorAll('.ev-row').forEach(r => r.remove());
-    strengths.slice(0, 4).forEach(s => {
-      const div = document.createElement('div');
-      div.className = 'ev-row';
-      div.innerHTML = `${checkSvg}<div class="ev-txt"><div class="ev-title">${s.title}</div><div class="ev-badge pos">${s.impact}</div></div>`;
-      card.appendChild(div);
+  if (strengths.length) {
+    document.querySelectorAll('[data-ev-type="str"]').forEach(card => {
+      card.querySelectorAll('.ev-row').forEach(r => r.remove());
+      strengths.slice(0, 4).forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'ev-row';
+        div.innerHTML = `${checkSvg}<div class="ev-txt"><div class="ev-title">${s.title}</div><div class="ev-badge pos">${s.impact}</div></div>`;
+        card.appendChild(div);
+      });
     });
-  });
+  }
 
-  document.querySelectorAll('[data-ev-type="gap"]').forEach(card => {
-    card.querySelectorAll('.ev-row').forEach(r => r.remove());
-    gaps.slice(0, 3).forEach(g => {
-      const div = document.createElement('div');
-      div.className = 'ev-row';
-      div.innerHTML = `${crossSvg}<div class="ev-txt"><div class="ev-title">${g.title}</div>${g.sub ? `<div class="ev-sub">→ ${g.sub}</div>` : ''}<div class="ev-badge neg">${g.impact}</div></div>`;
-      card.appendChild(div);
+  if (gaps.length) {
+    document.querySelectorAll('[data-ev-type="gap"]').forEach(card => {
+      card.querySelectorAll('.ev-row').forEach(r => r.remove());
+      gaps.slice(0, 3).forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'ev-row';
+        div.innerHTML = `${crossSvg}<div class="ev-txt"><div class="ev-title">${g.title}</div>${g.sub ? `<div class="ev-sub">→ ${g.sub}</div>` : ''}<div class="ev-badge neg">${g.impact}</div></div>`;
+        card.appendChild(div);
+      });
     });
-  });
+  }
 }
 
 // ── FILTER SIMILAR CASES ─────────────────────────────────────────────
