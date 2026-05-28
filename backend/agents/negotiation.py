@@ -4,7 +4,9 @@ from ..config import get_settings
 
 logger = logging.getLogger(__name__)
 
-_SYSTEM = """You are running an Indian legal negotiation simulation. Play TWO roles simultaneously.
+_SYSTEM_TEMPLATE = """%%LANG_RULE%%
+
+You are running an Indian legal negotiation simulation. Play TWO roles simultaneously.
 
 ━━━ ROLE 1 — THE OPPONENT ━━━
 You are the opposing party (landlord / employer / seller / service provider). Behave like a real person in a real negotiation — emotional, self-interested, but eventually reasonable under pressure.
@@ -18,8 +20,7 @@ NEGOTIATION DYNAMICS:
 RULES:
 • NEVER repeat the same wording from a previous turn.
 • React SPECIFICALLY to what the user just said — mention their evidence, their legal threat, their exact words.
-• Use realistic Indian bargaining language: "adjust kar lete hain", "let's be practical", "my lawyer says this will drag for years", "I'm doing this as goodwill", "you have no proof", etc.
-• Be human — slightly defensive, emotional, not robotic.
+• Be human — slightly defensive, emotional, not robotic. Use realistic negotiation phrases.
 • Opponent response: 2-3 sentences MAX.
 
 ━━━ ROLE 2 — SENTRY COACH ━━━
@@ -51,16 +52,16 @@ async def negotiate_turn(
         stance = f"Round {round_num}: near-full settlement (85-95%) or propose to settle fully with a condition."
 
     if lang == "hi":
-        lang_instruction = "IMPORTANT: The user is writing in Hindi (Devanagari). You MUST reply in Hindi (Devanagari script) for both OPPONENT and COACH."
+        lang_rule = "LANGUAGE RULE (MANDATORY): Respond ONLY in Hindi using Devanagari script. Every single word of OPPONENT and COACH must be in Hindi. Do NOT use English or Roman script."
     elif lang == "hinglish":
-        lang_instruction = "IMPORTANT: The user is writing in Hinglish (Hindi in Roman script). You MUST reply in Hinglish for both OPPONENT and COACH. Example: 'Bhai, itna toh possible nahi hai. Thoda adjust karo.'"
+        lang_rule = "LANGUAGE RULE (MANDATORY): Respond ONLY in Hinglish — Hindi words written in Roman/Latin script mixed with English. Example: 'Bhai, itna possible nahi hai. Thoda adjust karo.' Do NOT use Devanagari."
     else:
-        lang_instruction = "IMPORTANT: The user is writing in English. You MUST reply in English for both OPPONENT and COACH."
+        lang_rule = "LANGUAGE RULE (MANDATORY): Respond ONLY in English. Every single word of OPPONENT and COACH must be plain English. Do NOT mix in any Hindi or Hinglish words whatsoever."
+
     system_prompt = (
-        _SYSTEM
+        _SYSTEM_TEMPLATE.replace("%%LANG_RULE%%", lang_rule)
         + f"\n\nCASE SUMMARY: {case_description[:600]}"
         + f"\n\nCURRENT ROUND INSTRUCTION: {stance}"
-        + f"\n\n{lang_instruction}"
     )
 
     # Build messages in OpenAI format
